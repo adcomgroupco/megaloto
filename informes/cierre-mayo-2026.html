@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Megaloto · Informe de Cierre Mayo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;0,900;1,300;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --black: #1A1A1A;
+    --yellow: #FFC000;
+    --white: #FFFFFF;
+    --t1: #1A1A1A;
+    --t2: #333333;
+    --t3: #999999;
+    --t4: #666666;
+    --green: #4CAF50;
+    --red: #EF5350;
+    --slide-w: 1100px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #111;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 32px 16px 60px;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: rgba(17,17,17,.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 28px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 10px; }
+  .nav-logo {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--yellow); display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 900; color: var(--black);
+  }
+  .nav-title { color: #fff; font-size: 13px; font-weight: 600; }
+  .nav-title span { color: var(--yellow); font-style: italic; }
+  .nav-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .nav-pill {
+    background: #2a2a2a; color: #999; border: none;
+    padding: 4px 12px; border-radius: 20px; font-size: 11px; font-family: 'Poppins', sans-serif;
+    cursor: pointer; transition: all .2s;
+  }
+  .nav-pill:hover, .nav-pill.active { background: var(--yellow); color: var(--black); font-weight: 600; }
+
+  /* ── SLIDES ── */
+  .deck { margin-top: 68px; width: 100%; max-width: var(--slide-w); display: flex; flex-direction: column; gap: 20px; }
+
+  .slide {
+    background: var(--bg);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,.5);
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .55s ease, transform .55s ease;
+    min-height: 540px;
+  }
+  .slide.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── HEADER BAR ── */
+  .slide-header {
+    background: var(--black);
+    border-radius: 10px 10px 0 0;
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo-circle {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    background: var(--yellow); display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 900; color: var(--black);
+  }
+  .slide-header h2 { color: #fff; font-size: 17px; font-weight: 400; }
+  .slide-header h2 em { font-weight: 700; font-style: italic; }
+  .slide-num {
+    margin-left: auto; background: rgba(255,255,255,.1);
+    color: #888; font-size: 11px; padding: 3px 10px; border-radius: 20px;
+  }
+
+  .slide-subtitle {
+    padding: 8px 22px 0;
+    font-size: 11px; color: var(--t4); font-style: italic; font-weight: 300;
+  }
+
+  .slide-body { padding: 16px 22px 22px; }
+
+  /* ── COVER ── */
+  .slide-cover {
+    background: var(--black) !important;
+    min-height: 480px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; text-align: center;
+  }
+  .cover-logo {
+    width: 88px; height: 88px; border-radius: 50%;
+    background: var(--yellow); display: flex; align-items: center; justify-content: center;
+    font-size: 36px; font-weight: 900; color: var(--black);
+    margin-bottom: 16px;
+    box-shadow: 0 0 60px rgba(255,192,0,.3);
+  }
+  .cover-title { font-size: 42px; font-weight: 700; color: #fff; line-height: 1.1; }
+  .cover-month { font-size: 34px; font-weight: 700; font-style: italic; color: var(--yellow); }
+  .cover-sub { font-size: 14px; color: #666; font-weight: 300; margin-top: 4px; }
+  .cover-line { width: 140px; height: 4px; background: var(--yellow); border-radius: 2px; margin: 16px auto; }
+  .cover-footer { font-size: 11px; color: #444; font-style: italic; margin-top: 4px; }
+
+  /* ── KPI CARDS ── */
+  .kpi-row { display: grid; gap: 10px; margin-bottom: 14px; }
+  .kpi-row-5 { grid-template-columns: repeat(5, 1fr); }
+  .kpi-row-4 { grid-template-columns: repeat(4, 1fr); }
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+
+  .kpi {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 12px 10px 14px;
+    border: 1px solid #E0E0E0;
+    position: relative;
+    overflow: hidden;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+  .kpi::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 4px; background: var(--yellow);
+  }
+  .kpi.highlight { border: 2px solid var(--yellow); }
+  .kpi.muted { opacity: .65; }
+  .kpi-obj { font-size: 10px; color: var(--t3); font-style: italic; font-weight: 300; margin-bottom: 2px; }
+  .kpi-val { font-size: 24px; font-weight: 700; color: var(--t1); line-height: 1.1; }
+  .kpi.muted .kpi-val { color: #999; }
+  .kpi-label { font-size: 10px; font-weight: 700; color: var(--t2); margin-top: 4px; }
+  .kpi-sub { font-size: 9px; color: var(--t3); font-weight: 300; margin-top: 2px; }
+  .kpi-var { font-size: 9.5px; font-weight: 700; margin-top: 4px; }
+  .up { color: var(--green); }
+  .dn { color: var(--red); }
+  .ne { color: #888; }
+
+  /* ── SECTION DIVIDER ── */
+  .section-div {
+    display: flex; align-items: center; gap: 10px; margin: 10px 0 12px;
+  }
+  .section-div span { font-size: 10px; font-weight: 700; color: var(--t3); letter-spacing: .08em; white-space: nowrap; }
+  .section-div::before, .section-div::after { content:''; flex:1; height:1px; background:#E0E0E0; }
+
+  /* ── TABLES ── */
+  .tbl-wrap { overflow-x: auto; border-radius: 10px; overflow: hidden; border: 1px solid #E8E8E8; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: var(--black); }
+  thead th { color: #fff; font-weight: 700; font-size: 10px; padding: 10px 10px; text-align: center; letter-spacing:.02em; }
+  thead th:first-child { text-align: left; }
+  tbody tr:nth-child(even) { background: #F9F9F9; }
+  tbody tr:nth-child(odd) { background: #fff; }
+  tbody td { padding: 10px 10px; color: var(--t2); text-align: center; border-bottom: 1px solid #EEEEEE; }
+  tbody td:first-child { text-align: left; font-weight: 600; color: var(--t1); }
+  tbody tr.total-row { background: var(--yellow) !important; }
+  tbody tr.total-row td { font-weight: 700; color: var(--black); font-size: 13px; border: none; }
+  tbody tr.total-row td:first-child { font-size: 13px; }
+  .badge-yellow {
+    display: inline-block; background: var(--yellow);
+    color: var(--black); font-weight: 700; padding: 2px 10px; border-radius: 6px;
+    font-size: 12px;
+  }
+  .cpa-green { color: var(--green); font-weight: 700; }
+  .cpa-red   { color: var(--red);   font-weight: 700; }
+  .cpa-grey  { color: #999; }
+  .delta-up  { color: var(--green); font-weight: 700; }
+  .delta-dn  { color: var(--red);   font-weight: 700; }
+
+  /* ── HIGHLIGHTS BOX ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 14px; }
+
+  .highlights-box {
+    background: var(--white); border-radius: 10px; border: 1px solid #E0E0E0;
+    padding: 14px 16px 18px; position: relative; overflow: hidden;
+  }
+  .highlights-box::after { content:''; position:absolute; bottom:0; left:0; right:0; height:4px; background:var(--yellow); }
+  .highlights-box h4 { font-size: 11px; font-weight: 700; color: var(--t1); margin-bottom: 10px; }
+  .highlights-box li { list-style: none; font-size: 10.5px; color: var(--t2); font-weight: 300; padding: 4px 0; border-bottom: 1px solid #F0F0F0; }
+  .highlights-box li:last-child { border: none; }
+
+  /* ── INSIGHT BAR ── */
+  .insight {
+    background: var(--white); border-radius: 8px; border: 1px solid #E0E0E0;
+    padding: 10px 14px 10px 18px; position: relative; font-size: 10.5px;
+    color: var(--t4); font-weight: 300; line-height: 1.5;
+    margin-top: 12px;
+  }
+  .insight::before { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--yellow); border-radius:8px 0 0 8px; }
+
+  /* ── NOTICE BOX ── */
+  .notice {
+    background: #FFFBE6; border: 1px solid var(--yellow); border-radius: 8px;
+    padding: 9px 14px; font-size: 10.5px; color: #7A5800; font-weight: 300;
+    margin-bottom: 14px; line-height: 1.5;
+  }
+  .notice-warn {
+    background: #FFF8E1; border-color: var(--yellow);
+    font-size: 10px; margin-top: 10px; margin-bottom: 0;
+  }
+
+  /* ── ETAPA CARDS ── */
+  .etapa-card {
+    background: var(--white); border-radius: 10px; border: 1px solid #E0E0E0;
+    padding: 14px; position: relative; overflow: hidden;
+  }
+  .etapa-card.conv { border-left: 5px solid var(--yellow); }
+  .etapa-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--yellow); }
+  .etapa-card h4 { font-size: 10px; font-weight: 700; color: var(--t3); letter-spacing:.06em; margin-bottom:8px; }
+  .etapa-row { display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid #F5F5F5; font-size:11px; }
+  .etapa-row:last-child { border:none; }
+  .etapa-row .lbl { color: var(--t3); font-weight:300; }
+  .etapa-row .val { color: var(--t1); font-weight:600; }
+  .etapa-row .val.hl { color: var(--yellow); font-weight:700; }
+
+  /* ── DARK SLIDE (conclusiones) ── */
+  .slide-dark { background: var(--black) !important; }
+  .slide-dark .slide-header { background: #2a2a2a; }
+  .conc-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .conc-card {
+    background: #2A2A2A; border-radius:10px; border:1px solid #3A3A3A;
+    padding:16px; position:relative; overflow:hidden;
+  }
+  .conc-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:4px; background:var(--yellow); }
+  .conc-card h4 { font-size:11px; font-weight:700; color:var(--yellow); margin-bottom:8px; }
+  .conc-card p  { font-size:10.5px; color:#CCC; font-weight:300; line-height:1.55; }
+  .dark-footer  { text-align:center; font-size:11px; color:#444; font-style:italic; margin-top:18px; }
+
+  /* ── AWARENESS CARDS ── */
+  .awa-card {
+    background: var(--white); border-radius:10px; border:1px solid #E0E0E0;
+    padding:14px; position:relative; overflow:hidden;
+  }
+  .awa-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:4px; background:var(--yellow); }
+  .awa-card h4 { font-size:10px; font-weight:700; color:var(--t1); margin-bottom:10px; letter-spacing:.03em; }
+  .awa-row { display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px solid #F5F5F5; font-size:10.5px; }
+  .awa-row:last-child { border:none; }
+  .awa-row .k { color:var(--t3); font-weight:300; }
+  .awa-row .v { color:var(--t1); font-weight:600; }
+  .awa-badge { font-size:10px; font-weight:700; margin-top:10px; }
+
+  @media (max-width: 700px) {
+    .kpi-row-5 { grid-template-columns: repeat(2,1fr); }
+    .kpi-row-4 { grid-template-columns: repeat(2,1fr); }
+    .two-col, .conc-grid { grid-template-columns: 1fr; }
+    .three-col { grid-template-columns: 1fr; }
+    .cover-title { font-size: 28px; }
+    .cover-month { font-size: 24px; }
+    .slide-header h2 { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">A</div>
+    <div class="nav-title">MEGALOTO · <span>Informe Mayo 2026</span></div>
+  </div>
+  <div class="nav-pills">
+    <button class="nav-pill" onclick="scrollTo(0)">Portada</button>
+    <button class="nav-pill" onclick="scrollTo(1)">Presupuesto</button>
+    <button class="nav-pill" onclick="scrollTo(2)">Negocio</button>
+    <button class="nav-pill" onclick="scrollTo(3)">Por Etapa</button>
+    <button class="nav-pill" onclick="scrollTo(4)">Conversión</button>
+    <button class="nav-pill" onclick="scrollTo(5)">Comparativo</button>
+    <button class="nav-pill" onclick="scrollTo(6)">Conclusiones</button>
+  </div>
+</nav>
+
+<div class="deck" id="deck">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 1 · PORTADA
+════════════════════════════════════════════════════════════════ -->
+<div class="slide slide-cover" data-index="0">
+  <div class="cover-logo">A</div>
+  <div class="cover-title">Informe de Cierre</div>
+  <div class="cover-month">Mayo 2026</div>
+  <div class="cover-sub">MEGALOTO — Meta Ads</div>
+  <div class="cover-line"></div>
+  <div class="cover-footer">Preparado por ADCOM · Junio 2026</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 2 · RESUMEN PRESUPUESTO
+════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-index="1">
+  <div class="slide-header">
+    <div class="logo-circle">A</div>
+    <h2>Resumen General <em>Presupuesto &amp; Ejecución · Mayo 2026</em></h2>
+    <span class="slide-num">02</span>
+  </div>
+  <div class="slide-subtitle">Inversión total ejecutada vs. presupuesto proyectado — todas las campañas Meta</div>
+  <div class="slide-body">
+
+    <div class="kpi-row kpi-row-5">
+      <div class="kpi">
+        <div class="kpi-val">$20,000</div>
+        <div class="kpi-label">Presupuesto Proyectado</div>
+        <div class="kpi-sub">Flow Mayo 2026</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val">$19,611</div>
+        <div class="kpi-label">Inversión Ejecutada</div>
+        <div class="kpi-sub">Campañas activas</div>
+        <div class="kpi-var dn">▼ -1.9% vs objetivo</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val">98.1%</div>
+        <div class="kpi-label">Ejecución Presupuestal</div>
+        <div class="kpi-sub">Meta: 95–100%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val">14.8M</div>
+        <div class="kpi-label">Impresiones Totales</div>
+        <div class="kpi-sub">vs 13.4M en Abril</div>
+        <div class="kpi-var up">▲ +10.9% vs Abril</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val">4.0M</div>
+        <div class="kpi-label">Alcance Total</div>
+        <div class="kpi-sub">vs 3.2M en Abril</div>
+        <div class="kpi-var up">▲ +25.1% vs Abril</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>ETAPA</th><th>PPTO ASIG.</th><th>%</th><th>EJECUTADO</th><th>VARIACIÓN</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>AWARENESS</td><td>$6,000</td><td>30%</td><td>$6,000.02</td><td class="up">0.0%</td></tr>
+              <tr><td>CONSIDERACIÓN</td><td>$5,000</td><td>25%</td><td>$5,030.47</td><td class="up">+0.6%</td></tr>
+              <tr><td>CONVERSIÓN</td><td>$9,000</td><td>45%</td><td>$8,580.31</td><td class="dn">-4.7%</td></tr>
+              <tr class="total-row"><td>TOTAL META</td><td>$20,000</td><td>100%</td><td>$19,610.80</td><td>-1.9%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="highlights-box">
+        <h4>✦  Highlights del Mes</h4>
+        <ul>
+          <li>→  98.1% ejecución ($19,611 de $20,000)</li>
+          <li>→  +10.9% impresiones vs. Abril (14.8M)</li>
+          <li>→  +25.1% alcance vs. Abril (4.0M)</li>
+          <li>→  7,276 jugadas reales · CPA real $2.70</li>
+          <li>→  ROAS total 0.76 (conv. Meta: 1.80)</li>
+          <li>→  Festivos finalizó el 15 de Mayo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="insight">💡 Mayo cerró con 98.1% de ejecución presupuestal. Las campañas de conversión Meta generaron 7,503 jugadas reales con CPA $1.14 y ROAS 1.8 — el canal pagado más eficiente del mes.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 3 · RESULTADOS DEL NEGOCIO
+════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-index="2">
+  <div class="slide-header">
+    <div class="logo-circle">A</div>
+    <h2>Resultados del Negocio <em>Jugadas &amp; CPA Real vs. Objetivos · Mayo 2026</em></h2>
+    <span class="slide-num">03</span>
+  </div>
+  <div class="slide-subtitle">KPIs reales del negocio extraídos de plataforma — jugadas confirmadas y costo por jugada real</div>
+  <div class="slide-body">
+
+    <div class="notice">
+      📌 <strong>Distinción clave:</strong> "Jugadas Mta" = conversiones atribuidas por Meta (18,365). "Jugadas reales" = jugadas confirmadas en la plataforma del negocio (7,276). El CPA real se calcula sobre jugadas reales.
+    </div>
+
+    <div class="kpi-row kpi-row-4" style="margin-bottom:10px;">
+      <div class="kpi highlight">
+        <div class="kpi-obj">OBJ: 8,200</div>
+        <div class="kpi-val">7,276</div>
+        <div class="kpi-label">Jugadas Reales</div>
+        <div class="kpi-sub">vs obj. Flow Mayo</div>
+        <div class="kpi-var dn">▼ -11.3% vs objetivo</div>
+      </div>
+      <div class="kpi highlight">
+        <div class="kpi-obj">OBJ: $2.00</div>
+        <div class="kpi-val">$2.70</div>
+        <div class="kpi-label">CPA Real (negocio)</div>
+        <div class="kpi-sub">Inversión / jugada real</div>
+        <div class="kpi-var dn">▼ +35% vs objetivo $2.00</div>
+      </div>
+      <div class="kpi muted">
+        <div class="kpi-val">18,365</div>
+        <div class="kpi-label">Jugadas Mta (Meta)</div>
+        <div class="kpi-sub">Atribuidas por pixel</div>
+        <div class="kpi-var ne">≠ jugadas reales negocio</div>
+      </div>
+      <div class="kpi muted">
+        <div class="kpi-val">$1.07</div>
+        <div class="kpi-label">CPA Meta (atribuido)</div>
+        <div class="kpi-sub">No = CPA negocio real</div>
+        <div class="kpi-var ne">Modelo atribución Meta</div>
+      </div>
+    </div>
+
+    <div class="section-div"><span>MÉTRICAS COMPLEMENTARIAS</span></div>
+
+    <div class="kpi-row" style="grid-template-columns:repeat(5,1fr);">
+      <div class="kpi">
+        <div class="kpi-obj">OBJ: Gs 114.8M</div>
+        <div class="kpi-val" style="font-size:18px;">Gs 104.7M</div>
+        <div class="kpi-label">Ingresos Totales (plat.)</div>
+        <div class="kpi-sub">Meta Conv. + otros canales</div>
+        <div class="kpi-var dn">▼ -8.8% vs objetivo</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val">0.76</div>
+        <div class="kpi-label">ROAS Total Negocio</div>
+        <div class="kpi-sub">vs 1.80 ROAS Meta Conv.</div>
+        <div class="kpi-var dn">Incl. inversión AWA+CONS</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val">1.80</div>
+        <div class="kpi-label">ROAS Meta Conversión</div>
+        <div class="kpi-sub">Solo campañas conversión</div>
+        <div class="kpi-var up">▲ sobre breakeven 1.0</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-obj">OBJ: 90,000</div>
+        <div class="kpi-val">69,329</div>
+        <div class="kpi-label">Clics Tráfico (AWA)</div>
+        <div class="kpi-sub">vs 90,000 objetivo</div>
+        <div class="kpi-var dn">▼ -23% vs objetivo</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-obj">OBJ: 40,000</div>
+        <div class="kpi-val">22,070</div>
+        <div class="kpi-label">Visitas Perfil RRSS</div>
+        <div class="kpi-sub">vs 40,000 objetivo</div>
+        <div class="kpi-var dn">▼ -44.8% vs objetivo</div>
+      </div>
+    </div>
+
+    <div class="insight">⚠️ Brecha de atribución: Meta reporta 18,365 jugadas (CPA $1.07) vs. 7,276 jugadas reales en plataforma (CPA $2.70). El objetivo era 8,200 jugadas a $2.00 CPA — se llegó al 88.7% en volumen y el costo fue 35% superior al objetivo.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 4 · RESULTADOS POR ETAPA
+════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-index="3">
+  <div class="slide-header">
+    <div class="logo-circle">A</div>
+    <h2>Resultados por Etapa <em>Inversión, Jugadas &amp; ROAS · Mayo 2026</em></h2>
+    <span class="slide-num">04</span>
+  </div>
+  <div class="slide-subtitle">Desglose de resultados reales por etapa de embudo — fuente: plataforma Megaloto</div>
+  <div class="slide-body">
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>MEDIO</th><th>ETAPA</th><th>INVERSIÓN</th><th>INGRESOS (Gs)</th>
+          <th>JUGADAS REALES</th><th>CPA REAL</th><th>ROAS</th><th>TICKET MEDIO</th>
+        </tr></thead>
+        <tbody>
+          <tr style="border-left:4px solid var(--yellow);">
+            <td>Meta</td><td>Conversión</td><td>$8,580.31</td><td>$108,460,000</td>
+            <td><span class="badge-yellow">7,503</span></td><td class="cpa-green">$1.14</td><td>1.80</td><td>$14,455</td>
+          </tr>
+          <tr>
+            <td>Meta</td><td>Consideración</td><td>$5,030.47</td><td>—</td>
+            <td class="cpa-grey">—</td><td class="cpa-grey">—</td><td class="cpa-grey">—</td><td class="cpa-grey">—</td>
+          </tr>
+          <tr>
+            <td>Meta</td><td>Awareness</td><td>$6,000.02</td><td>—</td>
+            <td class="cpa-grey">—</td><td class="cpa-grey">—</td><td class="cpa-grey">—</td><td class="cpa-grey">—</td>
+          </tr>
+          <tr style="background:#F0F9F0;">
+            <td>Orgánico/Otros</td><td>—</td><td>$0</td><td>$744,050,000</td>
+            <td>51,162</td><td>$0</td><td>—</td><td>$14,543</td>
+          </tr>
+          <tr class="total-row">
+            <td>TOTAL</td><td></td><td>$19,611</td><td>$852,510,000*</td>
+            <td>58,665*</td><td>$2.70**</td><td>0.76</td><td>$14,389</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size:10px;color:#999;font-style:italic;margin-bottom:12px;">
+      *Total incluye canal orgánico/directo (51,162 jugadas sin inversión paid). **CPA real = inversión Meta / jugadas confirmadas en plataforma Megaloto.
+    </p>
+
+    <div class="three-col">
+      <div class="etapa-card conv">
+        <h4>META · CONVERSIÓN ★</h4>
+        <div class="etapa-row"><span class="lbl">Inversión</span><span class="val">$8,580.31</span></div>
+        <div class="etapa-row"><span class="lbl">Jugadas reales</span><span class="val hl">7,503</span></div>
+        <div class="etapa-row"><span class="lbl">CPA real</span><span class="val">$1.14</span></div>
+        <div class="etapa-row"><span class="lbl">ROAS</span><span class="val">1.80</span></div>
+        <div class="etapa-row"><span class="lbl">Ingresos</span><span class="val">Gs 108.4M</span></div>
+        <div class="etapa-row"><span class="lbl">Ticket medio</span><span class="val">$14,455</span></div>
+      </div>
+      <div class="etapa-card">
+        <h4>META · CONS + AWA</h4>
+        <div class="etapa-row"><span class="lbl">Inv. Consideración</span><span class="val">$5,030.47</span></div>
+        <div class="etapa-row"><span class="lbl">Inv. Awareness</span><span class="val">$6,000.02</span></div>
+        <div class="etapa-row"><span class="lbl">Jugadas reales</span><span class="val cpa-grey">—</span></div>
+        <div class="etapa-row"><span class="lbl">Rol</span><span class="val" style="font-size:10px;">Brand + Tráfico</span></div>
+        <div class="etapa-row"><span class="lbl">Impresiones</span><span class="val">14.8M</span></div>
+        <div class="etapa-row"><span class="lbl">Alcance</span><span class="val">4.0M</span></div>
+      </div>
+      <div class="etapa-card" style="background:#F0F9F0;">
+        <h4>ORGÁNICO / OTROS</h4>
+        <div class="etapa-row"><span class="lbl">Inversión paid</span><span class="val">$0</span></div>
+        <div class="etapa-row"><span class="lbl">Jugadas</span><span class="val hl">51,162</span></div>
+        <div class="etapa-row"><span class="lbl">CPA</span><span class="val">$0</span></div>
+        <div class="etapa-row"><span class="lbl">Ingresos</span><span class="val">Gs 744M</span></div>
+        <div class="etapa-row"><span class="lbl">Ticket medio</span><span class="val">$14,543</span></div>
+        <div class="etapa-row"><span class="lbl">Fuente</span><span class="val" style="font-size:10px;">Directo/orgánico</span></div>
+      </div>
+    </div>
+
+    <div class="insight">🎯 Meta Conversión es el único canal paid con jugadas confirmadas: 7,503 jugadas, CPA $1.14, ROAS 1.80. Consideración y Awareness invierten en brand y tráfico al funnel — sin jugadas directas. El canal orgánico aporta 51,162 jugadas sin inversión.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 5 · CONVERSIÓN POR CAMPAÑA
+════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-index="4">
+  <div class="slide-header">
+    <div class="logo-circle">A</div>
+    <h2>Campañas de <em>Conversión · CPA Real por Campaña</em></h2>
+    <span class="slide-num">05</span>
+  </div>
+  <div class="slide-subtitle">Foco en costo real de conversión — comparativo Mayo vs. Abril y vs. objetivos del Flow</div>
+  <div class="slide-body">
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>CAMPAÑA</th><th>OBJ<br>JUGADAS</th><th>OBJ<br>CPA</th>
+          <th>MAY JUGADAS MTA</th><th>MAY CPA MTA</th><th>MAY INVERSIÓN</th>
+          <th>ABR JUG. MTA</th><th>ABR CPA MTA</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td>ONE + ACTIVOS</td><td>2,400</td><td>$1.50</td>
+            <td><span class="badge-yellow">6,384</span></td>
+            <td class="cpa-green">$0.56</td><td>$3,569</td><td class="cpa-grey">5,106</td><td class="cpa-grey">$0.70</td>
+          </tr>
+          <tr>
+            <td>NUEVOS (Similares)</td><td>2,400</td><td>$1.50</td>
+            <td><span class="badge-yellow">6,382</span></td>
+            <td class="cpa-green">$0.56</td><td>$3,557</td><td class="cpa-grey">3,945</td><td class="cpa-grey">$0.94</td>
+          </tr>
+          <tr>
+            <td>RIESGO + HÁBITO ROTO</td><td>900</td><td>$2.00</td>
+            <td><span class="badge-yellow">2,618</span></td>
+            <td class="cpa-green">$0.56</td><td>$1,454</td><td class="cpa-grey">2,511</td><td class="cpa-grey">$0.61</td>
+          </tr>
+          <tr>
+            <td>CONSIDERACIÓN (CONS)</td><td>2,000</td><td>$2.00</td>
+            <td>1,868</td>
+            <td class="cpa-red">$2.15</td><td>$4,023</td><td class="cpa-grey">4,579</td><td class="cpa-grey">$0.97</td>
+          </tr>
+          <tr>
+            <td>FESTIVOS (hasta 15M)</td><td>500</td><td>$2.00</td>
+            <td>277</td>
+            <td class="cpa-red">$3.64</td><td>$1,008</td><td class="cpa-grey">—</td><td class="cpa-grey">—</td>
+          </tr>
+          <tr class="total-row">
+            <td>TOTAL CONVERSIÓN</td><td>8,200</td><td>$2.00</td>
+            <td>17,529 Mta</td><td>$0.78 Mta</td><td>$8,580</td><td>16,141</td><td>$0.84</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice notice-warn">
+      ⚠️ Las jugadas y CPA de esta tabla son atribución Meta (pixel). <strong>CPA real del negocio = $2.70</strong> (inversión total / jugadas confirmadas en plataforma). Conversión Meta atribuye más jugadas que las confirmadas en el sistema Megaloto.
+    </div>
+
+    <div class="insight" style="margin-top:10px;">💡 ONE+ACTIVOS, NUEVOS y RIESGO superaron objetivos de volumen con CPA Meta de $0.56 — muy eficiente. CONS tuvo CPA elevado ($2.15) y cayó en resultados. El CPA real negocio ($2.70) refleja la brecha de atribución vs. Meta.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 6 · COMPARATIVO ABRIL vs MAYO
+════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-index="5">
+  <div class="slide-header">
+    <div class="logo-circle">A</div>
+    <h2>Comparativo <em>Abril vs. Mayo 2026 — Todas las Campañas</em></h2>
+    <span class="slide-num">06</span>
+  </div>
+  <div class="slide-subtitle">Evolución mensual: inversión, resultados Meta y eficiencia por campaña</div>
+  <div class="slide-body">
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>CAMPAÑA</th>
+          <th>ABR GASTO</th><th>ABR RESULT</th><th>ABR CPA</th>
+          <th>MAY GASTO</th><th>MAY RESULT</th><th>MAY CPA</th>
+          <th>Δ RESULT</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td>ONE + ACTIVOS</td>
+            <td>$3,588</td><td>5,106</td><td>$0.70</td>
+            <td>$3,569</td><td>6,384</td><td>$0.56</td>
+            <td class="delta-up">▲ +25.0%</td>
+          </tr>
+          <tr>
+            <td>NUEVOS (Similares)</td>
+            <td>$3,708</td><td>3,945</td><td>$0.94</td>
+            <td>$3,557</td><td>6,382</td><td>$0.56</td>
+            <td class="delta-up">▲ +61.8%</td>
+          </tr>
+          <tr>
+            <td>RIESGO + HÁBITO</td>
+            <td>$1,522</td><td>2,511</td><td>$0.61</td>
+            <td>$1,454</td><td>2,618</td><td>$0.56</td>
+            <td class="delta-up">▲ +4.3%</td>
+          </tr>
+          <tr>
+            <td>CONS (Similares)</td>
+            <td>$4,463</td><td>4,579</td><td>$0.97</td>
+            <td>$4,023</td><td>1,868</td><td class="cpa-red">$2.15</td>
+            <td class="delta-dn">▼ -59.2%</td>
+          </tr>
+          <tr>
+            <td>FESTIVOS (RMKT)</td>
+            <td>—</td><td>—</td><td>—</td>
+            <td>$1,008</td><td>277</td><td class="cpa-red">$3.64</td>
+            <td class="cpa-grey">—</td>
+          </tr>
+          <tr>
+            <td>TRÁFICO (AWA)</td>
+            <td>$2,981</td><td>64,277 clics</td><td>$0.046</td>
+            <td>$3,596</td><td>69,329 clics</td><td>$0.052</td>
+            <td class="delta-up">▲ +7.9%</td>
+          </tr>
+          <tr>
+            <td>INTERACCIÓN RRSS</td>
+            <td>$279</td><td>8,495 visitas</td><td>$0.033</td>
+            <td>$1,199</td><td>22,070 visitas</td><td>$0.054</td>
+            <td class="delta-up">▲ +160.0%</td>
+          </tr>
+          <tr>
+            <td>VIDEO VIEWS</td>
+            <td>$1,533</td><td>N/D</td><td>N/D</td>
+            <td>$1,205</td><td>N/D</td><td>N/D</td>
+            <td class="cpa-grey">—</td>
+          </tr>
+          <tr class="total-row">
+            <td>TOTAL</td>
+            <td>$18,074</td><td>16,141</td><td>$0.84</td>
+            <td>$19,611</td><td>17,529*</td><td>$0.78*</td>
+            <td>▲ +8.6%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="insight">📊 NUEVOS tuvo el mayor salto (+61.8% jugadas Meta). CONS cayó -59.2% con CPA subiendo a $2.15. *Resultados Meta atribuidos — CPA real negocio = $2.70 (7,276 jugadas confirmadas). Clics (c) y visitas (v) son métricas AWA.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 7 · CONCLUSIONES
+════════════════════════════════════════════════════════════════ -->
+<div class="slide slide-dark" data-index="6">
+  <div class="slide-header">
+    <div class="logo-circle">A</div>
+    <h2>Conclusiones &amp; Recomendaciones</h2>
+    <span class="slide-num" style="color:#666;">07</span>
+  </div>
+  <div class="slide-subtitle" style="color:#888;">Mayo 2026 · MEGALOTO</div>
+  <div class="slide-body">
+    <div class="conc-grid">
+      <div class="conc-card">
+        <h4>✅ Conversión Meta — volumen superado</h4>
+        <p>ONE+ACTIVOS y NUEVOS duplicaron objetivos de jugadas Meta con CPA $0.56. El canal de conversión paid entregó 7,503 jugadas reales confirmadas con ROAS 1.80.</p>
+      </div>
+      <div class="conc-card">
+        <h4>⚠️ CPA real negocio por encima del objetivo</h4>
+        <p>El CPA real fue $2.70 vs. objetivo $2.00 (+35%). Brecha de atribución: Meta reporta 18,365 jugadas vs. 7,276 confirmadas. Necesario alinear el tracking entre Meta y plataforma.</p>
+      </div>
+      <div class="conc-card">
+        <h4>🔍 CONS requiere revisión urgente</h4>
+        <p>Cayó -59.2% en jugadas vs. Abril con CPA $2.15. Posible saturación de audiencias de públicos similares. Revisar creatividades y segmentación antes de Junio.</p>
+      </div>
+      <div class="conc-card">
+        <h4>🔄 Recomendaciones Junio</h4>
+        <p>Reasignar presupuesto CONS → ONE+ACTIVOS/NUEVOS. Mejorar tracking para reducir brecha de atribución. Ajustar objetivos de Tráfico (-23%) y RRSS (-44.8%) o reasignar inversión.</p>
+      </div>
+    </div>
+    <div class="dark-footer">Gracias por confiar en ADCOM · adcom.com.py</div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+  // scroll to slide
+  const slides = document.querySelectorAll('.slide');
+  function scrollTo(i) {
+    slides[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // intersection observer for fade-in
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.08 });
+  slides.forEach(s => obs.observe(s));
+
+  // active nav pill
+  const pills = document.querySelectorAll('.nav-pill');
+  const slideObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.3) {
+        const i = [...slides].indexOf(e.target);
+        pills.forEach(p => p.classList.remove('active'));
+        if (pills[i]) pills[i].classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+  slides.forEach(s => slideObs.observe(s));
+</script>
+</body>
+</html>

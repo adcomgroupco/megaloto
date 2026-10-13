@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Megaloto — Análisis de Audiencias 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --black: #1A1A1A;
+    --yellow: #FFC000;
+    --white: #FFFFFF;
+    --t1: #1A1A1A;
+    --t2: #333333;
+    --t3: #999999;
+    --t4: #666666;
+    --gray-bar: #888888;
+    --border: #E0E0E0;
+    --green: #4CAF50;
+    --red: #EF5350;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: 'Poppins', sans-serif; color: var(--t1); }
+
+  /* ── HEADER ── */
+  .report-header {
+    background: var(--black);
+    border-radius: 12px;
+    margin: 18px 18px 0;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .report-header img { width: 48px; height: 48px; border-radius: 50%; }
+  .report-header .titles { flex: 1; }
+  .report-header .titles h1 { font-size: 18px; font-weight: 700; color: #fff; }
+  .report-header .titles h1 span { font-style: italic; color: var(--yellow); }
+  .report-header .titles p { font-size: 11px; color: var(--t3); font-weight: 300; margin-top: 2px; }
+  .report-header .period-badge {
+    background: var(--yellow);
+    color: var(--black);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* ── LAYOUT ── */
+  .container { padding: 16px 18px 32px; max-width: 1300px; margin: 0 auto; }
+  .section-title {
+    font-size: 11px; font-weight: 700; color: var(--t3);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin: 24px 0 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 8px; }
+  .kpi-card {
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 16px 12px 20px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .kpi-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 5px; background: var(--yellow);
+  }
+  .kpi-card .val { font-size: 24px; font-weight: 700; color: var(--t1); line-height: 1; }
+  .kpi-card .lbl { font-size: 9px; font-weight: 700; color: var(--t2); margin-top: 6px; text-transform: uppercase; letter-spacing: .5px; }
+  .kpi-card .sub { font-size: 8px; color: var(--t3); font-weight: 300; margin-top: 3px; }
+
+  /* ── OBJETIVO TABS ── */
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .tab {
+    padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    cursor: pointer; border: 2px solid var(--border); background: var(--white); color: var(--t3);
+    transition: all .2s;
+  }
+  .tab.active { background: var(--black); color: var(--white); border-color: var(--black); }
+  .tab .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; }
+
+  /* ── AUDIENCE CARDS ── */
+  .aud-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .aud-card {
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+  }
+  .aud-card-header {
+    background: var(--black);
+    border-radius: 8px 8px 0 0;
+    padding: 11px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+  }
+  .aud-card-header .aud-name { font-size: 12px; font-weight: 700; color: var(--white); flex: 1; }
+  .aud-card-header .obj-badge {
+    font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 12px;
+    white-space: nowrap;
+  }
+  .obj-Conversión  { background: #FFF3CD; color: #7D5200; }
+  .obj-Tráfico     { background: #D4EDDA; color: #155724; }
+  .obj-Awareness   { background: #D1ECF1; color: #0C5460; }
+  .obj-Consideration { background: #F3D7FA; color: #5B0070; }
+
+  .aud-card-body { padding: 14px 16px 18px; position: relative; }
+  .aud-card-body::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 4px; background: var(--yellow);
+  }
+  .aud-meta { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .meta-chip {
+    font-size: 9px; font-weight: 600; background: var(--bg); border-radius: 20px;
+    padding: 3px 9px; color: var(--t3); border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .meta-chip .icon { font-size: 10px; }
+  .new-chip { background: #FFF3CD; color: #7D5200; border-color: #FFC000; }
+
+  .aud-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .metric-block { text-align: center; }
+  .metric-block .m-val { font-size: 15px; font-weight: 700; color: var(--t1); }
+  .metric-block .m-lbl { font-size: 8px; color: var(--t3); font-weight: 300; margin-top: 2px; text-transform: uppercase; letter-spacing: .4px; }
+  .metric-block .m-val.yellow { color: var(--yellow); }
+  .metric-block .m-val.green  { color: var(--green); }
+  .metric-block .m-val.red    { color: var(--red); }
+
+  /* ── TIMELINE TABLE ── */
+  .timeline-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .timeline-table th {
+    background: var(--black); color: var(--white); font-weight: 600;
+    padding: 9px 12px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .5px;
+  }
+  .timeline-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .timeline-table tr:nth-child(even) td { background: #F9F9F9; }
+  .timeline-table tr.highlight td { background: #FFF9E5; font-weight: 600; }
+  .timeline-table .pill {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 9px; font-weight: 600;
+  }
+  .pill-active { background: #D4EDDA; color: #155724; }
+  .pill-inactive { background: #F8D7DA; color: #721C24; }
+  .pill-completed { background: #D1ECF1; color: #0C5460; }
+  .pill-paused { background: #FFF3CD; color: #856404; }
+  .obj-bar { display: inline-flex; align-items: center; gap: 5px; }
+  .obj-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-conv { background: var(--yellow); }
+  .dot-traf { background: var(--green); }
+  .dot-awa  { background: #17A2B8; }
+  .dot-cons { background: #9C27B0; }
+
+  /* ── INSIGHT BAR ── */
+  .insight-bar {
+    background: var(--white);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-top: 20px;
+    padding: 12px 16px 12px 22px;
+    position: relative;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 11px; color: var(--t4); font-weight: 300; font-style: italic;
+  }
+  .insight-bar::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 5px; background: var(--yellow); border-radius: 8px 0 0 8px;
+  }
+  .insight-bar strong { color: var(--t1); font-style: normal; }
+
+  /* ── HIDDEN ── */
+  .aud-section { display: none; }
+  .aud-section.active { display: grid; }
+  .aud-section { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+  /* ── RANK BAR ── */
+  .rank-bar-wrap { margin-top: 12px; }
+  .rank-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .rank-bar-label { font-size: 9px; color: var(--t2); font-weight: 600; width: 160px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rank-bar-outer { flex: 1; background: #EFEFEF; border-radius: 4px; height: 8px; }
+  .rank-bar-inner { height: 8px; border-radius: 4px; background: var(--yellow); }
+  .rank-bar-val { font-size: 9px; color: var(--t3); width: 55px; text-align: right; flex-shrink: 0; }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .aud-grid, .aud-section { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="report-header">
+  <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoH" alt="ADCOM" onerror="this.style.display='none'">
+  <div style="width:46px;height:46px;border-radius:50%;background:var(--yellow);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:14px;color:var(--black);">AD</div>
+  <div class="titles">
+    <h1>Megaloto — <span>Análisis de Audiencias</span></h1>
+    <p>Rendimiento por tipo de audiencia · Datos consolidados Aug 2025 – Jun 2026</p>
+  </div>
+  <div class="period-badge">Ago 2025 – Jun 2026</div>
+</div>
+
+<div class="container">
+
+  <!-- KPIs GENERALES -->
+  <div class="section-title">Resumen General</div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="val">$124K</div>
+      <div class="lbl">Inversión Total</div>
+      <div class="sub">USD · Período completo</div>
+    </div>
+    <div class="kpi-card">
+      <div class="val">742K</div>
+      <div class="lbl">Compras Totales</div>
+      <div class="sub">offsite_conversion</div>
+    </div>
+    <div class="kpi-card">
+      <div class="val">107M</div>
+      <div class="lbl">Impresiones</div>
+      <div class="sub">Todas las audiencias</div>
+    </div>
+    <div class="kpi-card">
+      <div class="val">$0.68</div>
+      <div class="lbl">CPR Promedio</div>
+      <div class="sub">Conv. ponderado</div>
+    </div>
+    <div class="kpi-card">
+      <div class="val">15</div>
+      <div class="lbl">Tipos de Audiencia</div>
+      <div class="sub">Identificadas · Activas e inactivas</div>
+    </div>
+  </div>
+
+  <!-- RANKING POR INVERSIÓN -->
+  <div class="section-title">Ranking por Inversión (Top Audiencias)</div>
+  <div style="background:var(--white);border-radius:10px;border:1px solid var(--border);padding:18px 20px 22px;position:relative;overflow:hidden;">
+    <div style="position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--yellow);"></div>
+    <div class="rank-bar-wrap">
+
+      <div class="rank-bar-row">
+        <div class="rank-bar-label">RMKT – Jugadores 90d + Visitantes</div>
+        <div class="rank-bar-outer"><div class="rank-bar-inner" style="width:100%"></div></div>
+        <div class="rank-bar-val">$31,719</div>
+      </div>
+      <div class="rank-bar-row">
+        <div class="rank-bar-label">Lookalike BBDD + Seg + Visit</div>
+        <div class="rank-bar-outer"><div class="rank-bar-inner" style="width:86%"></div></div>
+        <div class="rank-bar-val">$27,415</div>
+      </div>
+      <div class="rank-bar-row">
+        <div class="rank-bar-label">Tráfico – InMarket</div>
+        <div class="rank-bar-outer"><div class="rank-bar-inner" style="width:54%"></div></div>
+        <div class="rank-bar-val">$17,249</div>
+      </div>
+      <div class="rank-bar-row">
+        <div class="rank-bar-label">Lookalike – Consideration</div>
+        <div class="rank-bar-outer"><div class="rank-bar-inner" style="width:44%"></div></div>
+        <div class="rank-bar-val">$13,976</div>
+      </div>
+      <div class="rank-bar-row">
+        <div class="rank-bar-label">RMKT – Riesgo / Hábito Roto</div>
+        <div class="rank-bar-outer"><div class="rank-bar-inner" style="width:21%"></div></div>
+        <div class="rank-bar-val">$6,606</div>
+      </div>
+      <div class="rank-bar-row">
+        <div class="rank-bar-label">Lookalike BBDD Nuevos</div>
+        <div class="rank-bar-outer"><div class="rank-bar-inner" style="width:19%"></div></div>
+        <div class="rank-bar-val">$6,007</div>
+      </div>
+      <div class="rank-bar-row">
+        <div class="rank-bar-label">RMKT AON – Jugadores + Visit</div>
+        <div class="rank-bar-outer"><div class="rank-bar-inner" style="width:17%"></div></div>
+        <div class="rank-bar-val">$5,418</div>
+      </div>
+      <div class="rank-bar-row">
+        <div class="rank-bar-label">Awareness – Intereses + InMarket</div>
+        <div class="rank-bar-outer"><div class="rank-bar-inner" style="width:15%"></div></div>
+        <div class="rank-bar-val">$4,605</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDS POR OBJETIVO -->
+  <div class="section-title" style="margin-top:28px;">Audiencias por Objetivo</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="filterTab('all', this)"><span class="dot" style="background:var(--yellow)"></span> Todas (15)</div>
+    <div class="tab" onclick="filterTab('conv', this)"><span class="dot dot-conv"></span> Conversión (9)</div>
+    <div class="tab" onclick="filterTab('traf', this)"><span class="dot dot-traf"></span> Tráfico (1)</div>
+    <div class="tab" onclick="filterTab('awa', this)"><span class="dot" style="background:#17A2B8"></span> Awareness (3)</div>
+    <div class="tab" onclick="filterTab('cons', this)"><span class="dot dot-cons"></span> Consideration (1)</div>
+  </div>
+
+  <div class="aud-grid" id="cards-container">
+
+    <!-- 1. RMKT JUGADORES -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">RMKT – Jugadores 90 días + Visitantes</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip"><span class="icon">📅</span> Desde Oct 2025</span>
+          <span class="meta-chip"><span class="icon">🔄</span> Activa en 2 períodos</span>
+          <span class="meta-chip"><span class="icon">📋</span> 23 ad sets</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$31,719</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">41,920</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.76</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">15M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. LOOKALIKE BBDD + SEG + VISIT -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">Lookalike BBDD + Seguidores + Visitantes</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip"><span class="icon">📅</span> Desde Oct 2025</span>
+          <span class="meta-chip"><span class="icon">🔄</span> Activa en 2 períodos</span>
+          <span class="meta-chip"><span class="icon">📋</span> 3 ad sets</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$27,415</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">36,734</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.75</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">14.7M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. TRÁFICO INMARKET -->
+    <div class="aud-card" data-obj="traf">
+      <div class="aud-card-header">
+        <div class="aud-name">Tráfico – Audiencia InMarket</div>
+        <span class="obj-badge obj-Tráfico">Tráfico</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip"><span class="icon">📅</span> Desde Oct 2025</span>
+          <span class="meta-chip"><span class="icon">🔄</span> Activa en 2 períodos</span>
+          <span class="meta-chip"><span class="icon">📋</span> 2 ad sets</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$17,249</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">592,413</div>
+            <div class="m-lbl">LP Views</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.03</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">34.1M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. CONSIDERATION SIMILARES -->
+    <div class="aud-card" data-obj="cons">
+      <div class="aud-card-header">
+        <div class="aud-name">Lookalike – Consideration Similares</div>
+        <span class="obj-badge obj-Consideration">Consideration</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip new-chip"><span class="icon">🆕</span> Desde Mar 2026</span>
+          <span class="meta-chip"><span class="icon">📋</span> 1 ad set</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$13,976</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">12,426</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val red">$1.12</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">11.1M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. RMKT RIESGO -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">RMKT – Riesgo / Hábito Roto</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip new-chip"><span class="icon">🆕</span> Desde Mar 2026</span>
+          <span class="meta-chip"><span class="icon">📋</span> 1 ad set</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$6,606</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">9,354</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.71</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">2.5M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. LOOKALIKE BBDD NUEVOS -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">Lookalike BBDD Nuevos</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip"><span class="icon">📅</span> Desde Nov 2025</span>
+          <span class="meta-chip"><span class="icon">🔄</span> Activa en 2 períodos</span>
+          <span class="meta-chip"><span class="icon">📋</span> 2 ad sets</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$6,007</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">5,335</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val red">$1.13</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">2.2M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. RMKT AON -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">RMKT AON – Jugadores + Visitantes</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip"><span class="icon">📅</span> Desde Dic 2025</span>
+          <span class="meta-chip"><span class="icon">🔄</span> Activa en 2 períodos</span>
+          <span class="meta-chip"><span class="icon">📋</span> 2 ad sets</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$5,418</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">7,567</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.72</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">2.1M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. AWARENESS INTERESES INMARKET -->
+    <div class="aud-card" data-obj="awa">
+      <div class="aud-card-header">
+        <div class="aud-name">Awareness – Intereses + InMarket</div>
+        <span class="obj-badge obj-Awareness">Awareness</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip"><span class="icon">📅</span> Desde Oct 2025</span>
+          <span class="meta-chip"><span class="icon">📋</span> 2 ad sets</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$4,605</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">2.7M</div>
+            <div class="m-lbl">Resultados</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.001</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">13.9M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. ABIERTO GEO -->
+    <div class="aud-card" data-obj="awa">
+      <div class="aud-card-header">
+        <div class="aud-name">Abierto Geográfico (Video)</div>
+        <span class="obj-badge obj-Awareness">Awareness</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip new-chip"><span class="icon">🆕</span> Desde Mar 2026</span>
+          <span class="meta-chip"><span class="icon">📋</span> 3 ad sets</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$4,431</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">2.9M</div>
+            <div class="m-lbl">ThruPlays</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.001</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">5.7M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. INTERESES LOTERÍA -->
+    <div class="aud-card" data-obj="awa">
+      <div class="aud-card-header">
+        <div class="aud-name">Abierto – Intereses Lotería</div>
+        <span class="obj-badge obj-Awareness">Awareness</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip new-chip"><span class="icon">🆕</span> Desde Mar 2026</span>
+          <span class="meta-chip"><span class="icon">📋</span> 2 ad sets</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$2,433</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">51,958</div>
+            <div class="m-lbl">Resultados</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.05</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">4.3M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. SEGMENTACIÓN GÉNERO -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">Segmentación por Género (Puja 50%)</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip"><span class="icon">📅</span> Desde Ene 2026</span>
+          <span class="meta-chip"><span class="icon">📋</span> 2 ad sets</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$679</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">1,869</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.36</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">263K</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. JUGADORES NUEVOS FESTIVOS -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">Jugadores Nuevos – Festivos</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip new-chip"><span class="icon">🆕</span> Desde Jun 2026</span>
+          <span class="meta-chip"><span class="icon">📋</span> 1 ad set</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$455</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">909</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.50</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">229K</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. WHATSAPP -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">RMKT WhatsApp – Visitantes + Seguidores</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip new-chip"><span class="icon">🆕</span> Desde Feb 2026</span>
+          <span class="meta-chip"><span class="icon">📋</span> 1 ad set</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$403</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">24,282</div>
+            <div class="m-lbl">Link Clicks</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val green">$0.02</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">2.3M</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14. BROAD -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">Broad (Audiencia Amplia)</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip"><span class="icon">📅</span> Desde Nov 2025</span>
+          <span class="meta-chip"><span class="icon">📋</span> 1 ad set</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$186</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">110</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val red">$1.69</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">122K</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 15. ADVANTAGE+ -->
+    <div class="aud-card" data-obj="conv">
+      <div class="aud-card-header">
+        <div class="aud-name">Advantage+ (Amplia Automatizada)</div>
+        <span class="obj-badge obj-Conversión">Conversión</span>
+      </div>
+      <div class="aud-card-body">
+        <div class="aud-meta">
+          <span class="meta-chip"><span class="icon">📅</span> Desde Nov 2025</span>
+          <span class="meta-chip"><span class="icon">📋</span> 1 ad set</span>
+        </div>
+        <div class="aud-metrics">
+          <div class="metric-block">
+            <div class="m-val yellow">$158</div>
+            <div class="m-lbl">Inversión</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">140</div>
+            <div class="m-lbl">Compras</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val red">$1.13</div>
+            <div class="m-lbl">CPR</div>
+          </div>
+          <div class="metric-block">
+            <div class="m-val">103K</div>
+            <div class="m-lbl">Impresiones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /aud-grid -->
+
+  <!-- TIMELINE TABLE -->
+  <div class="section-title" style="margin-top:28px;">Histórico de Activación por Audiencia</div>
+  <div style="background:var(--white);border-radius:10px;border:1px solid var(--border);overflow:hidden;">
+    <table class="timeline-table">
+      <thead>
+        <tr>
+          <th>Audiencia</th>
+          <th>Objetivo</th>
+          <th>Primer uso</th>
+          <th>Períodos activa</th>
+          <th>Ad sets</th>
+          <th>Inversión Total</th>
+          <th>CPR</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td>RMKT – Jugadores 90d + Visitantes</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Oct 2025</td>
+          <td>Ago'25 – Jun'26</td>
+          <td>23</td>
+          <td><strong>$31,719</strong></td>
+          <td>$0.76</td>
+          <td><span class="pill pill-active">Activa</span></td>
+        </tr>
+        <tr class="highlight">
+          <td>Lookalike BBDD + Seg + Visitantes</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Oct 2025</td>
+          <td>Ago'25 – Jun'26</td>
+          <td>3</td>
+          <td><strong>$27,415</strong></td>
+          <td>$0.75</td>
+          <td><span class="pill pill-active">Activa</span></td>
+        </tr>
+        <tr>
+          <td>Tráfico – InMarket</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-traf"></span> Tráfico</span></td>
+          <td>Oct 2025</td>
+          <td>Ago'25 – Jun'26</td>
+          <td>2</td>
+          <td>$17,249</td>
+          <td>$0.03</td>
+          <td><span class="pill pill-active">Activa</span></td>
+        </tr>
+        <tr>
+          <td>Lookalike – Consideration Similares</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-cons"></span> Consideration</span></td>
+          <td>Mar 2026</td>
+          <td>2026</td>
+          <td>1</td>
+          <td>$13,976</td>
+          <td>$1.12</td>
+          <td><span class="pill pill-active">Activa</span></td>
+        </tr>
+        <tr>
+          <td>RMKT – Riesgo / Hábito Roto</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Mar 2026</td>
+          <td>2026</td>
+          <td>1</td>
+          <td>$6,606</td>
+          <td>$0.71</td>
+          <td><span class="pill pill-active">Activa</span></td>
+        </tr>
+        <tr>
+          <td>Lookalike BBDD Nuevos</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Nov 2025</td>
+          <td>Ago'25 – Jun'26</td>
+          <td>2</td>
+          <td>$6,007</td>
+          <td>$1.13</td>
+          <td><span class="pill pill-paused">Sin entrega</span></td>
+        </tr>
+        <tr>
+          <td>RMKT AON – Jugadores + Visitantes</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Dic 2025</td>
+          <td>Ago'25 – Jun'26</td>
+          <td>2</td>
+          <td>$5,418</td>
+          <td>$0.72</td>
+          <td><span class="pill pill-active">Activa</span></td>
+        </tr>
+        <tr>
+          <td>Awareness – Intereses + InMarket</td>
+          <td><span class="obj-bar"><span class="obj-dot" style="background:#17A2B8"></span> Awareness</span></td>
+          <td>Oct 2025</td>
+          <td>Ago'25</td>
+          <td>2</td>
+          <td>$4,605</td>
+          <td>$0.001</td>
+          <td><span class="pill pill-inactive">Inactiva</span></td>
+        </tr>
+        <tr>
+          <td>Abierto Geográfico (Video)</td>
+          <td><span class="obj-bar"><span class="obj-dot" style="background:#17A2B8"></span> Awareness</span></td>
+          <td>Mar 2026</td>
+          <td>2026</td>
+          <td>3</td>
+          <td>$4,431</td>
+          <td>$0.001</td>
+          <td><span class="pill pill-active">Activa</span></td>
+        </tr>
+        <tr>
+          <td>Abierto – Intereses Lotería</td>
+          <td><span class="obj-bar"><span class="obj-dot" style="background:#17A2B8"></span> Awareness</span></td>
+          <td>Mar 2026</td>
+          <td>2026</td>
+          <td>2</td>
+          <td>$2,433</td>
+          <td>$0.05</td>
+          <td><span class="pill pill-active">Activa</span></td>
+        </tr>
+        <tr>
+          <td>Segmentación por Género</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Ene 2026</td>
+          <td>2026</td>
+          <td>2</td>
+          <td>$679</td>
+          <td>$0.36</td>
+          <td><span class="pill pill-inactive">Sin entrega</span></td>
+        </tr>
+        <tr>
+          <td>Jugadores Nuevos – Festivos</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Jun 2026</td>
+          <td>2026</td>
+          <td>1</td>
+          <td>$455</td>
+          <td>$0.50</td>
+          <td><span class="pill pill-completed">Completada</span></td>
+        </tr>
+        <tr>
+          <td>RMKT WhatsApp – Visitantes + Seg</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Feb 2026</td>
+          <td>2026</td>
+          <td>1</td>
+          <td>$403</td>
+          <td>$0.02</td>
+          <td><span class="pill pill-inactive">Sin entrega</span></td>
+        </tr>
+        <tr>
+          <td>Broad (Amplia)</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Nov 2025</td>
+          <td>Ago'25</td>
+          <td>1</td>
+          <td>$186</td>
+          <td>$1.69</td>
+          <td><span class="pill pill-inactive">Inactiva</span></td>
+        </tr>
+        <tr>
+          <td>Advantage+ (Amplia Auto)</td>
+          <td><span class="obj-bar"><span class="obj-dot dot-conv"></span> Conversión</span></td>
+          <td>Nov 2025</td>
+          <td>Ago'25</td>
+          <td>1</td>
+          <td>$158</td>
+          <td>$1.13</td>
+          <td><span class="pill pill-inactive">Inactiva</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- INSIGHT BAR -->
+  <div class="insight-bar">
+    💡 <span><strong>La estrategia RMKT concentra el 52% de la inversión total</strong> y entrega el mejor CPR del portafolio ($0.71–$0.76). Las audiencias de Lookalike BBDD Nuevos y Consideration presentan CPR >$1, por lo que se recomienda revisar sus creatividades y segmentaciones. Las audiencias de Awareness Geo e Intereses Lotería, aunque nuevas en 2026, muestran escalabilidad con CPR mínimo.</span>
+  </div>
+
+  <div style="text-align:right;margin-top:18px;font-size:9px;color:var(--t3);font-weight:300;">
+    Generado por ADCOM · Basado en datos Meta Ads · Período: Ago 2025 – Jun 2026
+  </div>
+
+</div><!-- /container -->
+
+<script>
+function filterTab(type, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const cards = document.querySelectorAll('.aud-card');
+  cards.forEach(card => {
+    if (type === 'all') {
+      card.style.display = '';
+    } else {
+      card.style.display = card.dataset.obj === type ? '' : 'none';
+    }
+  });
+}
+</script>
+</body>
+</html>

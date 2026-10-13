@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Megaloto · TikTok tráfico · Informe 14–23 sep 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#111111; --ink-2:#242424; --paper:#F7F7F8; --white:#FFFFFF;
+  --accent:#FFC000; --accent-soft:#FFF3D1; --line:#E7E7E7; --muted:#666666;
+  --positive:#157347; --warning:#A85400; --negative:#B42318; --comparison:#2457C5;
+  --bg:var(--white); --surface:var(--paper); --card:var(--white); --fg:var(--ink);
+  --shadow:0 12px 34px rgba(17,17,17,.07);
+  --r:18px; --r-sm:12px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E0E0E; --surface:#161616; --card:#1C1C1C; --fg:#F2F2F2; --muted:#A8A8A8; --line:#2E2E2E;
+    --accent-soft:#3A2F0A; --positive:#55C98A; --warning:#FF8A3D; --negative:#FF6B6B; --comparison:#7C9BFF;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E0E0E; --surface:#161616; --card:#1C1C1C; --fg:#F2F2F2; --muted:#A8A8A8; --line:#2E2E2E;
+  --accent-soft:#3A2F0A; --positive:#55C98A; --warning:#FF8A3D; --negative:#FF6B6B; --comparison:#7C9BFF;
+  --shadow:none;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:"Poppins",Arial,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,5vw,72px)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+h1,h2,h3{margin:0;letter-spacing:-.02em}
+p{margin:0}
+.num{font-variant-numeric:tabular-nums}
+
+/* Hero (negro como puntuación: portada) */
+.hero{background:#111;color:#fff;padding:clamp(40px,6vw,72px) 0 clamp(36px,5vw,56px)}
+.brandbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:clamp(36px,6vw,64px)}
+.logo{font-weight:900;font-size:1.05rem;letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.logo i{display:inline-block;width:14px;height:14px;background:var(--accent);border-radius:3px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{border:1px solid #3a3a3a;border-radius:999px;padding:5px 12px;font-size:.78rem;color:#d6d6d6}
+.kicker{font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.hero h1{font-size:clamp(2.3rem,5.4vw,4.6rem);line-height:.98;font-weight:800;max-width:17ch}
+.hero .lede{margin-top:22px;max-width:62ch;color:#cfcfcf;font-size:1.05rem}
+.hero-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:clamp(36px,5vw,52px)}
+.hk{border:1px solid #2f2f2f;border-radius:var(--r);padding:20px 22px;background:#1a1a1a}
+.hk.main{background:var(--accent);color:#111;border-color:var(--accent)}
+.hk b{display:block;font-size:clamp(1.9rem,3.4vw,2.6rem);font-weight:800;line-height:1.05}
+.hk span{display:block;font-weight:600;font-size:.92rem;margin-top:6px}
+.hk small{display:block;font-size:.8rem;opacity:.75;margin-top:2px}
+
+/* Secciones */
+section{padding:clamp(40px,5vw,52px) 0;border-bottom:1px solid var(--line)}
+section.alt{background:var(--surface)}
+.eyebrow{font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:18px;height:4px;background:var(--accent);border-radius:2px}
+h2{font-size:clamp(1.7rem,3.4vw,2.7rem);line-height:1.02;font-weight:800;max-width:24ch}
+.support{color:var(--muted);margin-top:12px;max-width:66ch}
+.head-split{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(20px,4vw,56px);align-items:end;margin-bottom:28px}
+.head-stack{margin-bottom:28px}
+.head-center{text-align:center;margin:0 auto 28px;max-width:760px}
+.head-center h2{margin:0 auto}
+.head-center .eyebrow{justify-content:center}
+.head-center .support{margin-left:auto;margin-right:auto}
+
+/* Resumen */
+.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow)}
+.sum.main{border-left:6px solid var(--accent)}
+.sum h3{font-size:1.08rem;font-weight:700;line-height:1.3}
+.sum p{color:var(--muted);font-size:.93rem;margin-top:8px}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;border-radius:999px;padding:2px 10px;margin-bottom:10px;border:1px solid var(--line);color:var(--muted)}
+.tag.fact{color:var(--positive);border-color:currentColor}
+.tag.inf{color:var(--comparison);border-color:currentColor}
+.tag.risk{color:var(--warning);border-color:currentColor}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:22px;top:0;width:40px;height:4px;background:var(--line);border-radius:0 0 3px 3px}
+.kpi.main{background:var(--accent-soft);border-color:var(--accent)}
+.kpi.main::before{background:var(--accent)}
+.kpi b{display:block;font-size:clamp(1.7rem,3vw,2.3rem);font-weight:800;line-height:1.1;margin-top:6px}
+.kpi span{display:block;font-weight:600;font-size:.92rem;margin-top:6px}
+.kpi small{display:block;color:var(--muted);font-size:.82rem;margin-top:4px}
+.delta{font-weight:700}
+.delta.up{color:var(--positive)}
+.delta.down{color:var(--negative)}
+
+/* Gráfico */
+.chart-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,3vw,28px);box-shadow:var(--shadow)}
+.chart-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-bottom:10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.scroll{overflow-x:auto}
+.chart svg{width:100%;min-width:640px;height:auto;display:block}
+.chart .bar-base{fill:#BDBDBD}
+.chart .bar-tt{fill:var(--accent)}
+.chart .lbl{fill:var(--fg);font-size:12px;font-weight:700;font-family:inherit}
+.chart .axis{fill:var(--muted);font-size:11.5px;font-family:inherit}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .baseline{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 5}
+.chart .ann{fill:var(--muted);font-size:11.5px;font-family:inherit}
+.reading{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+.reading div{border-top:3px solid var(--line);padding-top:12px;font-size:.92rem;color:var(--muted)}
+.reading div strong{color:var(--fg);display:block;font-size:.98rem;margin-bottom:4px}
+.reading div.warn{border-top-color:var(--warning)}
+
+/* Tablas */
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:620px}
+th,td{padding:12px 16px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{background:#111;color:#fff;font-weight:600;font-size:.8rem;position:sticky;top:0}
+tbody tr:nth-child(even){background:var(--surface)}
+tbody tr:hover{background:var(--accent-soft)}
+tr.total td{font-weight:800;border-top:2px solid var(--accent);background:var(--accent-soft)}
+td .delta{font-size:.82rem}
+
+/* Embudo TikTok */
+.funnel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.step{padding:22px 22px 20px;border-right:1px solid var(--line);position:relative}
+.step:last-child{border-right:0}
+.step.main{background:var(--accent-soft);box-shadow:inset 0 4px 0 var(--accent)}
+.step .src{font-size:.72rem;font-weight:700;color:var(--muted)}
+.step b{display:block;font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:800;margin-top:6px;line-height:1.1}
+.step span{display:block;font-weight:600;font-size:.9rem;margin-top:4px}
+.step .rate{display:inline-block;margin-top:12px;font-size:.8rem;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--surface);border:1px solid var(--line)}
+.costs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:14px}
+.cost{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:16px 18px}
+.cost b{display:block;font-size:1.45rem;font-weight:800}
+.cost span{display:block;font-weight:600;font-size:.88rem}
+.cost small{display:block;color:var(--muted);font-size:.8rem}
+.note{font-size:.82rem;color:var(--muted);margin-top:14px;max-width:90ch}
+
+/* Callout */
+.callout{border-left:6px solid var(--warning);background:var(--card);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:18px 22px;margin-top:22px;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.callout h3{font-size:1rem;font-weight:700}
+.callout p{font-size:.92rem;color:var(--muted);margin-top:6px}
+
+/* Recomendaciones */
+.recs{display:grid;gap:12px}
+.rec{display:grid;grid-template-columns:72px 1fr auto;gap:18px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px}
+.rec.main{border-color:var(--accent);box-shadow:inset 6px 0 0 var(--accent)}
+.prio{font-weight:800;font-size:1.3rem}
+.rec h3{font-size:1.05rem;font-weight:700;line-height:1.3}
+.rec p{font-size:.9rem;color:var(--muted);margin-top:6px}
+.rec .meta{text-align:right;font-size:.8rem;color:var(--muted);white-space:nowrap}
+.rec .meta strong{display:block;color:var(--fg);font-size:.85rem}
+
+/* Detalle / metodología */
+details{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:0}
+summary{cursor:pointer;padding:18px 22px;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.4rem;font-weight:600;color:var(--muted)}
+details[open] summary::after{content:"–"}
+details .inner{padding:0 22px 22px}
+.method{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 36px;font-size:.9rem}
+.method dt{font-weight:700}
+.method dd{margin:2px 0 10px;color:var(--muted)}
+footer{padding:28px 0 40px;font-size:.82rem;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .head-split,.summary,.reading,.method{grid-template-columns:1fr}
+  .funnel{grid-template-columns:1fr 1fr}
+  .step:nth-child(2){border-right:0}
+  .step:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .rec{grid-template-columns:1fr}
+  .rec .meta{text-align:left}
+}
+@media (max-width:520px){ .funnel{grid-template-columns:1fr} .step{border-right:0;border-bottom:1px solid var(--line)} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--card:#fff;--fg:#111;--muted:#555;--line:#ddd;--shadow:none}
+  .hero{background:#fff;color:#111;border-bottom:3px solid #111}
+  .hero .lede,.pill{color:#333}.hk{background:#fff;border-color:#ccc}
+  .hk.main{background:#FFF3D1}
+  section{break-inside:avoid}
+  .chart-card,.kpi,.sum,.rec,.step,tr{break-inside:avoid}
+  details .inner{display:block}
+  thead th{background:#eee;color:#111}
+}
+</style>
+<style>
+.chart .bar-warn{fill:var(--warning)}
+.chart .bar-meta{fill:var(--comparison)}
+.chart .bar-views{fill:#9DB3E8}
+.chart .avg{stroke:var(--fg);stroke-width:1.5;stroke-dasharray:4 4}
+.chart .in{fill:#111;font-size:12px;font-weight:700;font-family:inherit}
+.chart .in-w{fill:#fff;font-size:12px;font-weight:700;font-family:inherit}
+.est{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.est div{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:18px 20px}
+.est div.main{border-color:var(--accent);background:var(--accent-soft)}
+.est b{display:block;font-size:1.6rem;font-weight:800}
+.est span{display:block;font-weight:600;font-size:.9rem}
+.est small{display:block;color:var(--muted);font-size:.82rem;margin-top:4px}
+.sub{display:block;font-size:.75rem;color:var(--muted);font-weight:500}
+td.sub-row{padding-left:32px;color:var(--muted)}
+@media (max-width:860px){.est{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="brandbar">
+      <div class="logo"><i aria-hidden="true"></i>ADCOM · Megaloto</div>
+      <div class="pills">
+        <span class="pill">TikTok Ads · Tráfico</span>
+        <span class="pill">GA4 · pago_online / landing_ml</span>
+        <span class="pill">27 ago–23 sep 2026</span>
+        <span class="pill">USD · TRM $3.500</span>
+      </div>
+    </div>
+    <div class="kicker">Informe de desempeño · Campaña TikTok tráfico · Activa desde el 14 sep</div>
+    <h1>Con TikTok, las sesiones desde la landing se multiplicaron por 7</h1>
+    <p class="lede">TikTok llevó una audiencia nueva a la landing de ganadores, que redirige al sitio principal de Megaloto. Medimos cuántas sesiones sumó desde su lanzamiento el 14 de septiembre y cuánto costó cada una, usando la inversión de Meta en la misma landing como referencia.</p>
+    <div class="hero-kpis">
+      <div class="hk main"><b class="num">+5.001</b><span>Sesiones incrementales</span><small>Desde el lanzamiento de TikTok · 580/día vs 80</small></div>
+      <div class="hk"><b class="num">≈ 5.540</b><span>Sesiones estimadas de TikTok</span><small>69% de sus 8.001 vistas de landing</small></div>
+      <div class="hk"><b class="num">US$0,14</b><span>Costo estimado por sesión TikTok</span><small>vs cerca de US$1,00 en Meta</small></div>
+      <div class="hk"><b class="num">US$784,36</b><span>Inversión TikTok 14–23 sep</span><small>75% de la inversión hacia la landing</small></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="resumen">
+  <div class="wrap">
+    <div class="head-split">
+      <div>
+        <div class="eyebrow">Resumen ejecutivo</div>
+        <h2>TikTok explica el salto de tráfico y trae sesiones más baratas que Meta</h2>
+      </div>
+      <p class="support">Antes del 14 sep solo Meta llevaba tráfico a la landing. Desde el lanzamiento, TikTok concentra tres cuartas partes de la inversión y las sesiones diarias siguen su curva, no la de Meta.</p>
+    </div>
+    <div class="summary">
+      <article class="sum main">
+        <span class="tag inf">Hecho e inferencia</span>
+        <h3>Desde que arrancó TikTok, las sesiones pasaron de 80 a 580 diarias</h3>
+        <p>En 10 días TikTok invirtió US$784,36 y generó 8.001 vistas de la landing. Las sesiones diarias siguen su inversión (correlación 0,90); estimamos que aportó unas 5.540 sesiones a US$0,14 cada una.</p>
+      </article>
+      <article class="sum">
+        <span class="tag fact">Hecho</span>
+        <h3>Con TikTok, el costo por sesión total bajó 84%</h3>
+        <p>Sumando TikTok y Meta, la inversión diaria subió solo 20% (de US$87,35 a US$104,39), mientras el costo por sesión pasó de US$1,09 a US$0,18. Meta bajó a US$25,95 diarios en el mismo periodo.</p>
+      </article>
+      <article class="sum">
+        <span class="tag risk">Atención</span>
+        <h3>Solo 5 de cada 100 vistas de landing de Meta terminaron en sesión</h3>
+        <p>Antes de TikTok, Meta reportó 26.991 vistas de la landing y GA4 registró 1.436 sesiones desde landing_ml. Vale la pena auditar ese recorrido.</p>
+      </article>
+      <article class="sum">
+        <span class="tag risk">Atención</span>
+        <h3>Del 20 al 23 sep cada sesión costó 65% más que del 14 al 19</h3>
+        <p>US$0,246 contra US$0,149. En TikTok el clic se encareció y menos clics ven la landing; en Meta, el conjunto de views subió de unos US$10 a US$27 diarios desde el 21 sep.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="resultado" class="alt">
+  <div class="wrap">
+    <div class="head-stack">
+      <div class="eyebrow">Resultado consolidado</div>
+      <h2>Lo que cambió desde que se activó TikTok, en promedio diario</h2>
+      <p class="support">Periodo base: 27 ago–13 sep (18 días), solo Meta. Periodo TikTok: 14–23 sep (10 días), TikTok + Meta. Sesiones GA4 desde pago_online / landing_ml.</p>
+    </div>
+    <div class="kpis">
+      <div class="kpi main"><span>Costo por sesión</span><b class="num">US$0,180</b><small><span class="delta up">▼ −84%</span> vs US$1,095 en el periodo base</small></div>
+      <div class="kpi"><span>Sesiones por día</span><b class="num">579,9</b><small><span class="delta up">▲ +627%</span> vs 79,8 en el periodo base</small></div>
+      <div class="kpi"><span>Inversión por día</span><b class="num">US$104,39</b><small>+20% vs US$87,35 en el periodo base</small></div>
+      <div class="kpi"><span>Tasa de interacción</span><b class="num">92,8%</b><small>vs 56,3% en el periodo base</small></div>
+    </div>
+    <figure class="chart-card chart" style="margin:18px 0 0">
+      <div class="chart-meta">
+        <span>Inversión diaria promedio por plataforma · USD</span>
+        <span class="legend"><span><i style="background:var(--accent)"></i>TikTok</span><span><i style="background:var(--comparison)"></i>Meta tráfico</span><span><i style="background:#9DB3E8"></i>Meta views</span></span>
+      </div>
+      <div class="scroll" tabindex="0" role="region" aria-label="Gráfico de inversión por plataforma">
+      <svg viewBox="0 0 760 150" role="img" aria-labelledby="mixT mixD">
+        <title id="mixT">Mezcla de inversión diaria antes y después de TikTok</title>
+        <desc id="mixD">Periodo base: Meta tráfico 53,40 y Meta views 33,95 dólares por día, total 87,35. Periodo TikTok: TikTok 78,44, Meta tráfico 11,12 y Meta views 14,83 dólares por día, total 104,39.</desc>
+        <text class="axis" x="0" y="42">27 ago–13 sep</text>
+        <rect class="bar-meta" x="130" y="22" width="252.4" height="32" rx="3"/><text class="in-w" x="140" y="43">Meta tráfico $53,40</text>
+        <rect class="bar-views" x="382.4" y="22" width="160.5" height="32" rx="3"/><text class="in" x="392" y="43">Views $33,95</text>
+        <text class="lbl" x="552" y="43">US$87,35/día</text>
+        <text class="axis" x="0" y="106">14–23 sep</text>
+        <rect class="bar-tt" x="130" y="86" width="370.8" height="32" rx="3"/><text class="in" x="140" y="107">TikTok $78,44</text>
+        <rect class="bar-meta" x="500.8" y="86" width="52.6" height="32" rx="3"/>
+        <rect class="bar-views" x="553.4" y="86" width="70.1" height="32" rx="3"/>
+        <text class="lbl" x="632" y="107">US$104,39/día</text>
+        <text class="ann" x="500.8" y="136">Meta $11,12 + $14,83</text>
+      </svg>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<section id="evolucion">
+  <div class="wrap">
+    <div class="head-split">
+      <div>
+        <div class="eyebrow">Evolución</div>
+        <h2>El lanzamiento disparó el tráfico y luego se asentó en unas 460 diarias</h2>
+      </div>
+      <p class="support">Sesiones diarias desde landing_ml. La barra gris es el promedio del periodo base; las amarillas son los días con TikTok activo, con la inversión total del día (TikTok + Meta) debajo.</p>
+    </div>
+    <figure class="chart-card chart" style="margin:0">
+      <div class="chart-meta">
+        <span>Sesiones por día · 27 ago–23 sep 2026 · GA4 · inversión total en USD</span>
+        <span class="legend"><span><i style="background:#BDBDBD"></i>Promedio base</span><span><i style="background:var(--accent)"></i>Con TikTok</span></span>
+      </div>
+      <div class="scroll" tabindex="0" role="region" aria-label="Gráfico de sesiones diarias, desplazable">
+      <svg viewBox="0 0 760 345" role="img" aria-labelledby="chartTitle chartDesc">
+        <title id="chartTitle">Sesiones diarias desde landing_ml antes y después de TikTok</title>
+        <desc id="chartDesc">Promedio base de 80 sesiones por día con 87 dólares diarios de Meta. Con TikTok, sesiones e inversión total: 14 sep 473 (83), 15 sep 1.287 (169), 16 sep 1.037 (140), 17 sep 543 (87), 18 sep 365 (64), 19 sep 238 (45), 20 sep 412 (97), 21 sep 444 (126), 22 sep 433 (111), 23 sep 567 (123).</desc>
+        <line class="grid" x1="40" x2="750" y1="280" y2="280"/>
+        <line class="grid" x1="40" x2="750" y1="190.7" y2="190.7"/>
+        <line class="grid" x1="40" x2="750" y1="101.4" y2="101.4"/>
+        <text class="axis" x="34" y="284" text-anchor="end">0</text>
+        <text class="axis" x="34" y="194.7" text-anchor="end">500</text>
+        <text class="axis" x="34" y="105.4" text-anchor="end">1.000</text>
+        <line class="baseline" x1="40" x2="750" y1="265.8" y2="265.8"/>
+        <text class="ann" x="748" y="258" text-anchor="end">base 80/día</text>
+        <rect class="bar-base" x="52" y="265.8" width="44" height="14.2" rx="4"/>
+        <text class="lbl" x="74" y="258" text-anchor="middle">80</text>
+        <text class="axis" x="74" y="298" text-anchor="middle">base</text>
+        <text class="ann" x="74" y="313" text-anchor="middle">$87</text>
+        <g>
+          <rect class="bar-tt" x="126" y="195.5" width="44" height="84.5" rx="4"/><text class="lbl" x="148" y="189" text-anchor="middle">473</text><text class="axis" x="148" y="298" text-anchor="middle">14</text><text class="ann" x="148" y="313" text-anchor="middle">$83</text>
+          <rect class="bar-tt" x="188" y="50.2" width="44" height="229.8" rx="4"/><text class="lbl" x="210" y="44" text-anchor="middle">1.287</text><text class="axis" x="210" y="298" text-anchor="middle">15</text><text class="ann" x="210" y="313" text-anchor="middle">$169</text>
+          <rect class="bar-tt" x="250" y="94.8" width="44" height="185.2" rx="4"/><text class="lbl" x="272" y="88" text-anchor="middle">1.037</text><text class="axis" x="272" y="298" text-anchor="middle">16</text><text class="ann" x="272" y="313" text-anchor="middle">$140</text>
+          <rect class="bar-tt" x="312" y="183" width="44" height="97" rx="4"/><text class="lbl" x="334" y="176" text-anchor="middle">543</text><text class="axis" x="334" y="298" text-anchor="middle">17</text><text class="ann" x="334" y="313" text-anchor="middle">$87</text>
+          <rect class="bar-tt" x="374" y="214.8" width="44" height="65.2" rx="4"/><text class="lbl" x="396" y="208" text-anchor="middle">365</text><text class="axis" x="396" y="298" text-anchor="middle">18</text><text class="ann" x="396" y="313" text-anchor="middle">$64</text>
+          <rect class="bar-tt" x="436" y="237.5" width="44" height="42.5" rx="4"/><text class="lbl" x="458" y="231" text-anchor="middle">238</text><text class="axis" x="458" y="298" text-anchor="middle">19</text><text class="ann" x="458" y="313" text-anchor="middle">$45</text>
+          <rect class="bar-tt" x="498" y="206.4" width="44" height="73.6" rx="4"/><text class="lbl" x="520" y="200" text-anchor="middle">412</text><text class="axis" x="520" y="298" text-anchor="middle">20</text><text class="ann" x="520" y="313" text-anchor="middle">$97</text>
+          <rect class="bar-tt" x="560" y="200.7" width="44" height="79.3" rx="4"/><text class="lbl" x="582" y="194" text-anchor="middle">444</text><text class="axis" x="582" y="298" text-anchor="middle">21</text><text class="ann" x="582" y="313" text-anchor="middle">$126</text>
+          <rect class="bar-tt" x="622" y="202.7" width="44" height="77.3" rx="4"/><text class="lbl" x="644" y="196" text-anchor="middle">433</text><text class="axis" x="644" y="298" text-anchor="middle">22</text><text class="ann" x="644" y="313" text-anchor="middle">$111</text>
+          <rect class="bar-tt" x="684" y="178.7" width="44" height="101.3" rx="4"/><text class="lbl" x="706" y="172" text-anchor="middle">567</text><text class="axis" x="706" y="298" text-anchor="middle">23</text><text class="ann" x="706" y="313" text-anchor="middle">$123</text>
+        </g>
+        <text class="axis" x="427" y="336" text-anchor="middle">septiembre 2026 · inversión total diaria en USD (TikTok + Meta)</text>
+      </svg>
+      </div>
+      <figcaption class="reading">
+        <div><strong>Lanzamiento</strong>El 15 y 16 sep concentraron el 40% de las sesiones del periodo, con la mayor inversión de TikTok (US$267 entre ambos días).</div>
+        <div class="warn"><strong>Valle del 19 sep</strong>238 sesiones con US$44,93 de inversión total, la más baja del periodo. TikTok invirtió solo US$24,16 ese día.</div>
+        <div><strong>Estabilización</strong>Del 20 al 23 sep: 464 sesiones y US$114 de inversión por día. Más inversión que del 14 al 19 sep, pero menos sesiones.</div>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="origen" class="alt">
+  <div class="wrap">
+    <div class="head-stack">
+      <div class="eyebrow">Origen de las sesiones</div>
+      <h2>Las vistas de landing de TikTok llegan al sitio; las de Meta casi no</h2>
+      <p class="support">landing_ml no distingue plataformas, así que comparamos las vistas de landing que reporta cada una con las sesiones que registra GA4 en cada periodo.</p>
+    </div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Vistas de landing contra sesiones">
+      <table>
+        <thead><tr><th scope="col">Periodo</th><th scope="col">Vistas de landing TikTok</th><th scope="col">Vistas de landing Meta</th><th scope="col">Sesiones GA4</th><th scope="col">Sesiones por vista</th></tr></thead>
+        <tbody class="num">
+          <tr><td>27 ago–13 sep · solo Meta</td><td>—</td><td>26.991</td><td>1.436</td><td>5,3%</td></tr>
+          <tr><td>14–23 sep · TikTok + Meta</td><td>8.001</td><td>4.889</td><td>5.799</td><td>45,0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="est">
+      <div class="main"><span>Sesiones estimadas de TikTok</span><b class="num">≈ 5.540</b><small>69% de sus vistas de landing · costo estimado US$0,14 por sesión</small></div>
+      <div><span>Sesiones estimadas de Meta</span><b class="num">≈ 260</b><small>Si mantuvo su 5,3% de paso · costo estimado cerca de US$1,00 por sesión</small></div>
+    </div>
+    <p class="note">Estimación: aplicamos a las 4.889 vistas de landing de Meta del periodo TikTok la misma proporción de paso a sesión que tuvo Meta en el periodo base (5,3%); el resto de las 5.799 sesiones se asigna a TikTok. Es una inferencia hasta que cada plataforma tenga su propio UTM. El conjunto de Meta tráfico tiene un CTR de 4,3–5,0% y un costo por vista de landing de US$0,03–0,04, muy por debajo de TikTok, lo que sugiere clics o vistas de baja intención que no avanzan al sitio; hay que confirmarlo con el desglose por ubicación.</p>
+  </div>
+</section>
+
+<section id="eficiencia">
+  <div class="wrap">
+    <div class="head-split">
+      <div>
+        <div class="eyebrow">Eficiencia</div>
+        <h2>Desde el 20 de septiembre cada sesión cuesta 65% más</h2>
+      </div>
+      <p class="support">Costo por sesión = inversión total del día (TikTok + Meta tráfico + Meta views) ÷ sesiones GA4 desde landing_ml. La línea punteada marca el promedio de cada tramo: US$0,149 (14–19 sep) y US$0,246 (20–23 sep).</p>
+    </div>
+    <figure class="chart-card chart" style="margin:0">
+      <div class="chart-meta">
+        <span>Costo por sesión · USD · 14–23 sep 2026 · TikTok + Meta ÷ GA4</span>
+        <span class="legend"><span><i style="background:var(--accent)"></i>14–19 sep</span><span><i style="background:var(--warning)"></i>20–23 sep</span></span>
+      </div>
+      <div class="scroll" tabindex="0" role="region" aria-label="Gráfico de costo por sesión, desplazable">
+      <svg viewBox="0 0 760 290" role="img" aria-labelledby="cpsTitle cpsDesc">
+        <title id="cpsTitle">Costo por sesión diario en USD, inversión combinada</title>
+        <desc id="cpsDesc">14 sep 0,176; 15 sep 0,131; 16 sep 0,135; 17 sep 0,160; 18 sep 0,175; 19 sep 0,189; 20 sep 0,234; 21 sep 0,285; 22 sep 0,255; 23 sep 0,216. Promedio 14–19 sep 0,149; 20–23 sep 0,246.</desc>
+        <line class="grid" x1="48" x2="750" y1="250" y2="250"/>
+        <line class="grid" x1="48" x2="750" y1="180" y2="180"/>
+        <line class="grid" x1="48" x2="750" y1="110" y2="110"/>
+        <line class="grid" x1="48" x2="750" y1="40" y2="40"/>
+        <text class="axis" x="42" y="254" text-anchor="end">$0</text>
+        <text class="axis" x="42" y="184" text-anchor="end">$0,10</text>
+        <text class="axis" x="42" y="114" text-anchor="end">$0,20</text>
+        <text class="axis" x="42" y="44" text-anchor="end">$0,30</text>
+        <rect class="bar-tt" x="64" y="126.8" width="46" height="123.2" rx="4"/><text class="lbl" x="87" y="120" text-anchor="middle">0,176</text><text class="axis" x="87" y="268" text-anchor="middle">14</text>
+        <rect class="bar-tt" x="132" y="158.3" width="46" height="91.7" rx="4"/><text class="lbl" x="155" y="152" text-anchor="middle">0,131</text><text class="axis" x="155" y="268" text-anchor="middle">15</text>
+        <rect class="bar-tt" x="200" y="155.5" width="46" height="94.5" rx="4"/><text class="lbl" x="223" y="149" text-anchor="middle">0,135</text><text class="axis" x="223" y="268" text-anchor="middle">16</text>
+        <rect class="bar-tt" x="268" y="138" width="46" height="112" rx="4"/><text class="lbl" x="291" y="132" text-anchor="middle">0,160</text><text class="axis" x="291" y="268" text-anchor="middle">17</text>
+        <rect class="bar-tt" x="336" y="127.5" width="46" height="122.5" rx="4"/><text class="lbl" x="359" y="121" text-anchor="middle">0,175</text><text class="axis" x="359" y="268" text-anchor="middle">18</text>
+        <rect class="bar-tt" x="404" y="117.7" width="46" height="132.3" rx="4"/><text class="lbl" x="427" y="111" text-anchor="middle">0,189</text><text class="axis" x="427" y="268" text-anchor="middle">19</text>
+        <rect class="bar-warn" x="490" y="86.2" width="46" height="163.8" rx="4"/><text class="lbl" x="513" y="80" text-anchor="middle">0,234</text><text class="axis" x="513" y="268" text-anchor="middle">20</text>
+        <rect class="bar-warn" x="558" y="50.5" width="46" height="199.5" rx="4"/><text class="lbl" x="581" y="44" text-anchor="middle">0,285</text><text class="axis" x="581" y="268" text-anchor="middle">21</text>
+        <rect class="bar-warn" x="626" y="71.5" width="46" height="178.5" rx="4"/><text class="lbl" x="649" y="65" text-anchor="middle">0,255</text><text class="axis" x="649" y="268" text-anchor="middle">22</text>
+        <rect class="bar-warn" x="694" y="98.8" width="46" height="151.2" rx="4"/><text class="lbl" x="717" y="92" text-anchor="middle">0,216</text><text class="axis" x="717" y="268" text-anchor="middle">23</text>
+        <line class="avg" x1="58" x2="456" y1="145.7" y2="145.7"/>
+        <line class="avg" x1="484" x2="746" y1="77.8" y2="77.8"/>
+        <text class="axis" x="400" y="286" text-anchor="middle">septiembre 2026</text>
+      </svg>
+      </div>
+    </figure>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Comparación de eficiencia por tramo" style="margin-top:18px">
+      <table>
+        <thead><tr><th scope="col">Métrica</th><th scope="col">14–19 sep</th><th scope="col">20–23 sep</th><th scope="col">Cambio</th></tr></thead>
+        <tbody class="num">
+          <tr><td>Inversión total por día</td><td>US$97,96</td><td>US$114,03</td><td>+16%</td></tr>
+          <tr><td class="sub-row">TikTok</td><td>US$74,79</td><td>US$83,91</td><td>+12%</td></tr>
+          <tr><td class="sub-row">Meta (tráfico + views)</td><td>US$23,17</td><td>US$30,12</td><td>+30%</td></tr>
+          <tr><td>Sesiones por día</td><td>657</td><td>464</td><td><span class="delta down">▼ −29%</span></td></tr>
+          <tr><td>CTR TikTok</td><td>0,73%</td><td>0,61%</td><td><span class="delta down">▼ −0,12 p.p.</span></td></tr>
+          <tr><td>CPC TikTok</td><td>US$0,053</td><td>US$0,065</td><td><span class="delta down">▲ +23%</span></td></tr>
+          <tr><td>Clics de TikTok que ven la landing</td><td>61,8%</td><td>53,0%</td><td><span class="delta down">▼ −8,8 p.p.</span></td></tr>
+          <tr class="total"><td>Costo por sesión (total)</td><td>US$0,149</td><td>US$0,246</td><td><span class="delta down">▲ +65%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Dos causas se suman. En TikTok, el anuncio atrae menos clics por impresión y menos clics llegan a cargar la landing, lo que es consistente con desgaste del creativo y con problemas de carga (hipótesis por validar). En Meta, el conjunto de views pasó de unos US$10 a US$27 diarios desde el 21 sep; su objetivo son reproducciones y aporta pocas vistas de landing (US$0,26 por vista), así que encarece el costo por sesión sin mover mucho el volumen.</p>
+  </div>
+</section>
+
+<section id="plataformas" class="alt">
+  <div class="wrap">
+    <div class="head-center">
+      <div class="eyebrow">Detalle por plataforma</div>
+      <h2>TikTok compra la vista de landing más útil; Meta la más barata</h2>
+      <p class="support">Métricas reportadas por cada plataforma. TikTok convertido de COP a USD con TRM $3.500; Meta reporta en USD.</p>
+    </div>
+    <div class="funnel" style="grid-template-columns:repeat(3,minmax(0,1fr))" role="list" aria-label="Recorrido TikTok 14–23 sep">
+      <div class="step" role="listitem"><div class="src">TikTok · 14–23 sep</div><b class="num">2.021.688</b><span>Impresiones</span><span class="rate">CPM US$0,39</span></div>
+      <div class="step" role="listitem"><div class="src">TikTok · 14–23 sep</div><b class="num">13.683</b><span>Clics al destino</span><span class="rate">CTR 0,68% · CPC US$0,057</span></div>
+      <div class="step main" role="listitem"><div class="src">TikTok · 14–23 sep</div><b class="num">8.001</b><span>Vistas de la landing</span><span class="rate">US$0,098 por vista</span></div>
+    </div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Conjuntos de Meta" style="margin-top:18px">
+      <table>
+        <thead><tr><th scope="col">Conjunto de Meta</th><th scope="col">Periodo</th><th scope="col">Inversión</th><th scope="col">Impresiones</th><th scope="col">Clics en enlace</th><th scope="col">CTR</th><th scope="col">Vistas landing</th><th scope="col">Costo / vista</th></tr></thead>
+        <tbody class="num">
+          <tr><td>traf_abierto_inmarket <span class="sub">Tráfico</span></td><td>27 ago–13 sep</td><td>US$961,13</td><td>801.874</td><td>34.442</td><td>4,30%</td><td>24.565</td><td>US$0,039</td></tr>
+          <tr><td>traf_abierto_inmarket <span class="sub">Tráfico</span></td><td>14–23 sep</td><td>US$111,17</td><td>126.328</td><td>6.289</td><td>4,98%</td><td>4.320</td><td>US$0,026</td></tr>
+          <tr><td>awa_views_freq-3_abierto_geo <span class="sub">Views · 237.871 ThruPlays</span></td><td>27 ago–13 sep</td><td>US$611,10</td><td>442.039</td><td>5.760</td><td>1,30%</td><td>2.426</td><td>US$0,252</td></tr>
+          <tr><td>awa_views_freq-3_abierto_geo <span class="sub">Views · 53.680 ThruPlays</span></td><td>14–23 sep</td><td>US$148,32</td><td>102.814</td><td>1.340</td><td>1,30%</td><td>569</td><td>US$0,261</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">La inversión de Meta ya venía bajando antes de TikTok: US$132 diarios del 27 ago al 4 sep y US$42 diarios del 5 al 13 sep. El conjunto de views se evalúa por reproducciones (US$0,003 por ThruPlay), no por sesiones; lo incluimos en el costo por sesión porque dirige a la misma landing. Sin views, el costo por sesión de tráfico pagado fue US$0,669 en el periodo base y US$0,154 en el periodo TikTok.</p>
+  </div>
+</section>
+
+<section id="detalle">
+  <div class="wrap">
+    <div class="head-stack">
+      <div class="eyebrow">Detalle diario</div>
+      <h2>Inversión y sesiones, día por día</h2>
+    </div>
+    <details open>
+      <summary>TikTok + Meta + GA4 · USD</summary>
+      <div class="inner">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Tabla diaria">
+          <table>
+            <thead><tr><th scope="col">Día</th><th scope="col">TikTok</th><th scope="col">Meta tráfico</th><th scope="col">Meta views</th><th scope="col">Inversión total</th><th scope="col">Sesiones GA4</th><th scope="col">Costo / sesión</th><th scope="col">Tasa interacción</th></tr></thead>
+            <tbody class="num">
+              <tr><td>27 ago–13 sep · base (18 días)</td><td>—</td><td>US$961,13</td><td>US$611,10</td><td>US$1.572,23</td><td>1.436</td><td>US$1,095</td><td>56,3%</td></tr>
+              <tr><td>14 sep · lanzamiento</td><td>US$49,35</td><td>US$16,21</td><td>US$17,72</td><td>US$83,28</td><td>473</td><td>US$0,176</td><td>92,4%</td></tr>
+              <tr><td>15 sep</td><td>US$147,75</td><td>US$10,91</td><td>US$10,45</td><td>US$169,11</td><td>1.287</td><td>US$0,131</td><td>95,3%</td></tr>
+              <tr><td>16 sep</td><td>US$119,51</td><td>US$11,80</td><td>US$8,22</td><td>US$139,53</td><td>1.037</td><td>US$0,135</td><td>92,1%</td></tr>
+              <tr><td>17 sep</td><td>US$64,98</td><td>US$11,67</td><td>US$10,36</td><td>US$87,01</td><td>543</td><td>US$0,160</td><td>91,5%</td></tr>
+              <tr><td>18 sep</td><td>US$42,98</td><td>US$11,59</td><td>US$9,30</td><td>US$63,87</td><td>365</td><td>US$0,175</td><td>91,0%</td></tr>
+              <tr><td>19 sep</td><td>US$24,16</td><td>US$11,12</td><td>US$9,65</td><td>US$44,93</td><td>238</td><td>US$0,189</td><td>88,7%</td></tr>
+              <tr><td>20 sep</td><td>US$72,74</td><td>US$12,89</td><td>US$10,88</td><td>US$96,51</td><td>412</td><td>US$0,234</td><td>93,7%</td></tr>
+              <tr><td>21 sep</td><td>US$90,22</td><td>US$9,02</td><td>US$27,08</td><td>US$126,32</td><td>444</td><td>US$0,285</td><td>92,1%</td></tr>
+              <tr><td>22 sep</td><td>US$77,14</td><td>US$7,91</td><td>US$25,53</td><td>US$110,58</td><td>433</td><td>US$0,255</td><td>93,3%</td></tr>
+              <tr><td>23 sep</td><td>US$95,53</td><td>US$8,05</td><td>US$19,13</td><td>US$122,71</td><td>567</td><td>US$0,216</td><td>93,0%</td></tr>
+              <tr class="total"><td>Total 14–23 sep</td><td>US$784,36</td><td>US$111,17</td><td>US$148,32</td><td>US$1.043,85</td><td>5.799</td><td>US$0,180</td><td>92,8%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">Calidad del tráfico frente al periodo base: tiempo medio de interacción 2 min 16 s vs 52 s, eventos por sesión 24,5 vs 11,3, eventos clave por sesión 0,11 vs 0,10.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="decisiones" class="alt">
+  <div class="wrap">
+    <div class="head-split">
+      <div>
+        <div class="eyebrow">Decisiones</div>
+        <h2>Cuatro acciones para bajar el costo por sesión y medir cada plataforma</h2>
+      </div>
+      <p class="support">Ordenadas por impacto. Las dos primeras definen cuánto presupuesto debe seguir en Meta; las otras dos atacan el aumento de costo desde el 20 sep.</p>
+    </div>
+    <div class="recs">
+      <article class="rec main">
+        <div class="prio">P1</div>
+        <div><h3>Auditar por qué las vistas de landing de Meta tráfico no llegan al sitio</h3><p>Evidencia: 26.991 vistas de landing de Meta y 1.436 sesiones antes de TikTok (5,3%), con CTR de 4–5% y US$0,03 por vista. Revisar el desglose por ubicación, la URL de destino de los anuncios y que la redirección de la landing funcione igual para ese tráfico.</p></div>
+        <div class="meta"><strong>Ahora</strong>KPI: sesiones por vista de landing</div>
+      </article>
+      <article class="rec">
+        <div class="prio">P1</div>
+        <div><h3>Separar el tráfico de cada plataforma en la redirección de la landing</h3><p>Evidencia: landing_ml mezcla TikTok y Meta, y el reparto actual es una estimación (≈5.540 TikTok, ≈260 Meta). Pasar la plataforma de origen en utm_campaign o utm_content hacia el sitio principal permite medir el costo por sesión real de cada una.</p></div>
+        <div class="meta"><strong>Ahora</strong>KPI: sesiones por plataforma</div>
+      </article>
+      <article class="rec">
+        <div class="prio">P2</div>
+        <div><h3>Rotar creativos de TikTok y revisar la carga de la landing en móvil</h3><p>Evidencia: desde el 20 sep el CTR de TikTok bajó de 0,73% a 0,61% y los clics que ven la landing, de 61,8% a 53,0%. Confirmar en Ads Manager qué cambió ese día y subir variaciones nuevas.</p></div>
+        <div class="meta"><strong>Próximo ciclo</strong>KPI: CTR, costo por sesión</div>
+      </article>
+      <article class="rec">
+        <div class="prio">P3</div>
+        <div><h3>Probar mover parte del presupuesto de Meta tráfico a TikTok</h3><p>Evidencia: costo estimado por sesión de US$0,14 en TikTok contra cerca de US$1,00 en Meta. Hacerlo después de la auditoría y con UTMs separados, para confirmar la diferencia con datos directos.</p></div>
+        <div class="meta"><strong>Experimento</strong>KPI: costo por sesión total</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="metodologia">
+  <div class="wrap">
+    <div class="head-stack">
+      <div class="eyebrow">Metodología</div>
+      <h2>Fuentes, cálculos y límites</h2>
+    </div>
+    <details>
+      <summary>Ver metodología completa</summary>
+      <div class="inner">
+        <dl class="method">
+          <div><dt>Fuente de sesiones</dt><dd>GA4, cuenta y propiedad Mega Loto. Informe Adquisición de tráfico, Fuente/medio de la sesión = pago_online / landing_ml, todos los usuarios, desglose por día.</dd></div>
+          <div><dt>Fuentes de medios</dt><dd>TikTok Ads Manager, campaña adcom_megaloto_tt_conv_tiktok_cons-tiktok, diario 14–23 sep (COP). Meta Ads Manager, conjuntos adcom_megaloto_traf_abierto_inmarket y adcom_megaloto_awa_views_freq-3_abierto_geo, diario 27 ago–23 sep (USD).</dd></div>
+          <div><dt>Conjuntos excluidos</dt><dd>adcom_megaloto_traf_concurso_abierto_inmarket (US$277,15 desde el 7 sep) no está entre los conjuntos identificados como dirigidos a esta landing. awa_views_abierto_geo y awa_abierto_geo no tuvieron inversión en el periodo.</dd></div>
+          <div><dt>Periodos y moneda</dt><dd>Base: 2026-08-27 a 2026-09-13 (18 días). TikTok: 2026-09-14 a 2026-09-23 (10 días). TikTok: USD = COP ÷ 3.500. Meta: USD nativo. Zona horaria America/Bogota.</dd></div>
+          <div><dt>Costo por sesión</dt><dd>(TikTok + Meta tráfico + Meta views) ÷ sesiones GA4 desde landing_ml. Sin views: (TikTok + Meta tráfico) ÷ sesiones.</dd></div>
+          <div><dt>Sesiones incrementales</dt><dd>5.799 − (1.436 ÷ 18 × 10) = 5.001. Supone que la base habría seguido igual; como Meta invirtió menos en el periodo TikTok, la cifra es conservadora.</dd></div>
+          <div><dt>Reparto estimado por plataforma</dt><dd>Sesiones Meta ≈ 4.889 × (1.436 ÷ 26.991) ≈ 260; TikTok = 5.799 − 260 ≈ 5.540. Correlaciones de Pearson con sesiones diarias (10 días): TikTok 0,90; Meta −0,32.</dd></div>
+          <div><dt>Limitaciones</dt><dd>landing_ml agrupa todas las plataformas. Vistas de landing (TikTok, Meta) y sesiones (GA4) se miden en sistemas distintos. Periodo base agregado, no diario. Eventos clave sin definición confirmada. Diez días es una muestra corta.</dd></div>
+        </dl>
+      </div>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>ADCOM · Informe Megaloto landing de tráfico · TikTok + Meta · v1.2</span>
+    <span>Datos extraídos el 23 sep 2026 · Actualizado el 24 sep 2026 · Responsable: equipo de medios ADCOM</span>
+  </div>
+</footer>
+</body>
+</html>

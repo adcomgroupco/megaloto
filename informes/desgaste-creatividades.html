@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Megaloto — Análisis de Creatividades Meta Ads</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root{--g0:#020f06;--g1:#041a09;--g2:#072812;--g3:#0b3d1a;--g4:#145228;--g5:#1d6e38;--g6:#278a48;--g7:#34b060;--g8:#50d47c;--g9:#80e8a0;--accent:#aaff44;--accent2:#ffd74a;--warn:#ff6b35;--text:#e8f5ec;--muted:#7ab88a;--border:rgba(255,255,255,0.07);}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--g0);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(39,138,72,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(39,138,72,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+  .container{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+  header{padding:48px 0 32px;border-bottom:1px solid var(--border);margin-bottom:40px;}
+  .header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .brand-tag{display:inline-flex;align-items:center;gap:8px;background:var(--g3);border:1px solid var(--g5);border-radius:20px;padding:4px 14px 4px 8px;font-family:'DM Mono',monospace;font-size:11px;color:var(--g9);margin-bottom:16px;}
+  .brand-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(26px,5vw,44px);font-weight:800;line-height:1.05;letter-spacing:-1px;color:#fff;}
+  h1 span{color:var(--accent);}
+  .header-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:10px;}
+  .period-badge{background:var(--g2);border:1px solid var(--g4);border-radius:8px;padding:12px 20px;font-family:'DM Mono',monospace;font-size:11px;color:var(--g9);white-space:nowrap;line-height:1.9;}
+  .period-badge strong{color:var(--accent);font-size:13px;}
+  .section-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--g7);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:40px;}
+  .kpi{background:var(--g1);border:1px solid var(--g3);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+  .kpi:hover{border-color:var(--g5);}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--g5);opacity:0.5;}
+  .kpi.focus::before{background:var(--accent);opacity:1;}
+  .kpi.warn::before{background:var(--warn);opacity:1;}
+  .kpi-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+  .kpi-value{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;line-height:1;}
+  .kpi-sub{font-size:11px;color:var(--g7);margin-top:4px;}
+  .kpi-delta{font-size:11px;margin-top:4px;}
+  .kpi-delta.up{color:var(--accent);}
+  .kpi-delta.down{color:var(--warn);}
+  .card{background:var(--g1);border:1px solid var(--g3);border-radius:14px;padding:22px 24px;margin-bottom:24px;}
+  .card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--g9);margin-bottom:16px;}
+  .chart-container{position:relative;width:100%;}
+  .tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab-btn{padding:5px 14px;border:1px solid var(--g3);border-radius:20px;font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;background:transparent;color:var(--muted);transition:all 0.15s;}
+  .tab-btn:hover{border-color:var(--g5);color:var(--text);}
+  .tab-btn.active{background:var(--g4);border-color:var(--g6);color:var(--accent);}
+  .rank-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .rank-table th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+  .rank-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+  .rank-table tr.focus-row td{background:rgba(29,110,56,0.14);}
+  .rank-table tr:hover td{background:rgba(255,255,255,0.02);}
+  .type-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;}
+  .pill-focus{background:rgba(170,255,68,0.12);color:var(--accent);border:1px solid rgba(170,255,68,0.25);}
+  .pill-other{background:var(--g2);color:var(--muted);border:1px solid var(--g3);}
+  .cpr-bar-wrap{display:flex;align-items:center;gap:8px;}
+  .cpr-bar{height:4px;border-radius:2px;min-width:2px;}
+  .fatigue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:40px;}
+  .fatigue-card{background:var(--g1);border:1px solid var(--g3);border-radius:12px;padding:18px 20px;}
+  .fatigue-type{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+  .fatigue-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:12px;}
+  .fatigue-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+  .fatigue-key{font-size:11px;color:var(--muted);}
+  .fatigue-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--text);}
+  .fatigue-bar{height:5px;background:var(--g3);border-radius:3px;margin:10px 0 6px;position:relative;}
+  .fatigue-fill{height:5px;border-radius:3px;position:absolute;top:0;left:0;}
+  .saturation-label{font-size:10px;color:var(--muted);margin-bottom:10px;}
+  .fatigue-rec{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:11px;line-height:1.5;}
+  .fatigue-rec.good{background:rgba(170,255,68,0.08);border:1px solid rgba(170,255,68,0.2);color:var(--accent);}
+  .fatigue-rec.warn{background:rgba(255,215,74,0.08);border:1px solid rgba(255,215,74,0.2);color:var(--accent2);}
+  .fatigue-rec.alert{background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.25);color:var(--warn);}
+  .fatigue-rec strong{color:#fff;}
+  .rec-banner{background:linear-gradient(135deg,rgba(20,82,40,0.6),rgba(7,40,18,0.8));border:1px solid var(--g5);border-radius:14px;padding:24px 28px;margin-bottom:40px;position:relative;overflow:hidden;}
+  .rec-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(170,255,68,0.04);}
+  .rec-banner-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .rec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
+  .rec-item-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--g7);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+  .rec-item-val{font-size:12px;color:var(--text);line-height:1.5;margin-top:4px;}
+  .rec-cycle{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;line-height:1.1;}
+  .insight-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:40px;}
+  .insight{border-radius:12px;padding:18px 20px;border:1px solid;}
+  .insight.green{background:rgba(29,110,56,0.18);border-color:var(--g5);}
+  .insight.yellow{background:rgba(255,215,74,0.08);border-color:rgba(255,215,74,0.35);}
+  .insight.orange{background:rgba(255,107,53,0.08);border-color:rgba(255,107,53,0.3);}
+  .insight.neutral{background:var(--g1);border-color:var(--g3);}
+  .insight-icon{font-size:18px;margin-bottom:8px;}
+  .insight-head{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+  .insight-body{font-size:12px;line-height:1.55;color:var(--muted);}
+  .insight-body strong{color:var(--text);}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;font-size:11px;color:var(--muted);align-items:center;}
+  .leg-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;}
+  footer{padding:32px 0;border-top:1px solid var(--border);margin-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  footer p{font-family:'DM Mono',monospace;font-size:10px;color:var(--g5);}
+  @media(max-width:600px){.header-top{flex-direction:column;}.period-badge{width:100%;}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="brand-tag"><span class="brand-dot"></span>MEGALOTO · META ADS · CONVERSIÓN A JUGADA</div>
+        <h1>Desgaste de<br><span>Creatividades</span></h1>
+        <p class="header-meta">Oct 2025 – Abr 2026 · 325 anuncios únicos · PA + PY · crucero = playa (mismo concepto visual)</p>
+      </div>
+      <div class="period-badge">
+        <div>Rango histórico completo</div>
+        <strong>6 meses de data</strong>
+        <div style="color:var(--muted)">Oct 15, 2025 → Abr 17, 2026</div>
+        <div style="color:var(--muted);margin-top:4px;">~52 juegos · 2 por semana</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="section-title">Vista general — histórico 6 meses</div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Inversión total</div><div class="kpi-value">$31.5K</div><div class="kpi-sub">todos los formatos</div></div>
+    <div class="kpi"><div class="kpi-label">Total resultados</div><div class="kpi-value">36,920</div><div class="kpi-sub">conversiones a jugada</div></div>
+    <div class="kpi"><div class="kpi-label">CPR promedio general</div><div class="kpi-value">$0.97</div><div class="kpi-sub">todos los formatos</div></div>
+    <div class="kpi focus"><div class="kpi-label">Carrusel playa/crucero</div><div class="kpi-value">$0.96</div><div class="kpi-delta up">39 juegos · 2,611 conv.</div></div>
+    <div class="kpi focus"><div class="kpi-label">Estático depa/apto</div><div class="kpi-value">$0.98</div><div class="kpi-delta up">33 juegos · 3,748 conv.</div></div>
+    <div class="kpi warn"><div class="kpi-label">Estático chicoplaya</div><div class="kpi-value">$1.60</div><div class="kpi-delta down">Peor CPR de la campaña</div></div>
+  </div>
+
+  <div class="section-title">Ranking de todos los tipos — histórico completo</div>
+  <div class="card">
+    <div class="card-title">Comparativa por métrica — verde = tipos analizados</div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchMetric('cpr',this)">CPR</button>
+      <button class="tab-btn" onclick="switchMetric('res',this)">Resultados</button>
+      <button class="tab-btn" onclick="switchMetric('spend',this)">Inversión</button>
+      <button class="tab-btn" onclick="switchMetric('impr',this)">Impresiones</button>
+    </div>
+    <div class="chart-container" style="height:400px;"><canvas id="mainChart" role="img" aria-label="Ranking de tipos de anuncio por CPR"></canvas></div>
+  </div>
+
+  <div style="overflow-x:auto;margin-bottom:40px;">
+    <table class="rank-table"><thead><tr><th>#</th><th>Tipo</th><th>Grupo</th><th>Anuncios</th><th>Inversión</th><th>Impr.</th><th>Resultados</th><th>CPR avg</th><th>CTR %</th><th>Freq avg</th></tr></thead><tbody id="rankBody"></tbody></table>
+  </div>
+
+  <div class="section-title">Evolución histórica — carrusel playa / crucero · Oct 2025 → Abr 2026</div>
+  <div class="card">
+    <div class="card-title">Impresiones (barras) y CPR (línea) por juego · ordenado por monto del pozo</div>
+    <div class="legend"><span><span class="leg-dot" style="background:#50d47c"></span>Impresiones</span><span><span class="leg-dot" style="background:#ffd74a"></span>CPR ($) — eje derecho</span></div>
+    <div class="chart-container" style="height:300px;"><canvas id="fatigueChart" role="img" aria-label="Evolución carrusel playa por juego"></canvas></div>
+  </div>
+
+  <div class="section-title">Evolución histórica — estático depa / apartamento · Oct 2025 → Abr 2026</div>
+  <div class="card">
+    <div class="card-title">Impresiones (barras) y CPR (línea) por juego · ordenado por monto del pozo</div>
+    <div class="legend"><span><span class="leg-dot" style="background:#D4537E"></span>Impresiones</span><span><span class="leg-dot" style="background:#ffd74a"></span>CPR ($) — eje derecho</span></div>
+    <div class="chart-container" style="height:300px;"><canvas id="depaChart" role="img" aria-label="Evolución estático depa por juego"></canvas></div>
+  </div>
+
+  <div class="section-title">Diagnóstico de desgaste por tipo de visual</div>
+  <div class="fatigue-grid">
+    <div class="fatigue-card">
+      <div class="fatigue-type">Formato #1 · 39 juegos históricos</div>
+      <div class="fatigue-name">Carrusel Playa / Crucero</div>
+      <div class="fatigue-row"><span class="fatigue-key">CPR promedio histórico</span><span class="fatigue-val">$0.96</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">CPR mínimo logrado</span><span class="fatigue-val">$0.23</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">Impresiones totales</span><span class="fatigue-val">633,587</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">Frecuencia promedio</span><span class="fatigue-val">1.39</span></div>
+      <div class="fatigue-bar"><div class="fatigue-fill" style="width:28%;background:var(--accent);"></div></div>
+      <div class="saturation-label">Saturación: BAJA — el formato más resistente en 6 meses</div>
+      <div class="fatigue-rec good">✦ 6 meses activo, sigue convirtiendo. Frecuencia bajo 2.0 en casi todos los juegos. Picos de CPR coinciden con pozos donde el sistema satura ($3,355M y $3,600M). <strong>Rotar concepto visual cada 4–6 semanas (8–10 juegos). Mantener mientras freq &lt; 2.0.</strong></div>
+    </div>
+    <div class="fatigue-card">
+      <div class="fatigue-type">Formato #2 · 33 juegos históricos</div>
+      <div class="fatigue-name">Estático Depa / Apartamento</div>
+      <div class="fatigue-row"><span class="fatigue-key">CPR promedio histórico</span><span class="fatigue-val">$0.98</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">CPR mínimo logrado</span><span class="fatigue-val">$0.13</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">Impresiones totales</span><span class="fatigue-val">1,299,627</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">Frecuencia promedio</span><span class="fatigue-val">1.47</span></div>
+      <div class="fatigue-bar"><div class="fatigue-fill" style="width:50%;background:var(--accent2);"></div></div>
+      <div class="saturation-label">Saturación: MEDIA — distribución muy variable por juego</div>
+      <div class="fatigue-rec warn">⚡ El formato tiene capacidad alta (106K impr. en algunos juegos) pero Meta lo desactiva rápido si no convierte en los primeros 2 ciclos. CPR se dispara en pozos medios ($3,355M, $3,505M, $3,560M). <strong>Renovar el ángulo creativo cada 3 semanas (6 juegos).</strong></div>
+    </div>
+    <div class="fatigue-card">
+      <div class="fatigue-type">Formato #3 · 4 juegos históricos</div>
+      <div class="fatigue-name">Estático Chicoplaya</div>
+      <div class="fatigue-row"><span class="fatigue-key">CPR promedio</span><span class="fatigue-val">$1.60</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">CPR mínimo logrado</span><span class="fatigue-val">$0.80</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">Impresiones totales</span><span class="fatigue-val">99,487</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">Frecuencia promedio</span><span class="fatigue-val">1.15</span></div>
+      <div class="fatigue-bar"><div class="fatigue-fill" style="width:80%;background:var(--warn);"></div></div>
+      <div class="saturation-label">Saturación: ALTA — peor CPR de toda la campaña</div>
+      <div class="fatigue-rec alert">⚠ Solo 4 juegos de historia y ya es el formato más caro. <strong>Pausar o reemplazar. Si se mantiene, solo activar en pozos &gt;$3,600M y cambiar concepto por juego.</strong></div>
+    </div>
+    <div class="fatigue-card">
+      <div class="fatigue-type">Formato #4 · 37 juegos históricos</div>
+      <div class="fatigue-name">Estático Playa / Crucero</div>
+      <div class="fatigue-row"><span class="fatigue-key">CPR promedio</span><span class="fatigue-val">$1.03</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">CPR mínimo logrado</span><span class="fatigue-val">$0.13</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">Impresiones totales</span><span class="fatigue-val">213,175</span></div>
+      <div class="fatigue-row"><span class="fatigue-key">Frecuencia promedio</span><span class="fatigue-val">1.19</span></div>
+      <div class="fatigue-bar"><div class="fatigue-fill" style="width:65%;background:var(--warn);"></div></div>
+      <div class="saturation-label">Saturación: ALTA — Meta no lo prioriza consistentemente</div>
+      <div class="fatigue-rec alert">⚠ Con 37 juegos de historia, el CPR es elevado y la distribución errática. Meta lo ignora sistemáticamente en muchos ciclos. <strong>Renovar concepto completo. Probar nuevo ángulo visual en los próximos 2 juegos.</strong></div>
+    </div>
+  </div>
+
+  <div class="rec-banner">
+    <div class="rec-banner-title"><span style="font-size:16px;">◈</span> Guía de rotación — basada en 6 meses de data real</div>
+    <div class="rec-grid">
+      <div class="rec-item">
+        <div class="rec-item-label">Carrusel playa / crucero</div>
+        <div class="rec-cycle" style="color:var(--accent);">8–10 juegos</div>
+        <div class="rec-item-val">4–5 semanas. Cambiar cuando CPR supere $1.20 por 2 juegos seguidos o frecuencia llegue a 2.0.</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-item-label">Estático depa / apartamento</div>
+        <div class="rec-cycle" style="color:var(--accent2);">6 juegos</div>
+        <div class="rec-item-val">3 semanas. Si en los primeros 2 juegos no supera 10K impr., Meta lo está descartando — renovar de inmediato.</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-item-label">Estático playa / crucero</div>
+        <div class="rec-cycle" style="color:var(--warn);">4 juegos</div>
+        <div class="rec-item-val">2 semanas máximo. Si no tracciona en 4 juegos seguidos, pausar y probar nuevo concepto.</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-item-label">Estático chicoplaya</div>
+        <div class="rec-cycle" style="color:var(--warn);">1–2 juegos</div>
+        <div class="rec-item-val">Solo en pozos grandes (+$3,600M). Evaluar pausar definitivamente si CPR no baja de $1.20.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Señales de desgaste — qué monitorear cada juego</div>
+  <div class="insight-row">
+    <div class="insight green">
+      <div class="insight-icon">◉</div>
+      <div class="insight-head">Frecuencia &lt; 2.0 = verde</div>
+      <div class="insight-body">En 6 meses ningún formato superó 2.2 de frecuencia de forma sostenida. Mientras la frecuencia esté bajo 2.0, el visual no está saturando la audiencia. <strong>Revisar por juego, no por campaña.</strong></div>
+    </div>
+    <div class="insight yellow">
+      <div class="insight-icon">◈</div>
+      <div class="insight-head">Caída brusca de impr. en ciclo 2</div>
+      <div class="insight-body">El patrón más repetido: un anuncio arranca con 30K–100K impr. y el siguiente juego cae a menos de 500. <strong>Meta evaluó y descartó el creativo</strong> por bajo CVR — no es el pozo, es el algoritmo.</div>
+    </div>
+    <div class="insight orange">
+      <div class="insight-icon">◬</div>
+      <div class="insight-head">CPR &gt; $1.20 por 2 juegos</div>
+      <div class="insight-body">El umbral histórico de esta campaña. Cuando el CPR supera $1.20 por 2 juegos consecutivos, rara vez baja solo. <strong>Señal de que el creativo ya no conecta</strong> con la audiencia disponible.</div>
+    </div>
+    <div class="insight neutral">
+      <div class="insight-icon">◌</div>
+      <div class="insight-head">CTR alto sin conversiones</div>
+      <div class="insight-body">Estático playa tiene CTR de 2.4% pero pocas conversiones. Indica que el visual llama la atención pero no genera intención de jugada. <strong>El problema no es el awareness sino el mensaje de conversión.</strong></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>MEGALOTO · Campaña Meta Ads · Conversión a jugada</p>
+    <p>Data: Oct 15, 2025 – Abr 17, 2026 · PA + PY · 325 anuncios únicos · crucero = playa</p>
+    <p>Generado por ADCOM Analytics</p>
+  </footer>
+</div>
+
+<script>
+const allTypes=[
+  {type:'promo-otros',        focus:false,n:19,spend:2070.73, impr:1153338,res:3784,cpr:0.603,ctr:1.727,freq:1.593},
+  {type:'estatico_texto1',    focus:false,n:21,spend:1876.68, impr:854531, res:3398,cpr:0.699,ctr:1.188,freq:1.415},
+  {type:'seasonal',           focus:false,n:28,spend:4386.44, impr:1733691,res:4707,cpr:0.755,ctr:1.619,freq:1.571},
+  {type:'estatico_spa',       focus:false,n:25,spend:1041.42, impr:383586, res:1163,cpr:0.762,ctr:1.230,freq:1.170},
+  {type:'video_playa',        focus:false,n:19,spend:429.77,  impr:164859, res:776, cpr:0.781,ctr:2.615,freq:1.363},
+  {type:'carrusel_playa',     focus:true, n:39,spend:1556.24, impr:633587, res:2611,cpr:0.956,ctr:1.511,freq:1.388},
+  {type:'estatico_generico',  focus:false,n:10,spend:3270.57, impr:1875563,res:3938,cpr:0.964,ctr:1.511,freq:2.070},
+  {type:'estatico_depa',      focus:true, n:33,spend:3463.15, impr:1299627,res:3748,cpr:0.975,ctr:1.579,freq:1.471},
+  {type:'otros',              focus:false,n:25,spend:240.88,  impr:85881,  res:402, cpr:1.003,ctr:1.526,freq:0.920},
+  {type:'estatico_playa',     focus:true, n:37,spend:526.60,  impr:213175, res:731, cpr:1.031,ctr:1.496,freq:1.190},
+  {type:'video_mariae',       focus:false,n:24,spend:3154.25, impr:1345172,res:4254,cpr:1.225,ctr:2.306,freq:1.452},
+  {type:'video_michelin',     focus:false,n:21,spend:2140.66, impr:924494, res:2896,cpr:1.294,ctr:2.538,freq:1.525},
+  {type:'estatico_texto',     focus:false,n:20,spend:3000.67, impr:1170223,res:2135,cpr:1.363,ctr:1.255,freq:1.419},
+  {type:'estatico_chicoplaya',focus:true, n:4, spend:266.77,  impr:99487,  res:125, cpr:1.601,ctr:1.230,freq:1.150},
+];
+
+const carruselData=[
+  {m:3290,i:26641,cpr:0.355},{m:3300,i:8114,cpr:0.319},{m:3315,i:6792,cpr:0.225},{m:3320,i:7029,cpr:0.298},
+  {m:3330,i:6101,cpr:0.361},{m:3340,i:3244,cpr:0.398},{m:3345,i:5465,cpr:0.348},{m:3350,i:31467,cpr:0.412},
+  {m:3355,i:19378,cpr:null},{m:3370,i:77321,cpr:0.691},{m:3380,i:17799,cpr:0.574},{m:3400,i:1001,cpr:0.475},
+  {m:3405,i:24941,cpr:0.455},{m:3420,i:15630,cpr:0.335},{m:3425,i:43007,cpr:0.764},{m:3470,i:16825,cpr:0.368},
+  {m:3475,i:3168,cpr:0.239},{m:3505,i:28670,cpr:1.028},{m:3515,i:3615,cpr:0.416},{m:3525,i:34258,cpr:0.445},
+  {m:3535,i:354,cpr:0.230},{m:3545,i:3237,cpr:0.541},{m:3560,i:5744,cpr:0.726},{m:3565,i:7963,cpr:1.117},
+  {m:3575,i:500,cpr:0.253},{m:3590,i:2869,cpr:0.304},{m:3595,i:18771,cpr:0.554},{m:3600,i:95106,cpr:1.451},
+  {m:3640,i:601,cpr:0.347},{m:3655,i:116965,cpr:0.382},
+];
+
+const depaData=[
+  {m:3320,i:56665,cpr:0.450},{m:3330,i:6537,cpr:0.310},{m:3340,i:47918,cpr:0.804},{m:3345,i:29191,cpr:0.437},
+  {m:3350,i:30318,cpr:0.715},{m:3355,i:55241,cpr:null},{m:3370,i:3635,cpr:0.974},{m:3380,i:106716,cpr:0.615},
+  {m:3420,i:9057,cpr:0.379},{m:3425,i:18445,cpr:0.725},{m:3445,i:7027,cpr:0.522},{m:3450,i:39810,cpr:0.719},
+  {m:3470,i:103946,cpr:0.647},{m:3475,i:19830,cpr:0.562},{m:3485,i:36630,cpr:1.151},{m:3495,i:23193,cpr:0.987},
+  {m:3505,i:206844,cpr:1.319},{m:3515,i:734,cpr:0.339},{m:3525,i:51931,cpr:0.880},{m:3535,i:35056,cpr:0.378},
+  {m:3545,i:123948,cpr:1.053},{m:3560,i:129121,cpr:1.363},{m:3565,i:37497,cpr:1.079},{m:3575,i:1821,cpr:0.324},
+  {m:3590,i:1288,cpr:0.125},{m:3595,i:340,cpr:0.210},{m:3600,i:2849,cpr:0.687},{m:3630,i:160,cpr:0.175},
+  {m:3645,i:11232,cpr:1.233},{m:3670,i:102441,cpr:1.933},
+];
+
+const focusColor='#50d47c', restColor='#1a3d22', accentY='#ffd74a';
+
+// TABLE
+const sorted=[...allTypes].sort((a,b)=>a.cpr-b.cpr);
+const tbody=document.getElementById('rankBody');
+sorted.forEach((t,i)=>{
+  const pct=Math.min(100,(t.cpr/1.8)*100);
+  const bc=t.focus?'#aaff44':'#2a5c38';
+  const pill=t.focus?`<span class="type-pill pill-focus">analizado</span>`:`<span class="type-pill pill-other">resto</span>`;
+  const tr=document.createElement('tr');
+  if(t.focus)tr.classList.add('focus-row');
+  tr.innerHTML=`<td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${i+1}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:11px;">${t.type.replace(/_/g,' ')}</td>
+    <td>${pill}</td><td style="text-align:center">${t.n}</td>
+    <td style="font-family:'DM Mono',monospace;">$${t.spend.toLocaleString('en',{maximumFractionDigits:0})}</td>
+    <td style="font-family:'DM Mono',monospace;">${(t.impr/1000).toFixed(0)}K</td>
+    <td style="font-family:'DM Mono',monospace;">${t.res.toLocaleString()}</td>
+    <td><div class="cpr-bar-wrap"><div class="cpr-bar" style="width:${pct*0.65}px;background:${bc}"></div><span style="font-family:'DM Mono',monospace;font-size:11px;color:${t.focus?'#aaff44':'var(--muted)'}">$${t.cpr.toFixed(3)}</span></div></td>
+    <td style="font-family:'DM Mono',monospace;">${t.ctr.toFixed(2)}%</td>
+    <td style="font-family:'DM Mono',monospace;">${t.freq.toFixed(2)}</td>`;
+  tbody.appendChild(tr);
+});
+
+// MAIN CHART
+const metrics={
+  cpr:  {key:'cpr',  asc:true,  fmt:v=>'$'+v.toFixed(2)},
+  res:  {key:'res',  asc:false, fmt:v=>v.toLocaleString()},
+  spend:{key:'spend',asc:false, fmt:v=>'$'+(v/1000).toFixed(1)+'K'},
+  impr: {key:'impr', asc:false, fmt:v=>(v/1000).toFixed(0)+'K'},
+};
+let mainChart=null;
+function switchMetric(m,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const cfg=metrics[m];
+  const data=[...allTypes].sort((a,b)=>cfg.asc?a[cfg.key]-b[cfg.key]:b[cfg.key]-a[cfg.key]);
+  if(mainChart)mainChart.destroy();
+  mainChart=new Chart(document.getElementById('mainChart'),{
+    type:'bar',
+    data:{labels:data.map(d=>d.type.replace(/_/g,' ')),datasets:[{data:data.map(d=>d[cfg.key]),backgroundColor:data.map(d=>d.focus?focusColor:restColor),borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#041a09',borderColor:'#1d6e38',borderWidth:1,titleColor:'#b5f5c8',bodyColor:'#7ab88a',callbacks:{label:ctx=>cfg.fmt(ctx.parsed.x)}}},
+      scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#7ab88a',font:{family:"'DM Mono',monospace",size:10},callback:v=>cfg.fmt(v)}},y:{grid:{display:false},ticks:{color:'#7ab88a',font:{family:"'DM Mono',monospace",size:10}}}}}
+  });
+}
+switchMetric('cpr',document.querySelector('.tab-btn.active'));
+
+// FATIGUE CHARTS
+function makeFatigueChart(id,data,barColor){
+  new Chart(document.getElementById(id),{
+    type:'bar',
+    data:{
+      labels:data.map(d=>'$'+d.m+'M'),
+      datasets:[
+        {type:'bar',label:'Impresiones',data:data.map(d=>d.i),backgroundColor:barColor+'44',borderColor:barColor,borderWidth:1,yAxisID:'y',borderRadius:2},
+        {type:'line',label:'CPR ($)',data:data.map(d=>d.cpr),borderColor:accentY,backgroundColor:'transparent',pointBackgroundColor:accentY,pointRadius:3,borderWidth:2,tension:0.35,spanGaps:true,yAxisID:'y2'},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#041a09',borderColor:'#1d6e38',borderWidth:1,titleColor:'#b5f5c8',bodyColor:'#7ab88a',
+        callbacks:{label:ctx=>ctx.dataset.label==='CPR ($)'?(ctx.parsed.y!=null?'CPR: $'+ctx.parsed.y.toFixed(2):'Sin datos'):'Impr: '+ctx.parsed.y.toLocaleString()}}},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#7ab88a',font:{family:"'DM Mono',monospace",size:9},maxRotation:45,autoSkip:true,maxTicksLimit:18}},
+        y:{position:'left',grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#7ab88a',font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}},
+        y2:{position:'right',grid:{display:false},min:0,max:2.5,ticks:{color:accentY,font:{size:10},callback:v=>'$'+v.toFixed(2)}},
+      }
+    }
+  });
+}
+makeFatigueChart('fatigueChart',carruselData,'#50d47c');
+makeFatigueChart('depaChart',depaData,'#D4537E');
+</script>
+</body>
+</html>
