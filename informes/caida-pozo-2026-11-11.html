@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Megaloto · Después de la caída del pozo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#111111; --ink-2:#242424; --paper:#F7F7F8; --white:#FFFFFF;
+  --accent:#FFC000; --accent-soft:#FFF3D1; --line:#E7E7E7; --muted:#666666;
+  --positive:#157347; --warning:#A85400; --negative:#B42318; --comparison:#2457C5;
+  --bg:var(--white); --surface:var(--paper); --card:var(--white); --fg:var(--ink);
+  --shadow:0 12px 34px rgba(17,17,17,.07);
+  --r:18px; --r-sm:12px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E0E0E; --surface:#161616; --card:#1C1C1C; --fg:#F2F2F2; --muted:#A8A8A8; --line:#2E2E2E;
+    --accent-soft:#3A2F0A; --positive:#55C98A; --warning:#FF8A3D; --negative:#FF6B6B; --comparison:#7C9BFF;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E0E0E; --surface:#161616; --card:#1C1C1C; --fg:#F2F2F2; --muted:#A8A8A8; --line:#2E2E2E;
+  --accent-soft:#3A2F0A; --positive:#55C98A; --warning:#FF8A3D; --negative:#FF6B6B; --comparison:#7C9BFF;
+  --shadow:none;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:"Poppins",Arial,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,5vw,72px)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+h1,h2,h3{margin:0;letter-spacing:-.02em}
+p{margin:0}
+.num{font-variant-numeric:tabular-nums}
+
+/* Hero (negro como puntuación: portada) */
+.hero{background:#111;color:#fff;padding:clamp(40px,6vw,72px) 0 clamp(36px,5vw,56px)}
+.brandbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:clamp(36px,6vw,64px)}
+.logo{font-weight:900;font-size:1.05rem;letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.logo i{display:inline-block;width:14px;height:14px;background:var(--accent);border-radius:3px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{border:1px solid #3a3a3a;border-radius:999px;padding:5px 12px;font-size:.78rem;color:#d6d6d6}
+.kicker{font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.hero h1{font-size:clamp(2.3rem,5.4vw,4.6rem);line-height:.98;font-weight:800;max-width:17ch}
+.hero .lede{margin-top:22px;max-width:62ch;color:#cfcfcf;font-size:1.05rem}
+.hero-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:clamp(36px,5vw,52px)}
+.hk{border:1px solid #2f2f2f;border-radius:var(--r);padding:20px 22px;background:#1a1a1a}
+.hk.main{background:var(--accent);color:#111;border-color:var(--accent)}
+.hk b{display:block;font-size:clamp(1.9rem,3.4vw,2.6rem);font-weight:800;line-height:1.05}
+.hk span{display:block;font-weight:600;font-size:.92rem;margin-top:6px}
+.hk small{display:block;font-size:.8rem;opacity:.75;margin-top:2px}
+
+/* Secciones */
+section{padding:clamp(40px,5vw,52px) 0;border-bottom:1px solid var(--line)}
+section.alt{background:var(--surface)}
+.eyebrow{font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:18px;height:4px;background:var(--accent);border-radius:2px}
+h2{font-size:clamp(1.7rem,3.4vw,2.7rem);line-height:1.02;font-weight:800;max-width:24ch}
+.support{color:var(--muted);margin-top:12px;max-width:66ch}
+.head-split{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(20px,4vw,56px);align-items:end;margin-bottom:28px}
+.head-stack{margin-bottom:28px}
+.head-center{text-align:center;margin:0 auto 28px;max-width:760px}
+.head-center h2{margin:0 auto}
+.head-center .eyebrow{justify-content:center}
+.head-center .support{margin-left:auto;margin-right:auto}
+
+/* Resumen */
+.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow)}
+.sum.main{border-left:6px solid var(--accent)}
+.sum h3{font-size:1.08rem;font-weight:700;line-height:1.3}
+.sum p{color:var(--muted);font-size:.93rem;margin-top:8px}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;border-radius:999px;padding:2px 10px;margin-bottom:10px;border:1px solid var(--line);color:var(--muted)}
+.tag.fact{color:var(--positive);border-color:currentColor}
+.tag.inf{color:var(--comparison);border-color:currentColor}
+.tag.risk{color:var(--warning);border-color:currentColor}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:22px;top:0;width:40px;height:4px;background:var(--line);border-radius:0 0 3px 3px}
+.kpi.main{background:var(--accent-soft);border-color:var(--accent)}
+.kpi.main::before{background:var(--accent)}
+.kpi b{display:block;font-size:clamp(1.7rem,3vw,2.3rem);font-weight:800;line-height:1.1;margin-top:6px}
+.kpi span{display:block;font-weight:600;font-size:.92rem;margin-top:6px}
+.kpi small{display:block;color:var(--muted);font-size:.82rem;margin-top:4px}
+.delta{font-weight:700}
+.delta.up{color:var(--positive)}
+.delta.down{color:var(--negative)}
+
+/* Gráfico */
+.chart-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,3vw,28px);box-shadow:var(--shadow)}
+.chart-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-bottom:10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.scroll{overflow-x:auto}
+.chart svg{width:100%;min-width:640px;height:auto;display:block}
+.chart .bar-base{fill:#BDBDBD}
+.chart .bar-tt{fill:var(--accent)}
+.chart .lbl{fill:var(--fg);font-size:12px;font-weight:700;font-family:inherit}
+.chart .axis{fill:var(--muted);font-size:11.5px;font-family:inherit}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .baseline{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 5}
+.chart .ann{fill:var(--muted);font-size:11.5px;font-family:inherit}
+.reading{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+.reading div{border-top:3px solid var(--line);padding-top:12px;font-size:.92rem;color:var(--muted)}
+.reading div strong{color:var(--fg);display:block;font-size:.98rem;margin-bottom:4px}
+.reading div.warn{border-top-color:var(--warning)}
+
+/* Tablas */
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:620px}
+th,td{padding:12px 16px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{background:#111;color:#fff;font-weight:600;font-size:.8rem;position:sticky;top:0}
+tbody tr:nth-child(even){background:var(--surface)}
+tbody tr:hover{background:var(--accent-soft)}
+tr.total td{font-weight:800;border-top:2px solid var(--accent);background:var(--accent-soft)}
+td .delta{font-size:.82rem}
+
+/* Embudo TikTok */
+.funnel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.step{padding:22px 22px 20px;border-right:1px solid var(--line);position:relative}
+.step:last-child{border-right:0}
+.step.main{background:var(--accent-soft);box-shadow:inset 0 4px 0 var(--accent)}
+.step .src{font-size:.72rem;font-weight:700;color:var(--muted)}
+.step b{display:block;font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:800;margin-top:6px;line-height:1.1}
+.step span{display:block;font-weight:600;font-size:.9rem;margin-top:4px}
+.step .rate{display:inline-block;margin-top:12px;font-size:.8rem;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--surface);border:1px solid var(--line)}
+.costs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:14px}
+.cost{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:16px 18px}
+.cost b{display:block;font-size:1.45rem;font-weight:800}
+.cost span{display:block;font-weight:600;font-size:.88rem}
+.cost small{display:block;color:var(--muted);font-size:.8rem}
+.note{font-size:.82rem;color:var(--muted);margin-top:14px;max-width:90ch}
+
+/* Callout */
+.callout{border-left:6px solid var(--warning);background:var(--card);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:18px 22px;margin-top:22px;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.callout h3{font-size:1rem;font-weight:700}
+.callout p{font-size:.92rem;color:var(--muted);margin-top:6px}
+
+/* Recomendaciones */
+.recs{display:grid;gap:12px}
+.rec{display:grid;grid-template-columns:72px 1fr auto;gap:18px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px}
+.rec.main{border-color:var(--accent);box-shadow:inset 6px 0 0 var(--accent)}
+.prio{font-weight:800;font-size:1.3rem}
+.rec h3{font-size:1.05rem;font-weight:700;line-height:1.3}
+.rec p{font-size:.9rem;color:var(--muted);margin-top:6px}
+.rec .meta{text-align:right;font-size:.8rem;color:var(--muted);white-space:nowrap}
+.rec .meta strong{display:block;color:var(--fg);font-size:.85rem}
+
+/* Detalle / metodología */
+details{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:0}
+summary{cursor:pointer;padding:18px 22px;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.4rem;font-weight:600;color:var(--muted)}
+details[open] summary::after{content:"–"}
+details .inner{padding:0 22px 22px}
+.method{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 36px;font-size:.9rem}
+.method dt{font-weight:700}
+.method dd{margin:2px 0 10px;color:var(--muted)}
+footer{padding:28px 0 40px;font-size:.82rem;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .head-split,.summary,.reading,.method{grid-template-columns:1fr}
+  .funnel{grid-template-columns:1fr 1fr}
+  .step:nth-child(2){border-right:0}
+  .step:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .rec{grid-template-columns:1fr}
+  .rec .meta{text-align:left}
+}
+@media (max-width:520px){ .funnel{grid-template-columns:1fr} .step{border-right:0;border-bottom:1px solid var(--line)} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--card:#fff;--fg:#111;--muted:#555;--line:#ddd;--shadow:none}
+  .hero{background:#fff;color:#111;border-bottom:3px solid #111}
+  .hero .lede,.pill{color:#333}.hk{background:#fff;border-color:#ccc}
+  .hk.main{background:#FFF3D1}
+  section{break-inside:avoid}
+  .chart-card,.kpi,.sum,.rec,.step,tr{break-inside:avoid}
+  details .inner{display:block}
+  thead th{background:#eee;color:#111}
+}
+
+.pieces{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.piece{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.piece img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;display:block;background:var(--surface)}
+.piece .pb{padding:14px 16px 16px;display:grid;gap:6px}
+.piece h3{font-size:.98rem;font-weight:700}
+.piece code{font-size:.74rem;color:var(--muted);word-break:break-all}
+.piece p{font-size:.84rem;color:var(--muted)}
+.piece.win{border-color:var(--accent);box-shadow:inset 0 4px 0 var(--accent)}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.tl{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;border-top:4px solid var(--accent)}
+.tl b{display:block;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tl h3{font-size:1rem;font-weight:700;margin-top:6px;line-height:1.3}
+.tl p{font-size:.86rem;color:var(--muted);margin-top:6px}
+.bars{display:grid;gap:8px}
+.br{display:grid;grid-template-columns:150px 1fr 70px;gap:12px;align-items:center;font-size:.86rem}
+.br .t{background:var(--surface);border-radius:6px;height:18px;overflow:hidden}
+.br .t i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.br .t i.f{background:var(--comparison)}
+@media (max-width:860px){.timeline{grid-template-columns:1fr 1fr}.br{grid-template-columns:110px 1fr 56px}}
+@media (max-width:520px){.timeline{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div style="background:#111"><div class="wrap" style="padding-top:14px;padding-bottom:14px"><a href="../index.html" style="color:#cfcfcf;font-size:13px;text-decoration:none">← Portal Mega Loto</a></div></div>
+<header class="hero"><div class="wrap">
+<div class="brandbar"><div class="logo"><i aria-hidden="true"></i>ADCOM · Megaloto</div>
+<div class="pills"><span class="pill">CRM + Meta + TikTok</span><span class="pill">Sorteo mié 11/11/2026</span><span class="pill">Datos al 13/11/2026</span></div></div>
+<div class="kicker">Caída del pozo · primera lectura</div>
+<h1>El día después de la caída se jugó un 36 % menos que un jueves normal</h1>
+<p class="lede">El pozo de Gs. 3.840 millones cayó en el sorteo del miércoles 11 de noviembre y explotó la Mega Chance con un ganador de +137 millones en Ciudad del Este. El jueves 12 es el único día completo después de la caída: comparamos ese día con los cuatro jueves anteriores, que también vienen después de un sorteo de miércoles.</p>
+<div class="hero-kpis">
+<div class="hk main"><b class="num">1.458</b><span>Jugadas el jueves 12/11</span><small>vs 2.268 de promedio en los 4 jueves anteriores</small></div>
+<div class="hk"><b class="num">Gs. 20,7 M</b><span>Venta del jueves</span><small>-38 % vs promedio (Gs. 33,2 M)</small></div>
+<div class="hk"><b class="num">879</b><span>Jugadas online (QR)</span><small>-40 % vs promedio</small></div>
+<div class="hk"><b class="num">119</b><span>Jugadas atribuidas a pauta</span><small>vs 163 el jueves 05/11 · -27 %</small></div>
+</div></div></header>
+<main>
+<section id="resumen"><div class="wrap">
+<div class="head-stack"><div class="eyebrow">En corto</div><h2>Lo que muestran los datos hasta hoy</h2></div>
+<div class="summary">
+<article class="sum main"><span class="tag fact">Dato</span><h3>El sorteo del 11/11 no tuvo un pico especial</h3><p>Con el pozo más alto del periodo (Gs. 3.840 M) el miércoles cerró en 3.984 jugadas: 9 % más que el miércoles 04/11, pero por debajo de los miércoles de octubre (5.670 con la promo 2x1 y 4.936 el 28/10).</p></article>
+<article class="sum"><span class="tag fact">Dato</span><h3>Después de la caída bajan las dos ventas: online y tradicional</h3><p>Jueves 12/11: online 879 (-40 % vs promedio) y puntos de venta 579 (-29 %). La mayor caída está en el QR sin UTM, que pasa de 667 a 228 jugadas frente al jueves anterior.</p></article>
+<article class="sum"><span class="tag inf">Lectura</span><h3>La pauta de pozo quedó apagada justo en la caída</h3><p>Al caer el pozo pausamos los 14 anuncios con el monto de Gs. 3.840 M. Los conjuntos de jugadores activos (v2 y lookalike) gastaron US$19 el jueves contra US$115 el jueves 05/11 y one-activos atribuyó 45 jugadas contra 100; de esas, 25 llegaron con Black Weeks.</p></article>
+<article class="sum"><span class="tag risk">Ojo</span><h3>Es un solo día: el domingo 15/11 es la prueba real</h3><p>El CRM del viernes 13/11 todavía viene parcial (46 jugadas cargadas), así que no entra en la comparación. El primer sorteo con el pozo reiniciado (domingo 15/11) dirá si la baja se sostiene.</p></article>
+</div>
+</div></section>
+<section id="diario" class="alt"><div class="wrap">
+<div class="head-split"><div><div class="eyebrow">Día a día</div><h2>Jugadas diarias del último mes</h2></div>
+<p class="support">Jugadas del CRM por día. Los picos son los días de sorteo (miércoles y domingo). En amarillo la venta online (QR) y en gris la venta tradicional.</p></div>
+<figure class="chart-card" style="margin:0"><div class="chart-meta"><div class="legend"><span><i style="background:var(--accent)"></i>Online (QR)</span><span><i style="background:#BDBDBD"></i>Tradicional</span></div><span>12/10 – 12/11/2026</span></div>
+<div class="scroll chart"><svg viewBox="0 0 960 320" role="img" aria-label="Jugadas diarias del 12 de octubre al 12 de noviembre"><rect x="243.8" y="20" width="197.8" height="254" fill="var(--accent-soft)" opacity=".6"/><text x="342.6" y="30" text-anchor="middle" class="ann">Promo 2x1</text><line x1="46" x2="950" y1="274.0" y2="274.0" class="grid"/><text x="38" y="278.0" text-anchor="end" class="axis">0</text><line x1="46" x2="950" y1="189.3" y2="189.3" class="grid"/><text x="38" y="193.3" text-anchor="end" class="axis">2.000</text><line x1="46" x2="950" y1="104.7" y2="104.7" class="grid"/><text x="38" y="108.7" text-anchor="end" class="axis">4.000</text><line x1="46" x2="950" y1="20.0" y2="20.0" class="grid"/><text x="38" y="24.0" text-anchor="end" class="axis">6.000</text><rect x="48.0" y="188.2" width="24.2" height="22.7" class="bar-base" opacity=".55"/><rect x="48.0" y="211.0" width="24.2" height="63.0" class="bar-tt" opacity=".55"/><text x="60.1" y="290" text-anchor="middle" class="axis">12/10</text><rect x="76.2" y="229.6" width="24.2" height="29.3" class="bar-base" opacity=".55"/><rect x="76.2" y="258.9" width="24.2" height="15.1" class="bar-tt" opacity=".55"/><rect x="104.5" y="118.6" width="24.2" height="89.5" class="bar-base" opacity=".55"/><rect x="104.5" y="208.0" width="24.2" height="66.0" class="bar-tt" opacity=".55"/><text x="116.6" y="113.6" text-anchor="middle" class="axis" style="font-size:10px">Mié</text><text x="116.6" y="290" text-anchor="middle" class="axis">14/10</text><rect x="132.8" y="173.4" width="24.2" height="29.9" class="bar-base" opacity=".55"/><rect x="132.8" y="203.3" width="24.2" height="70.7" class="bar-tt" opacity=".55"/><rect x="161.0" y="234.6" width="24.2" height="20.5" class="bar-base" opacity=".55"/><rect x="161.0" y="255.1" width="24.2" height="18.9" class="bar-tt" opacity=".55"/><text x="173.1" y="290" text-anchor="middle" class="axis">16/10</text><rect x="189.2" y="201.8" width="24.2" height="52.1" class="bar-base" opacity=".55"/><rect x="189.2" y="253.9" width="24.2" height="20.1" class="bar-tt" opacity=".55"/><rect x="217.5" y="93.1" width="24.2" height="88.5" class="bar-base" opacity=".55"/><rect x="217.5" y="181.6" width="24.2" height="92.4" class="bar-tt" opacity=".55"/><text x="229.6" y="88.1" text-anchor="middle" class="axis" style="font-size:10px">Dom</text><text x="229.6" y="290" text-anchor="middle" class="axis">18/10</text><rect x="245.8" y="184.6" width="24.2" height="19.7" class="bar-base" opacity=".55"/><rect x="245.8" y="204.3" width="24.2" height="69.7" class="bar-tt" opacity=".55"/><rect x="274.0" y="191.1" width="24.2" height="32.6" class="bar-base" opacity=".55"/><rect x="274.0" y="223.6" width="24.2" height="50.4" class="bar-tt" opacity=".55"/><text x="286.1" y="290" text-anchor="middle" class="axis">20/10</text><rect x="302.2" y="34.0" width="24.2" height="109.9" class="bar-base" opacity=".55"/><rect x="302.2" y="143.8" width="24.2" height="130.2" class="bar-tt" opacity=".55"/><text x="314.4" y="29.0" text-anchor="middle" class="axis" style="font-size:10px">Mié</text><rect x="330.5" y="190.4" width="24.2" height="23.8" class="bar-base" opacity=".55"/><rect x="330.5" y="214.2" width="24.2" height="59.8" class="bar-tt" opacity=".55"/><text x="342.6" y="290" text-anchor="middle" class="axis">22/10</text><rect x="358.8" y="173.6" width="24.2" height="44.2" class="bar-base" opacity=".55"/><rect x="358.8" y="217.7" width="24.2" height="56.3" class="bar-tt" opacity=".55"/><rect x="387.0" y="175.2" width="24.2" height="54.7" class="bar-base" opacity=".55"/><rect x="387.0" y="229.9" width="24.2" height="44.1" class="bar-tt" opacity=".55"/><text x="399.1" y="290" text-anchor="middle" class="axis">24/10</text><rect x="415.2" y="49.5" width="24.2" height="102.7" class="bar-base" opacity=".55"/><rect x="415.2" y="152.2" width="24.2" height="121.8" class="bar-tt" opacity=".55"/><text x="427.4" y="44.5" text-anchor="middle" class="axis" style="font-size:10px">Dom</text><rect x="443.5" y="221.9" width="24.2" height="16.5" class="bar-base" opacity=".55"/><rect x="443.5" y="238.4" width="24.2" height="35.6" class="bar-tt" opacity=".55"/><text x="455.6" y="290" text-anchor="middle" class="axis">26/10</text><rect x="471.8" y="234.8" width="24.2" height="24.6" class="bar-base" opacity=".55"/><rect x="471.8" y="259.4" width="24.2" height="14.6" class="bar-tt" opacity=".55"/><rect x="500.0" y="65.0" width="24.2" height="120.1" class="bar-base" opacity=".55"/><rect x="500.0" y="185.1" width="24.2" height="88.9" class="bar-tt" opacity=".55"/><text x="512.1" y="60.0" text-anchor="middle" class="axis" style="font-size:10px">Mié</text><text x="512.1" y="290" text-anchor="middle" class="axis">28/10</text><rect x="528.2" y="159.8" width="24.2" height="42.7" class="bar-base" opacity=".55"/><rect x="528.2" y="202.5" width="24.2" height="71.5" class="bar-tt" opacity=".55"/><rect x="556.5" y="158.4" width="24.2" height="49.0" class="bar-base" opacity=".55"/><rect x="556.5" y="207.4" width="24.2" height="66.6" class="bar-tt" opacity=".55"/><text x="568.6" y="290" text-anchor="middle" class="axis">30/10</text><rect x="584.8" y="161.5" width="24.2" height="72.2" class="bar-base" opacity=".55"/><rect x="584.8" y="233.7" width="24.2" height="40.3" class="bar-tt" opacity=".55"/><rect x="613.0" y="32.0" width="24.2" height="99.0" class="bar-base" opacity=".55"/><rect x="613.0" y="131.0" width="24.2" height="143.0" class="bar-tt" opacity=".55"/><text x="625.1" y="27.0" text-anchor="middle" class="axis" style="font-size:10px">Dom</text><text x="625.1" y="290" text-anchor="middle" class="axis">1/11</text><rect x="641.2" y="202.5" width="24.2" height="25.2" class="bar-base" opacity=".55"/><rect x="641.2" y="227.6" width="24.2" height="46.4" class="bar-tt" opacity=".55"/><rect x="669.5" y="240.3" width="24.2" height="22.2" class="bar-base" opacity=".55"/><rect x="669.5" y="262.6" width="24.2" height="11.4" class="bar-tt" opacity=".55"/><text x="681.6" y="290" text-anchor="middle" class="axis">3/11</text><rect x="697.8" y="119.6" width="24.2" height="94.1" class="bar-base" opacity=".55"/><rect x="697.8" y="213.7" width="24.2" height="60.3" class="bar-tt" opacity=".55"/><text x="709.9" y="114.6" text-anchor="middle" class="axis" style="font-size:10px">Mié</text><rect x="726.0" y="188.3" width="24.2" height="41.6" class="bar-base" opacity=".55"/><rect x="726.0" y="229.8" width="24.2" height="44.2" class="bar-tt" opacity=".55"/><text x="738.1" y="290" text-anchor="middle" class="axis">5/11</text><rect x="754.2" y="215.5" width="24.2" height="32.6" class="bar-base" opacity=".55"/><rect x="754.2" y="248.0" width="24.2" height="26.0" class="bar-tt" opacity=".55"/><rect x="782.5" y="209.0" width="24.2" height="42.3" class="bar-base" opacity=".55"/><rect x="782.5" y="251.3" width="24.2" height="22.7" class="bar-tt" opacity=".55"/><text x="794.6" y="290" text-anchor="middle" class="axis">7/11</text><rect x="810.8" y="96.7" width="24.2" height="86.4" class="bar-base" opacity=".55"/><rect x="810.8" y="183.1" width="24.2" height="90.9" class="bar-tt" opacity=".55"/><text x="822.9" y="91.7" text-anchor="middle" class="axis" style="font-size:10px">Dom</text><rect x="839.0" y="197.0" width="24.2" height="26.8" class="bar-base" opacity=".55"/><rect x="839.0" y="223.8" width="24.2" height="50.2" class="bar-tt" opacity=".55"/><text x="851.1" y="290" text-anchor="middle" class="axis">9/11</text><rect x="867.2" y="209.8" width="24.2" height="34.2" class="bar-base" opacity=".55"/><rect x="867.2" y="244.0" width="24.2" height="30.0" class="bar-tt" opacity=".55"/><rect x="895.5" y="105.3" width="24.2" height="92.5" class="bar-base" /><rect x="895.5" y="197.8" width="24.2" height="76.2" class="bar-tt" /><text x="907.6" y="100.3" text-anchor="middle" class="axis" style="font-size:10px">Mié</text><text x="907.6" y="87.3" text-anchor="middle" class="lbl">3.984</text><text x="907.6" y="290" text-anchor="middle" class="axis">11/11</text><rect x="923.8" y="212.3" width="24.2" height="24.5" class="bar-base" /><rect x="923.8" y="236.8" width="24.2" height="37.2" class="bar-tt" /><text x="935.9" y="194.3" text-anchor="middle" class="lbl">1.458</text><line x1="921.8" x2="921.8" y1="20" y2="274" class="baseline"/><text x="915.8" y="30" text-anchor="end" class="ann">Cae el pozo · sorteo 11/11</text></svg></div></figure>
+</div></section>
+<section id="sorteos"><div class="wrap">
+<div class="head-split"><div><div class="eyebrow">Sorteo y día siguiente</div><h2>Cada miércoles de sorteo y su jueves, semana a semana</h2></div>
+<p class="support">El jueves es el día que mejor muestra el efecto de un sorteo: compara el 12/11 (después de la caída) con los jueves de las cuatro semanas anteriores, cuando el pozo seguía acumulando.</p></div>
+<div class="table-wrap"><table><thead><tr><th>Sorteo del miércoles · pozo</th><th>Jugadas mié</th><th>Jugadas jue</th><th>Online jue</th><th>Tradicional jue</th><th>Venta jue (Gs. M)</th><th>Pauta jue (CRM)</th><th>Inversión jue</th></tr></thead><tbody><tr><td>14/10 · Gs. 3.750M <small style="color:var(--muted)">· Promo 2x1 arranca el 15/10</small></td><td class="num">3.672</td><td class="num">2.377</td><td class="num">1.670</td><td class="num">707</td><td class="num">34,9</td><td class="num">399</td><td class="num">US$579</td></tr><tr><td>21/10 · Gs. 3.770M <small style="color:var(--muted)">· Semana promo 2x1</small></td><td class="num">5.670</td><td class="num">1.975</td><td class="num">1.412</td><td class="num">563</td><td class="num">28,8</td><td class="num">486</td><td class="num">US$1.378</td></tr><tr><td>28/10 · Gs. 3.790M <small style="color:var(--muted)">· Promo 3x2 el 24/10</small></td><td class="num">4.936</td><td class="num">2.697</td><td class="num">1.688</td><td class="num">1.009</td><td class="num">39,9</td><td class="num">252</td><td class="num">US$1.268</td></tr><tr><td>04/11 · Gs. 3.810M</td><td class="num">3.647</td><td class="num">2.025</td><td class="num">1.043</td><td class="num">982</td><td class="num">29,3</td><td class="num">163</td><td class="num">US$533</td></tr><tr class="total"><td>11/11 · Gs. 3.840M <small style="color:var(--muted)">· Cae el pozo</small></td><td class="num">3.984</td><td class="num">1.458</td><td class="num">879</td><td class="num">579</td><td class="num">20,7</td><td class="num">119</td><td class="num">US$539</td></tr><tr><td>Promedio 4 jueves anteriores</td><td class="num">4.481</td><td class="num">2.268</td><td class="num">1.453</td><td class="num">815</td><td class="num">33,2</td><td class="num">325</td><td class="num">US$940</td></tr></tbody></table></div>
+<p class="note">Inversión = Meta + TikTok (TikTok convertido de COP a USD con TRM 3.500; arrancó el 02/11). Pauta (CRM) = jugadas con UTM de campañas ADCOM según HOMOLOGACION, incluida Black Weeks.</p>
+</div></section>
+<section id="canales" class="alt"><div class="wrap">
+<div class="head-split"><div><div class="eyebrow">Por canal</div><h2>Dónde se perdieron las jugadas del jueves</h2></div>
+<p class="support">Jugadas por canal de origen (UTM del CRM). SMS y WhatsApp subieron, lo que sugiere envíos del cliente ese día, y no alcanzaron a compensar la baja del QR sin UTM y de la venta tradicional.</p></div>
+<div class="table-wrap"><table><thead><tr><th>Canal</th><th>Promedio 4 jueves</th><th>Jue 05/11</th><th>Jue 12/11</th><th>vs 05/11</th><th>vs promedio</th></tr></thead><tbody><tr><td>Venta tradicional (puntos de venta)</td><td class="num">815</td><td class="num">982</td><td class="num">579</td><td class="num"><span class="delta down">−41%</span></td><td class="num"><span class="delta down">−29%</span></td></tr><tr><td>QR online sin UTM</td><td class="num">642</td><td class="num">667</td><td class="num">228</td><td class="num"><span class="delta down">−66%</span></td><td class="num"><span class="delta down">−64%</span></td></tr><tr><td>Pauta ADCOM (Meta + TikTok)</td><td class="num">325</td><td class="num">163</td><td class="num">119</td><td class="num"><span class="delta down">−27%</span></td><td class="num"><span class="delta down">−63%</span></td></tr><tr><td>SMS</td><td class="num">183</td><td class="num">51</td><td class="num">213</td><td class="num"><span class="delta up">+318%</span></td><td class="num"><span class="delta up">+16%</span></td></tr><tr><td>WhatsApp</td><td class="num">103</td><td class="num">56</td><td class="num">157</td><td class="num"><span class="delta up">+180%</span></td><td class="num"><span class="delta up">+52%</span></td></tr><tr><td>Redes orgánicas</td><td class="num">103</td><td class="num">63</td><td class="num">105</td><td class="num"><span class="delta up">+67%</span></td><td class="num"><span class="delta up">+2%</span></td></tr><tr><td>Banner del sitio</td><td class="num">86</td><td class="num">32</td><td class="num">43</td><td class="num"><span class="delta up">+34%</span></td><td class="num"><span class="delta down">−50%</span></td></tr><tr><td>Landing Mega Loto</td><td class="num">10</td><td class="num">11</td><td class="num">10</td><td class="num"><span class="delta down">−9%</span></td><td class="num"><span class="delta down">−2%</span></td></tr></tbody></table></div>
+</div></section>
+<section id="pauta"><div class="wrap">
+<div class="head-split"><div><div class="eyebrow">Pauta</div><h2>Gastamos parecido y la pauta trajo menos jugadas</h2></div>
+<p class="support">Jueves 05/11 vs jueves 12/11 por campaña. La inversión total fue US$533 y US$539 (Meta + TikTok); el costo por jugada atribuida pasó de US$3,27 a US$4,53.</p></div>
+<div class="table-wrap"><table><thead><tr><th>Campaña</th><th>Inversión 05/11</th><th>Jugadas 05/11</th><th>Inversión 12/11</th><th>Jugadas 12/11</th><th>Costo por jugada 12/11</th></tr></thead><tbody><tr><td>Jugadores activos · pozo y promos</td><td class="num">US$221</td><td class="num">100</td><td class="num">US$125</td><td class="num">45</td><td class="num">US$2,77</td></tr><tr><td>Jugadores en riesgo</td><td class="num">US$94</td><td class="num">25</td><td class="num">US$96</td><td class="num">34</td><td class="num">US$2,84</td></tr><tr><td>Jugadores nuevos</td><td class="num">US$45</td><td class="num">13</td><td class="num">US$47</td><td class="num">12</td><td class="num">US$3,93</td></tr><tr><td>Consideración · remarketing</td><td class="num">US$46</td><td class="num">24</td><td class="num">US$48</td><td class="num">12</td><td class="num">US$4,01</td></tr><tr><td>Tráfico al sitio</td><td class="num">US$23</td><td class="num">1</td><td class="num">US$25</td><td class="num">1</td><td class="num">US$25,27</td></tr><tr><td>TikTok · conversión</td><td class="num">US$47</td><td class="num">0</td><td class="num">US$140</td><td class="num">14</td><td class="num">US$10,01</td></tr></tbody></table></div>
+<div class="callout"><h3>Meta no ve la misma caída que el CRM</h3><p>El píxel de Meta contó 195 compras el jueves 12/11, más que el jueves 05/11 (172). El píxel cuenta toda compra de quien vio o tocó un anuncio, aunque haya entrado por otro camino; el CRM solo atribuye las que llegan con UTM de la campaña. Para medir el negocio usamos el CRM.</p></div>
+<p class="note">One-activos el 12/11: US$106 en el conjunto de promos (Black Weeks, 25 jugadas) y US$19 en v2 y lookalike, que quedaron sin anuncios activos tras pausar los del pozo de Gs. 3.840 M. TikTok conversión trajo 14 jugadas por US$140.</p>
+</div></section>
+<section id="acciones" class="alt"><div class="wrap">
+<div class="head-stack"><div class="eyebrow">Qué hacemos</div><h2>Próximos pasos</h2></div>
+<div class="recs">
+<article class="rec main"><div class="prio">1</div><div><h3>Cargar el pozo nuevo apenas llegue el material</h3><p>v2 y lookalike tienen US$106 por día asignados y hoy no entregan. Es la pauta que más jugadas atribuidas trae en semanas normales.</p></div><div class="meta"><strong>Bloqueado</strong>Material del cliente</div></article>
+<article class="rec main"><div class="prio">2</div><div><h3>Ganador de +137 M al aire en tope de funnel</h3><p>Desde el 13/11, tres piezas del ganador de la Mega Chance (feed y story, foto y video Michelin) en la campaña de interacción, junto al testimonio de Don Ramón, para sostener el interés mientras el pozo vuelve a crecer.</p></div><div class="meta"><strong>Hecho</strong>13/11</div></article>
+<article class="rec"><div class="prio">3</div><div><h3>Repetir esta lectura después del domingo 15/11</h3><p>Comparar el primer domingo con pozo reiniciado contra los domingos anteriores (4.188 jugadas el 08/11) y ver si la venta online se recupera con Black Weeks y el pozo nuevo.</p></div><div class="meta"><strong>Lunes 16/11</strong>CRM completo</div></article>
+</div>
+</div></section>
+<section><div class="wrap">
+<details><summary>Cómo se calculó</summary><div class="inner"><dl class="method">
+<dt>Jugadas y venta</dt><dd>Pestaña MEGALOTO-CRM de «[Megaloto] Fuente de datos», columna jugadas e importe total, por fecha de jugada.</dd>
+<dt>Canal</dt><dd>Según la UTM del CRM. Pauta ADCOM = UTM homologadas a campañas de Meta y TikTok (incluye PAGO_ONLINE-META-BLACK_WEEKS).</dd>
+<dt>Inversión</dt><dd>API de Meta (Megaloto 4) y TikTok (ADCOM - Megaloto, COP ÷ 3.500).</dd>
+<dt>Periodo</dt><dd>12/10 al 12/11/2026. El 13/11 queda fuera porque el CRM aún no está completo.</dd>
+</dl></div></details>
+</div></section>
+</main>
+<footer><div class="wrap"><span>ADCOM · Mega Loto · informe del 13/11/2026</span><span>Fuente: CRM Mega Loto, Meta Ads, TikTok Ads</span></div></footer>
+</body></html>
