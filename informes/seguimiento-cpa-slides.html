@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mega Loto · CPA por medio y etapa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--y:#FFC000;--ink:#111;--soft:#555;--muted:#888;--ok:#1E7B24;--ok-bg:#E4F5E5;--warn:#8A6400;--warn-bg:#FFF1C2;--bad:#B3261E;--bad-bg:#FBE3E0;
+--meta:#2a78d6;--tiktok:#111;--conv:#eda100;--cons:#2a78d6;--awa:#9AA5B1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#2A2A2A;font-family:'Poppins',sans-serif;padding:20px 16px 60px;color:var(--ink)}
+.bar{max-width:1180px;margin:0 auto 18px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;color:#ddd;font-size:12px}
+.bar a{color:#ddd;text-decoration:none}
+.bar select,.bar button{font-family:inherit;font-size:12px;border-radius:8px;border:1px solid #555;background:#3a3a3a;color:#fff;padding:5px 10px;cursor:pointer}
+.bar .sp{flex:1}
+.deck{max-width:1180px;margin:0 auto}
+.slide{position:relative;width:100%;aspect-ratio:16/9;background:#F2F2F2;border-radius:10px;margin:0 auto 26px;overflow:hidden;box-shadow:0 6px 26px rgba(0,0,0,.35);container-type:inline-size}
+.top{position:absolute;top:1.4cqw;left:1.8cqw;right:1.8cqw;display:flex;align-items:center;gap:.9cqw;font-size:.85cqw;color:#333}
+.top img{width:2.6cqw;height:2.6cqw;border-radius:50%}
+.top span{border-left:1px solid #999;padding-left:.9cqw}
+.top .r{margin-left:auto;color:var(--muted)}
+.card{position:absolute;top:5.2cqw;left:3.6cqw;right:3.6cqw;bottom:3.2cqw;background:#fff;border-radius:2.4cqw;padding:1.8cqw 2.4cqw 1.6cqw;display:flex;flex-direction:column;gap:1.2cqw}
+.h{display:flex;align-items:center;gap:1.8cqw}
+.pill{background:var(--y);border-radius:3cqw;padding:.5cqw 2.2cqw;font-weight:900;font-size:2.2cqw;letter-spacing:-.03em;line-height:1.05;white-space:nowrap}
+.hs{font-size:1.1cqw;line-height:1.35;color:#333}
+.hs b{font-weight:700;color:var(--ink)}
+.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:2cqw;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:1cqw;min-height:0}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:.8cqw}
+.tile{background:#F7F7F5;border-radius:.8cqw;padding:.8cqw .6cqw;text-align:center;border-bottom:.35cqw solid var(--y)}
+.tile .v{font-size:1.9cqw;font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.tile .l{font-size:.8cqw;color:var(--soft);margin-top:.2cqw}
+.tile.ok{border-color:var(--ok)}.tile.warn{border-color:#E0A800}.tile.bad{border-color:var(--bad)}
+table{width:100%;border-collapse:separate;border-spacing:.15cqw;font-size:.9cqw}
+th{background:var(--y);font-weight:600;padding:.4cqw .5cqw;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+td{background:#F1F1EF;padding:.4cqw .5cqw;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.tt td{background:var(--ink);color:#fff;font-weight:700}
+.chip{display:inline-block;border-radius:2cqw;padding:.05cqw .6cqw;font-weight:700}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.warn{background:var(--warn-bg);color:var(--warn)}.chip.bad{background:var(--bad-bg);color:var(--bad)}
+.m{color:var(--muted);font-size:.75cqw}
+.up{color:var(--bad);font-weight:600}.down{color:var(--ok);font-weight:600}
+.chartbox{position:relative;flex:1;min-height:0}
+.ct{font-size:1cqw;font-weight:600}
+.cs{font-size:.78cqw;color:var(--muted);margin-top:-.6cqw}
+.ins{background:var(--ink);color:#eee;border-radius:1cqw;padding:1cqw 1.4cqw;font-size:.95cqw;line-height:1.5;font-weight:300}
+.ins b{color:var(--y);font-weight:600}
+.ins li{margin-left:1.1cqw}
+.foot{position:absolute;bottom:1cqw;left:3.6cqw;right:3.6cqw;font-size:.7cqw;color:var(--muted)}
+.cover{background:var(--ink);color:#fff}
+.cover .in{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 7cqw}
+.cover img{width:6cqw;height:6cqw;border-radius:50%;margin-bottom:2cqw}
+.cover h1{font-size:5cqw;font-weight:800;letter-spacing:-.03em;line-height:1}
+.cover h1 em{color:var(--y);font-style:italic}
+.cover p{font-size:1.6cqw;color:#ccc;margin-top:1.4cqw;font-weight:300}
+.cover .k{display:flex;gap:4cqw;margin-top:3cqw}
+.cover .k div b{display:block;font-size:3cqw;font-weight:800;color:var(--y)}
+.cover .k div{font-size:1cqw;color:#bbb}
+#estado{color:#ddd;font-size:13px;text-align:center}
+@media print{
+  @page{size:1280px 720px;margin:0}
+  body{background:#fff;padding:0}
+  .bar,#estado{display:none}
+  .deck{max-width:none}
+  .slide{width:1280px;border-radius:0;box-shadow:none;margin:0;page-break-after:always;break-after:page}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <a href="seguimiento-cpa.html">← Seguimiento CPA</a>
+  <label>Periodo <select id="per"></select></label>
+  <span class="sp"></span>
+  <button onclick="window.print()">Imprimir / PDF</button>
+</div>
+<div id="estado">Cargando datos…</div>
+<div class="deck" id="deck"></div>
+
+<script>
+const GOAL = 2.75;
+const GOAL_ETAPA = {'Conversión': 2.59, 'Consideración': 0.59};
+const MESL = ['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MES = ['','ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const $ = id => document.getElementById(id);
+const fU = (n,d=2) => isFinite(n) && n ? 'US$' + n.toLocaleString('es-PY',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
+const fN = n => isFinite(n) ? Math.round(n).toLocaleString('es-PY') : '0';
+const fP = n => isFinite(n) ? Math.round(n*100) + ' %' : '—';
+const div = (a,b) => b ? a/b : NaN;
+const fD = s => { const p = s.split('-'); return `${+p[2]} ${MES[+p[1]]}` };
+const addDays = (s,n) => new Date(Date.parse(s + 'T12:00:00Z') + n*864e5).toISOString().slice(0,10);
+const cls = (v,g) => !isFinite(v) || !g ? '' : v <= g ? 'ok' : v <= g*1.2 ? 'warn' : 'bad';
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const ORD_E = ['Conversión','Consideración','Awareness'];
+const COL_M = {Meta:'--meta', TikTok:'--tiktok', Landing:'--awa'}, COL_E = {'Conversión':'--conv','Consideración':'--cons','Awareness':'--awa'};
+let D, charts = [];
+
+function sum(a, b, key){       // agrupa por medio o etapa en [a,b]; también últimos 7 días y 7 previos
+  const g = {}, w1 = addDays(b,-6), w0a = addDays(b,-13), w0b = addDays(b,-7);
+  for(const [d, ci, i, j] of D.filas){
+    const c = D.campanas[ci], k = key ? c[key] : 'T', x = g[k] ||= {inv:0,jug:0,i1:0,j1:0,i0:0,j0:0};
+    if(d>=a && d<=b){ x.inv+=i; x.jug+=j }
+    if(d>=w1 && d<=b){ x.i1+=i; x.j1+=j }
+    if(d>=w0a && d<=w0b){ x.i0+=i; x.j0+=j } }
+  return g }
+function cross(a, b){ const g = {};
+  for(const [d, ci, i, j] of D.filas){ if(d<a || d>b) continue; const c = D.campanas[ci];
+    const x = (g[c.medio] ||= {})[c.etapa] ||= {inv:0,jug:0}; x.inv+=i; x.jug+=j }
+  return g }
+function daily7(a, b, filt){   // CPA de 7 días móviles por día
+  const by = {}; for(const [d, ci, i, j] of D.filas){ if(!filt(D.campanas[ci])) continue; const x = by[d] ||= [0,0]; x[0]+=i; x[1]+=j }
+  const out = []; for(let d=a; d<=b; d=addDays(d,1)){ let i=0,j=0; for(let k=0;k<7;k++){ const x = by[addDays(d,-k)]; if(x){ i+=x[0]; j+=x[1] } } out.push(j ? +(i/j).toFixed(2) : null) }
+  return out }
+const delta = (n,o) => { if(!(n>0) || !(o>0)) return '—'; const p = (n/o-1)*100; return `<span class="${p>0?'up':'down'}">${p>0?'+':''}${p.toFixed(0)} %</span>` };
+const topBar = (per) => `<div class="top"><img src="../assets/logo-adcom.jpg" alt="ADCOM"><b>MEGA LOTO</b><span>Seguimiento CPA · ${per}</span><span class="r">Jugadas de pauta del CRM · inversión Meta + TikTok</span></div>`;
+
+function build(){
+  charts.forEach(c => c.destroy()); charts = [];
+  const [a, b] = $('per').value.split('|'), labels = []; for(let d=a; d<=b; d=addDays(d,1)) labels.push(fD(d));
+  const per = `${fD(a)} – ${fD(b)} ${b.slice(0,4)}`, mesTxt = a.slice(8)==='01' ? `${MESL[+a.slice(5,7)]} ${a.slice(0,4)}` : per;
+  const T = sum(a,b,null).T, M = sum(a,b,'medio'), E = sum(a,b,'etapa'), X = cross(a,b);
+  const cpaT = div(T.inv,T.jug);
+  const meds = Object.entries(M).filter(([,x]) => x.inv || x.jug).sort((p,q) => q[1].inv - p[1].inv);
+  const ets = ORD_E.filter(e => E[e] && (E[e].inv || E[e].jug)).map(e => [e, E[e]]);
+  const otros = Object.entries(E).filter(([k,x]) => !ORD_E.includes(k) && x.jug).reduce((s,[,x]) => s + x.jug, 0);
+
+  // ── insights automáticos
+  const mm = meds.filter(([k]) => k !== 'Landing');
+  const caro = mm.slice().sort((p,q) => div(q[1].inv,q[1].jug) - div(p[1].inv,p[1].jug))[0];
+  const insM = mm.map(([k,x]) => `<li><b>${k}</b>: ${fP(div(x.inv,T.inv))} de la inversión y ${fP(div(x.jug,T.jug))} de las jugadas · CPA ${fU(div(x.inv,x.jug))} (7 días ${fU(div(x.i1,x.j1))}, ${delta(div(x.i1,x.j1), div(x.i0,x.j0)).replace(/<[^>]+>/g,'')} vs 7 previos)</li>`).join('');
+  const peor = [...mm.flatMap(([m]) => ['Conversión','Consideración'].map(e => [m, e, X[m]?.[e]]))].filter(r => r[2] && r[2].jug > 20)
+    .map(r => [...r, div(r[2].inv, r[2].jug) / GOAL_ETAPA[r[1]]]).sort((p,q) => q[3]-p[3])[0];
+  const insE = ets.filter(([e]) => e !== 'Awareness').map(([e,x]) => { const v = div(x.inv,x.jug), g = GOAL_ETAPA[e];
+      return `<li><b>${e}</b>: CPA ${fU(v)} contra ${fU(g)} ${v<=g ? '(en objetivo)' : `(${Math.round((v/g-1)*100)} % arriba)`} · ${fP(div(x.jug,T.jug))} de las jugadas</li>` }).join('') +
+    (E.Awareness ? `<li><b>Awareness</b>: ${fP(div(E.Awareness.inv,T.inv))} de la inversión; no busca jugadas, pero entra en el CPA total.</li>` : '') +
+    (peor ? `<li>Lo que más se aleja del objetivo: <b>${peor[1].toLowerCase()} en ${peor[0]}</b> (${fU(div(peor[2].inv,peor[2].jug))}).</li>` : '');
+
+  const tile = (v,l,c='') => `<div class="tile ${c}"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+  const row = (k,x,g,aw) => { const v = div(x.inv,x.jug);
+    return `<tr><td><b>${k}</b>${g ? ` <span class="m">obj. ${fU(g)}</span>` : ''}</td><td>${fU(x.inv,0)}</td><td>${fP(div(x.inv,T.inv))}</td><td>${fN(x.jug)}</td><td>${fP(div(x.jug,T.jug))}</td>
+      <td>${aw ? `<span class="m">${fU(v)}</span>` : g ? `<span class="chip ${cls(v,g)}">${fU(v)}</span>` : fU(v)}</td><td>${aw ? '—' : delta(div(x.i1,x.j1), div(x.i0,x.j0))}</td></tr>` };
+  const head = t => `<tr><th>${t}</th><th>Inversión</th><th>% inv.</th><th>Jugadas</th><th>% jug.</th><th>CPA</th><th>7 días</th></tr>`;
+  const tot = `<tr class="tt"><td>Total</td><td>${fU(T.inv,0)}</td><td>100 %</td><td>${fN(T.jug)}</td><td>100 %</td><td>${fU(cpaT)}</td><td>${delta(div(T.i1,T.j1), div(T.i0,T.j0)).replace(/class="(up|down)"/,'')}</td></tr>`;
+  const cruceRows = mm.map(([m]) => `<tr><td><b>${m}</b></td>${['Conversión','Consideración','Awareness'].map(e => { const y = X[m]?.[e]; if(!y || !(y.inv||y.jug)) return '<td>—</td>';
+      const v = div(y.inv,y.jug); return `<td>${e==='Awareness' ? `<span class="m">${fU(v)}</span>` : `<span class="chip ${cls(v,GOAL_ETAPA[e])}">${fU(v)}</span>`} <span class="m">${fN(y.jug)} jug</span></td>` }).join('')}</tr>`).join('');
+
+  $('deck').innerHTML = `
+  <section class="slide cover"><div class="in"><img src="../assets/logo-adcom.jpg" alt="ADCOM">
+    <h1>Seguimiento <em>CPA</em><br>por medio y etapa</h1><p>Mega Loto · ${mesTxt} · datos al ${fD(b)}</p>
+    <div class="k"><div><b>${fU(T.inv,0)}</b>inversión</div><div><b>${fN(T.jug)}</b>jugadas de pauta</div><div><b>${fU(cpaT)}</b>CPA total · objetivo ${fU(GOAL)}</div></div></div></section>
+
+  <section class="slide">${topBar(per)}<div class="card">
+    <div class="h"><div class="pill">POR MEDIO</div><div class="hs">Inversión, jugadas de pauta del CRM y <b>CPA de cada medio</b>. Objetivo total del flow: <b>${fU(GOAL)}</b>.</div></div>
+    <div class="cols">
+      <div class="col">
+        <div class="tiles">${mm.slice(0,2).map(([k,x]) => tile(fU(div(x.inv,x.jug)), `CPA ${k}`)).join('')}${tile(fU(cpaT), 'CPA total', cls(cpaT,GOAL))}</div>
+        <table>${head('Medio')}${meds.map(([k,x]) => row(k,x,null,false)).join('')}${tot}</table>
+        <div class="ins"><ul>${insM}${caro ? `<li>El medio más caro por jugada es <b>${caro[0]}</b>.</li>` : ''}</ul></div>
+      </div>
+      <div class="col"><div class="ct">CPA de 7 días por medio</div><div class="cs">Línea punteada: objetivo total ${fU(GOAL)}</div><div class="chartbox"><canvas id="chM"></canvas></div>
+        <div class="ct">Peso de cada medio</div><div class="chartbox" style="flex:.55"><canvas id="chM2"></canvas></div></div>
+    </div></div>
+    <div class="foot">CPA = inversión ÷ jugadas de pauta del CRM (UTM con ADCOM o PAGO_ONLINE, sin SMS, WhatsApp, banner ni orgánico). TikTok en COP ÷ 3.500. «7 días» = últimos 7 días contra los 7 anteriores.</div></section>
+
+  <section class="slide">${topBar(per)}<div class="card">
+    <div class="h"><div class="pill">POR ETAPA</div><div class="hs">Etapas según el flow. Objetivos: <b>conversión ${fU(GOAL_ETAPA['Conversión'])}</b> y <b>consideración ${fU(GOAL_ETAPA['Consideración'])}</b>.</div></div>
+    <div class="cols">
+      <div class="col">
+        <div class="tiles">${['Conversión','Consideración'].map(e => { const x = E[e]; const v = x ? div(x.inv,x.jug) : NaN; return tile(fU(v), `CPA ${e.toLowerCase()}`, cls(v,GOAL_ETAPA[e])) }).join('')}${tile(fU(cpaT), 'CPA total', cls(cpaT,GOAL))}</div>
+        <table>${head('Etapa')}${ets.map(([e,x]) => row(e,x,GOAL_ETAPA[e], e==='Awareness')).join('')}${tot}</table>
+        <table><tr><th>Medio × etapa</th><th>Conversión</th><th>Consideración</th><th>Awareness</th></tr>${cruceRows}</table>
+        <div class="ins"><ul>${insE}</ul></div>
+      </div>
+      <div class="col"><div class="ct">CPA de 7 días por etapa</div><div class="cs">Líneas punteadas: objetivo de cada etapa</div><div class="chartbox"><canvas id="chE"></canvas></div>
+        <div class="ct">Peso de cada etapa</div><div class="chartbox" style="flex:.55"><canvas id="chE2"></canvas></div></div>
+    </div></div>
+    <div class="foot">${otros ? `${fN(otros)} jugadas sin campaña (landing en días sin campaña de tráfico o UTM sin homologar) entran en el total pero no en una etapa. ` : ''}Awareness no se evalúa por CPA.</div></section>`;
+
+  const base = {maintainAspectRatio:false, animation:false, interaction:{mode:'index',intersect:false},
+    plugins:{legend:{position:'top', align:'end', labels:{boxWidth:10, boxHeight:10, font:{size:10, family:'Poppins'}}}},
+    scales:{x:{grid:{display:false}, ticks:{maxTicksLimit:8, maxRotation:0, font:{size:9}}}, y:{beginAtZero:true, grid:{color:'#EEE'}, ticks:{font:{size:9}, callback:v=>'US$'+v}}}};
+  const line = (lab, data, col, dash) => ({label:lab, data, borderColor:col, backgroundColor:col, pointRadius:0, borderWidth:dash?1.2:2.2, borderDash:dash?[5,4]:[], tension:.3});
+  charts.push(new Chart($('chM'), {type:'line', data:{labels, datasets:[...mm.map(([k]) => line(k, daily7(a,b,c=>c.medio===k), css(COL_M[k]||'--awa'))), line('Total', daily7(a,b,()=>true), css('--conv')), {...line('Objetivo', labels.map(()=>GOAL), css('--bad'), true)}]}, options:base}));
+  const share = (rows, colOf) => ({type:'bar', data:{labels:['Inversión','Jugadas'], datasets:rows.map(([k,x]) => ({label:k, data:[div(x.inv,T.inv)*100, div(x.jug,T.jug)*100], backgroundColor:css(colOf(k)||'--awa'), borderRadius:2}))},
+    options:{...base, indexAxis:'y', scales:{x:{stacked:true, max:100, grid:{display:false}, ticks:{font:{size:9}, callback:v=>v+' %'}}, y:{stacked:true, grid:{display:false}, ticks:{font:{size:10}}}},
+      plugins:{...base.plugins, tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${Math.round(c.parsed.x)} %`}}}}});
+  charts.push(new Chart($('chM2'), share(mm, k => COL_M[k])));
+  charts.push(new Chart($('chE'), {type:'line', data:{labels, datasets:[
+    line('Conversión', daily7(a,b,c=>c.etapa==='Conversión'), css('--conv')), line('Consideración', daily7(a,b,c=>c.etapa==='Consideración'), css('--cons')),
+    line('Obj. conversión', labels.map(()=>GOAL_ETAPA['Conversión']), css('--conv'), true), line('Obj. consideración', labels.map(()=>GOAL_ETAPA['Consideración']), css('--cons'), true)]}, options:base}));
+  charts.push(new Chart($('chE2'), share(ets, k => COL_E[k])));
+}
+
+fetch('../data/seguimiento-cpa.json', {cache:'no-store'}).then(r => r.json()).then(j => {
+  D = j; $('estado').remove();
+  const conInv = [...new Set(D.filas.filter(f => f[2] > 0).map(f => f[0]))].sort(), full = conInv[conInv.length-1];
+  const opts = []; let m = full.slice(0,7);
+  while(m >= D.desde.slice(0,7)){ const a = m + '-01', y = +m.slice(0,4), mo = +m.slice(5,7), last = new Date(Date.UTC(y, mo, 0)).toISOString().slice(0,10);
+    opts.push([`${a}|${last < full ? last : full}`, `${MESL[mo]} ${y}${last < full ? '' : ` (al ${fD(full)})`}`]); m = new Date(Date.UTC(y, mo-2, 1)).toISOString().slice(0,7) }
+  opts.splice(1, 0, [`${addDays(full,-6)}|${full}`, `Últimos 7 días (al ${fD(full)})`]);
+  $('per').innerHTML = opts.map(([v,t]) => `<option value="${v}">${t}</option>`).join('');
+  $('per').onchange = build; build();
+}).catch(e => { $('estado').textContent = 'No se pudieron cargar los datos: ' + e });
+</script>
+</body>
+</html>
