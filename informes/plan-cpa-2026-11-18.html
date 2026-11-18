@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mega Loto · Plan para bajar el CPA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#F5F5F5;--ink:#1A1A1A;--t2:#333;--soft:#666;--muted:#999;--line:#E0E0E0;--accent:#FFC000;
+--s-tot:#1A1A1A;--s-conv:#eda100;--s-cons:#2a78d6;--s-goal:#C62828;
+--ok:#1E7B24;--ok-bg:#E4F5E5;--warn:#8A6400;--warn-bg:#FFF1C2;--bad:#B3261E;--bad-bg:#FBE3E0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:'Poppins',sans-serif;color:var(--t2);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+.back{display:inline-block;font-size:12px;color:var(--soft);text-decoration:none;margin-bottom:12px}
+header.bar{background:var(--ink);border-radius:16px;display:flex;align-items:center;gap:16px;padding:14px 22px}
+header.bar img{width:46px;height:46px;border-radius:50%}
+header.bar h1{margin:0;font-size:19px;font-weight:400;color:#fff;line-height:1.25}
+header.bar h1 b{font-weight:700;font-style:italic}
+header.bar span{display:block;font-size:11.5px;color:var(--accent);font-weight:300;margin-top:2px}
+.subtitle{font-size:13px;color:var(--soft);font-weight:300;margin:14px 2px 6px;line-height:1.65}
+.subtitle b{color:var(--ink);font-weight:600}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+nav.toc a{font-size:11px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:99px;padding:4px 12px;text-decoration:none}
+h2.section-title{font-size:15px;font-weight:600;color:var(--ink);margin:38px 2px 12px;display:flex;align-items:center;gap:8px}
+h2.section-title::before{content:"";width:8px;height:8px;background:var(--accent);border-radius:2px}
+.note{font-size:11.5px;color:var(--soft);font-weight:300;margin:8px 2px 0;line-height:1.6}
+.kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 10px 14px;text-align:center;position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;bottom:0;left:0;right:0;height:5px;background:var(--accent)}
+.kpi.ok::after{background:var(--ok)}.kpi.bad::after{background:var(--bad)}
+.kpi .val{font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.kpi .lbl{font-size:10.5px;font-weight:600;color:var(--t2);margin-top:5px}
+.kpi .sub{font-size:9.5px;color:var(--muted);margin-top:3px;font-weight:300;line-height:1.4}
+.highlights{background:var(--ink);color:#eee;border-radius:14px;padding:16px 20px;margin-top:14px;font-size:12.5px;line-height:1.75;font-weight:300}
+.highlights b{color:var(--accent);font-weight:600}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 18px 14px;margin-top:16px}
+.panel h3{margin:0 0 2px;font-size:13.5px;font-weight:600;color:var(--ink)}
+.panel .cap{font-size:11px;color:var(--muted);font-weight:300;margin-bottom:8px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:11px;color:var(--soft);margin-bottom:8px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.legend i.dash{background:repeating-linear-gradient(90deg,var(--s-goal) 0 4px,transparent 4px 7px)}
+.chart{position:relative;height:260px}
+.tbl-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--ink);color:#fff;font-weight:500;font-size:11px;text-align:left;padding:10px 12px;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid #F0F0F0;vertical-align:top;line-height:1.5}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td b{color:var(--ink);font-weight:600}
+.camp{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ink)}
+.muted{color:var(--muted);font-size:10.5px}
+.pill{display:inline-block;font-size:10.5px;font-weight:600;border-radius:99px;padding:2px 9px;white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.done{background:var(--ink);color:var(--accent)}
+.up{color:var(--bad);font-weight:600}.down{color:var(--ok);font-weight:600}
+.steps{display:grid;gap:12px}
+.step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;grid-template-columns:44px 1fr;gap:14px}
+.step .num{width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--ink);font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--ink);color:var(--accent)}
+.step h4{margin:0 0 4px;font-size:14px;color:var(--ink);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.step p{margin:0;font-size:12.5px;line-height:1.6}
+.step ul{margin:6px 0 0;padding-left:18px;font-size:12px;line-height:1.6}
+.foot{font-size:11px;color:var(--muted);text-align:center;margin-top:30px;font-style:italic}
+@media (max-width:800px){.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.wrap{padding:20px 16px 48px}.step{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="../index.html">← Portal Mega Loto</a>
+<header class="bar"><img src="../assets/logo-adcom.jpg" alt="ADCOM"><div><h1>MEGA LOTO · <b>Plan para bajar el CPA</b></h1><span>Diagnóstico Megaloto 3 vs Megaloto 4 y acciones · 18 de noviembre de 2026</span></div></header>
+<p class="subtitle">En septiembre el CPA de pauta llegó a <b>US$1,23</b>, el mejor del año. Con el paso a Megaloto 4 (octubre) subió a <b>US$2,06</b> y en noviembre va en <b>US$2,11</b>. Comparamos la configuración de Megaloto 3 en septiembre con la de Megaloto 4 en noviembre para encontrar qué se perdió, aplicamos los primeros ajustes el 18/11 y dejamos el resto del plan con responsables y fechas. CPA = inversión ÷ jugadas de pauta del CRM.</p>
+<nav class="toc"><a href="#resumen">Resumen</a><a href="#donde">Dónde subió el costo</a><a href="#diferencias">Qué cambió de M3 a M4</a><a href="#hecho">Acciones del 18/11</a><a href="#siguiente">Próximos pasos</a><a href="#medicion">Cómo lo medimos</a></nav>
+
+<h2 class="section-title" id="resumen">Resumen</h2>
+<div class="kpi-row">
+  <div class="kpi ok"><div class="val">US$1,23</div><div class="lbl">CPA septiembre</div><div class="sub">Megaloto 3 · 15.895 jugadas</div></div>
+  <div class="kpi bad"><div class="val">US$2,11</div><div class="lbl">CPA noviembre</div><div class="sub">Megaloto 4 · 1–17 nov · 4.381 jugadas</div></div>
+  <div class="kpi"><div class="val">US$2,75</div><div class="lbl">Objetivo del flow</div><div class="sub">noviembre: US$17.200 / 6.261 compras</div></div>
+  <div class="kpi"><div class="val">US$1,50–1,70</div><div class="lbl">Meta del plan</div><div class="sub">en 2–3 semanas, con los pasos 1 a 6</div></div>
+</div>
+<div class="highlights">El costo subió sobre todo en <b>one-activos</b>: en septiembre traía 288 jugadas por día a US$0,60 y en noviembre 88 por día a US$1,74. Las causas principales son un <b>píxel sin historial</b>, <b>públicos cerrados con frecuencia muy alta</b> (riesgo 11,9 en 17 días), <b>menos promo 2x1</b> y <b>públicos de Megaloto 3 que no se habían recreado</b>. El 18/11 aplicamos tres ajustes (ubicaciones, Advantage+ y públicos); el más importante que falta es recuperar el píxel con historial.</div>
+
+<div class="panel">
+  <h3>CPA por mes en 2026</h3>
+  <div class="cap">Total, conversión y consideración. Consideración de enero, febrero y mayo queda fuera del gráfico (US$51, US$26 y US$5,93) porque esas campañas casi no tuvieron jugadas.</div>
+  <div class="legend"><span><i style="background:var(--s-tot)"></i>Total</span><span><i style="background:var(--s-conv)"></i>Conversión</span><span><i style="background:var(--s-cons)"></i>Consideración</span><span><i class="dash"></i>Objetivo total (nov)</span></div>
+  <div class="chart"><canvas id="cMes" role="img" aria-label="CPA mensual 2026"></canvas></div>
+</div>
+
+<h2 class="section-title" id="donde">Dónde subió el costo</h2>
+<div class="tbl-wrap"><table>
+<thead><tr><th>Campaña</th><th class="n">Septiembre (M3)</th><th class="n">Noviembre 1–17 (M4)</th><th class="n">Jugadas por día</th><th class="n">CPA</th></tr></thead>
+<tbody>
+<tr><td><span class="camp">one-activos</span> <span class="muted">(incluye promo 2x1 y lookalike)</span></td><td class="n">US$5.175 · 8.637 jug · <b>US$0,60</b></td><td class="n">US$2.597 · 1.489 jug · <b>US$1,74</b></td><td class="n">288 → 88</td><td class="n"><span class="up">+190 %</span></td></tr>
+<tr><td><span class="camp">riesgo</span></td><td class="n">US$4.024 · 2.914 jug · <b>US$1,38</b></td><td class="n">US$1.658 · 930 jug · <b>US$1,78</b></td><td class="n">97 → 55</td><td class="n"><span class="up">+29 %</span></td></tr>
+<tr><td><span class="camp">nuevos</span> <span class="muted">(en sep usaba la UTM de one-activos)</span></td><td class="n">US$2.289 · — </td><td class="n">US$812 · 506 jug · <b>US$1,61</b></td><td class="n">— → 30</td><td class="n">—</td></tr>
+<tr><td><span class="camp">cons-meta</span></td><td class="n">US$3.261 · 2.921 jug · <b>US$1,12</b></td><td class="n">US$735 · 854 jug · <b>US$0,86</b></td><td class="n">97 → 50</td><td class="n"><span class="down">−23 %</span></td></tr>
+<tr><td><span class="camp">trafico-awa</span> (Meta)</td><td class="n">US$1.196 · 275 jug · <b>US$4,35</b></td><td class="n">US$458 · 58 jug · <b>US$7,90</b></td><td class="n">9 → 3</td><td class="n"><span class="up">+82 %</span></td></tr>
+<tr><td><span class="camp">TikTok cons-tiktok</span></td><td class="n">US$2.430 · 595 jug · <b>US$4,08</b></td><td class="n">US$854 · 180 jug · <b>US$4,75</b></td><td class="n">20 → 11</td><td class="n"><span class="up">+16 %</span></td></tr>
+<tr><td><span class="camp">TikTok conversión</span></td><td class="n">—</td><td class="n">US$641 · 274 jug · <b>US$2,34</b></td><td class="n">— → 16</td><td class="n">—</td></tr>
+</tbody></table></div>
+<p class="note">One-activos y nuevos juntos: septiembre US$0,86 (US$7.464 / 8.637) contra noviembre US$1,71 (US$3.409 / 1.995). En septiembre la promo 2x1 por sí sola sumó 2.628 jugadas (UTM META-2X1). Jugadas de pauta del CRM: UTM con ADCOM o PAGO_ONLINE, sin SMS, WhatsApp, banner ni orgánico; las de la landing se reparten entre las campañas de tráfico que llevan a ella.</p>
+
+<h2 class="section-title" id="diferencias">Qué cambió de Megaloto 3 a Megaloto 4</h2>
+<div class="tbl-wrap"><table>
+<thead><tr><th>#</th><th>Megaloto 3 (septiembre)</th><th>Megaloto 4 (noviembre, antes del 18/11)</th><th>Impacto</th><th>Estado</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Optimizaba con el píxel <b>«Loto Qr»</b> (2024096218091789), con años de historial de compras.</td><td>Optimiza con <b>«LotoQr 2»</b> (1790896178792185), creado en octubre. El píxel viejo <b>sigue disparando en lotoqr</b> con el mismo volumen, pero Megaloto 4 no tiene acceso.</td><td><span class="pill bad">Alto</span></td><td><span class="pill warn">Pendiente</span></td></tr>
+<tr><td>2</td><td>Atribución 7 días clic + 1 día vista + 1 día video.</td><td>Solo 7 días clic: Meta recibe menos señales para optimizar.</td><td><span class="pill bad">Alto</span></td><td><span class="pill warn">Pendiente</span></td></tr>
+<tr><td>3</td><td>Público ampliado de Advantage+ encendido: las bases eran sugerencias.</td><td>Apagado: públicos cerrados. Frecuencia en 17 días: riesgo <b>11,9</b>, one-activos v2 <b>8,8</b> (M3, mes entero: 4,5 y 3,1–3,5).</td><td><span class="pill bad">Alto</span></td><td><span class="pill done">Hecho 18/11</span></td></tr>
+<tr><td>4</td><td>Audience Network: 0,9 % del gasto de conversión.</td><td>~5 % del gasto, con clics que casi no llegan a la landing (27–37 %) ni compran (3–5 % de las visitas).</td><td><span class="pill warn">Medio</span></td><td><span class="pill done">Hecho 18/11</span></td></tr>
+<tr><td>5</td><td>Más públicos: video 60 días, interacción 365 días, lookalikes 2–3 %, lookalikes de la base de nuevos, compras no finalizadas.</td><td>Faltaban; solo lookalikes 1 % y 1–2 % de jugadores e interacción 120 días.</td><td><span class="pill warn">Medio</span></td><td><span class="pill done">Hecho 18/11</span> <span class="muted">(menos la lista de compras no finalizadas)</span></td></tr>
+<tr><td>6</td><td>Promo 2x1 frecuente: 2.628 jugadas en septiembre, el 30 % de one-activos.</td><td>Solo Black Weeks desde el 11/11.</td><td><span class="pill bad">Alto</span></td><td><span class="pill warn">Depende del cliente</span></td></tr>
+<tr><td>7</td><td>Bases chicas pero separadas.</td><td>Bases subidas el 16/11 con «agregar»: hábito roto y nuevos se pisan con activos y one-timer, y en riesgo no se actualizó.</td><td><span class="pill warn">Medio</span></td><td><span class="pill warn">Depende del cliente</span></td></tr>
+<tr><td>8</td><td>Tráfico con comportamientos de intención de compra (usuarios de pagos de Facebook 90 días y otros).</td><td>Tráfico por intereses (juegos de azar, lotería).</td><td><span class="pill">Bajo</span></td><td><span class="pill">A evaluar</span></td></tr>
+</tbody></table></div>
+
+<h2 class="section-title" id="hecho">Acciones aplicadas el 18 de noviembre</h2>
+<div class="steps">
+  <div class="step done"><div class="num">2</div><div><h4>Sin Audience Network ni WhatsApp <span class="pill done">Hecho</span></h4>
+    <p>Los 7 conjuntos de conversión activos quedaron en Facebook, Instagram y Messenger: one-activos v2, lookalike jugadores 90 días, promo 2x1, riesgo, nuevos, rmk-visitantes-seguidores y nueva matriz.</p></div></div>
+  <div class="step done"><div class="num">3</div><div><h4>Público ampliado de Advantage+ <span class="pill done">Hecho</span></h4>
+    <p>Encendido en riesgo, one-activos v2, promo 2x1, rmk-visitantes-seguidores y nueva matriz, como estaba en Megaloto 3. Las bases siguen como punto de partida, pero Meta puede salir de ellas cuando la frecuencia sube. Nuevos y el lookalike quedan cerrados: nuevos depende de excluir a los jugadores actuales y el lookalike ya es amplio.</p></div></div>
+  <div class="step done"><div class="num">4</div><div><h4>Públicos de Megaloto 3 recreados <span class="pill done">Hecho</span></h4>
+    <div class="tbl-wrap" style="margin-top:8px;border-radius:10px"><table>
+      <thead><tr><th>Público nuevo</th><th>Se agregó a</th></tr></thead>
+      <tbody>
+        <tr><td>Vieron videos de la página, 60 días <span class="muted">(58 videos, los mismos de Megaloto 3)</span></td><td>rmk-visitantes-seguidores, nueva matriz, nuevos</td></tr>
+        <tr><td>Interacción con la página de Facebook, 365 días</td><td>rmk-visitantes-seguidores, nueva matriz, nuevos</td></tr>
+        <tr><td>Interacción con Instagram, 365 días</td><td>rmk-visitantes-seguidores, nueva matriz, nuevos</td></tr>
+        <tr><td>Lookalike de jugadores 90 días, 2–3 %</td><td>lookalike de one-activos</td></tr>
+        <tr><td>Lookalike de la base de nuevos, 1–3 %</td><td>nuevos</td></tr>
+      </tbody></table></div>
+    <p class="note" style="margin-top:8px">Son cambios importantes para Meta: los conjuntos vuelven a aprendizaje y el costo puede moverse los primeros días. Se evalúan a partir del 25/11.</p></div></div>
+</div>
+
+<h2 class="section-title" id="siguiente">Próximos pasos</h2>
+<div class="steps">
+  <div class="step"><div class="num">1</div><div><h4>Recuperar el píxel «Loto Qr» <span class="pill bad">Prioridad alta</span> <span class="pill">Cliente / admin del BM</span></h4>
+    <p>El píxel 2024096218091789 pertenece al administrador comercial «Fintech» y sigue recibiendo los eventos de lotoqr. Hay que compartirlo con el administrador comercial «Caproni 2» o con la cuenta Megaloto 4. Con acceso, los conjuntos de conversión pasan a optimizar con su historial.</p></div></div>
+  <div class="step"><div class="num">5</div><div><h4>Atribución 7 días clic + 1 día vista <span class="pill">ADCOM · semana del 23/11</span></h4>
+    <p>Meta no deja cambiar la atribución en conjuntos ya publicados, así que se duplican los de conversión con la nueva ventana (y con el píxel viejo, si ya llegó). Corren 5–7 días en paralelo y se apagan los que rindan peor.</p></div></div>
+  <div class="step"><div class="num">6</div><div><h4>Calendario de promo 2x1 <span class="pill">Cliente</span></h4>
+    <p>En septiembre la 2x1 de lunes y jueves aportó el 30 % de las jugadas de one-activos. Proponemos volver a una cadencia fija y cargarla en el conjunto de promos con la UTM homologada.</p></div></div>
+  <div class="step"><div class="num">7</div><div><h4>Bases con «reemplazar» <span class="pill">Cliente</span></h4>
+    <ul><li>Volver a subir las 5 bases con «Reemplazar clientes», no «Agregar», y con segmentos excluyentes (cada jugador en una sola base).</li>
+    <li>Actualizar en riesgo (sigue con la carga del 15/10).</li>
+    <li>Compartir la lista de jugadores que no finalizaron la compra, como la que había en Megaloto 3.</li></ul></div></div>
+  <div class="step"><div class="num">8</div><div><h4>TikTok en diciembre: solo consideración y awareness <span class="pill">Decisión 18/11</span></h4>
+    <p>TikTok sale de la parte baja del funnel. En noviembre, la conversión de TikTok va en US$2,34 y cons-tiktok en US$4,75. Desde diciembre su presupuesto va a consideración (tráfico a la landing) y video views, y la conversión queda en Meta.</p></div></div>
+</div>
+
+<h2 class="section-title" id="medicion">Cómo lo medimos</h2>
+<div class="tbl-wrap"><table>
+<thead><tr><th>Fecha</th><th>Qué revisamos</th><th>Criterio</th></tr></thead>
+<tbody>
+<tr><td><b>20 nov</b></td><td>Públicos nuevos poblados y conjuntos editados gastando normal</td><td>Gasto del 19/11 ≥ 85 % del presupuesto diario</td></tr>
+<tr><td><b>23 nov</b></td><td>Semana 16–22/11 contra 9–15/11 por campaña</td><td>CPA del CRM por campaña</td></tr>
+<tr><td><b>25 nov</b></td><td>«Antes y después» del 18/11 en el seguimiento de CPA</td><td>CPA de conversión ≤ US$1,60 y frecuencia de riesgo &lt; 6 en 7 días</td></tr>
+<tr><td><b>Semana del 30 nov</b></td><td>Conjuntos duplicados con la nueva atribución</td><td>Se quedan los de menor CPA del CRM</td></tr>
+</tbody></table></div>
+<p class="note">El día a día está en el <a href="seguimiento-cpa.html">seguimiento de CPA</a>, con el evento «Ajustes M3 → M4» marcado el 18/11, y en las <a href="seguimiento-cpa-slides.html">slides por medio y etapa</a>.</p>
+<p class="foot">ADCOM · Mega Loto · 18 de noviembre de 2026</p>
+</div>
+<script>
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const L = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov'];
+const T = [2.25,3.01,3.05,2.47,2.55,2.18,2.24,1.50,1.23,2.06,2.11];
+const C = [1.72,2.29,2.19,1.74,1.31,1.40,1.24,1.20,0.95,2.12,1.78];
+const S = [null,null,2.75,2.27,null,1.79,1.63,1.35,1.62,0.76,1.54];
+const ln = (label, data, col, w) => ({label, data, borderColor:col, backgroundColor:col, pointRadius:3.5, borderWidth:w, tension:.25, spanGaps:true});
+new Chart(document.getElementById('cMes'), {type:'line', data:{labels:L, datasets:[
+  ln('Total', T, css('--s-tot'), 2.8), ln('Conversión', C, css('--s-conv'), 2), ln('Consideración', S, css('--s-cons'), 2),
+  {label:'Objetivo total', data:L.map(()=>2.75), borderColor:css('--s-goal'), borderDash:[5,4], pointRadius:0, borderWidth:1.3}]},
+  options:{maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, plugins:{legend:{display:false},
+    tooltip:{callbacks:{label:c => `${c.dataset.label}: US$${c.parsed.y.toFixed(2).replace('.',',')}`}}},
+    scales:{x:{grid:{display:false}}, y:{beginAtZero:true, max:3.5, grid:{color:'#EEE'}, ticks:{callback:v=>'US$'+v}}}}});
+</script>
+</body>
+</html>
