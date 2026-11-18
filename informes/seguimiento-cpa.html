@@ -88,7 +88,7 @@ ul.rules{font-size:12px;line-height:1.7;margin:0;padding:14px 18px 14px 34px;bac
   <label>Medio <select id="medio"><option value="">Todos</option><option>Meta</option><option>TikTok</option><option>Landing</option></select></label>
   <label>Etapa <select id="etapaF"><option value="">Todas</option><option>Conversión</option><option>Consideración</option><option>Awareness</option></select></label>
 </div>
-<nav class="toc"><a href="seguimiento-cpa-slides.html" style="background:var(--ink);color:var(--accent);border-color:var(--ink)">Slides por medio y etapa ↗</a><a href="#resumen">Resumen</a><a href="#cpa">CPA por día</a><a href="#etapa">Por etapa</a><a href="#medio-etapa">Medio y etapa</a><a href="#campanas">Por campaña</a><a href="#antes">Antes y después</a><a href="#diario">Detalle diario</a><a href="#bitacora">Bitácora y reglas</a></nav>
+<nav class="toc"><a href="seguimiento-cpa-slides.html" style="background:var(--ink);color:var(--accent);border-color:var(--ink)">Slides por medio y etapa ↗</a><a href="#resumen">Resumen</a><a href="#cpa">CPA por día</a><a href="#mensual">Por mes</a><a href="#etapa">Por etapa</a><a href="#medio-etapa">Medio y etapa</a><a href="#campanas">Por campaña</a><a href="#antes">Antes y después</a><a href="#diario">Detalle diario</a><a href="#bitacora">Bitácora y reglas</a></nav>
 <div id="estado"></div>
 
 <h2 class="section-title" id="resumen">Resumen del rango</h2>
@@ -101,6 +101,13 @@ ul.rules{font-size:12px;line-height:1.7;margin:0;padding:14px 18px 14px 34px;bac
   <div class="cap">El CPA diario salta con los sorteos (miércoles y domingo); el de 7 días móviles es el que manda.</div>
   <div class="legend"><span><i style="background:var(--s-day)"></i>CPA del día</span><span><i style="background:var(--s-cpa)"></i>CPA 7 días</span><span><i class="dash"></i>Objetivo</span><span><i style="background:#E0A800;width:2px;height:10px"></i>Cambio en la cuenta</span></div>
   <div class="chart"><canvas id="cCpa" role="img" aria-label="CPA diario y de 7 días contra el objetivo"></canvas></div>
+</div>
+<div class="panel" id="mensual" style="margin-top:16px">
+  <h3>CPA por mes · total, conversión y consideración</h3>
+  <div class="cap">Todo 2026, sin importar el rango elegido arriba (sí respeta los filtros de medio y etapa). El mes en curso va hasta el último día con inversión. Líneas punteadas: objetivos del flow de noviembre.</div>
+  <div class="legend"><span><i style="background:var(--s-cpa)"></i>Total</span><span><i style="background:var(--s-conv)"></i>Conversión</span><span><i style="background:var(--s-cons)"></i>Consideración</span><span><i class="dash"></i>Objetivo total</span></div>
+  <div class="chart"><canvas id="cMes" role="img" aria-label="CPA mensual total, de conversión y de consideración"></canvas></div>
+  <div class="tbl-wrap" style="margin-top:12px;border-radius:10px"><table id="tMes"></table></div>
 </div>
 <div class="grid2">
   <div class="panel" id="etapa">
@@ -252,6 +259,32 @@ function render(){
     options:{...base({y2:{position:'right', beginAtZero:true, grid:{display:false}}}), plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>c.dataset.label==='Inversión'?`Inversión: ${fU(c.parsed.y,0)}`:`Jugadas: ${fN(c.parsed.y)}`}}},
       scales:{...base().scales, y:{beginAtZero:true, grid:{color:'#EEE'}, ticks:{callback:v=>'US$'+v}}, y2:{position:'right', beginAtZero:true, grid:{display:false}}}}, plugins:[evPlugin]});
 
+  // ── por mes (todo el año)
+  const mesAgg = {}; const ff = medioF();
+  for(const [d, ci, i, j] of D.filas){ if(d > D.full) continue; const c = D.campanas[ci]; if(ff && !ff(c)) continue;
+    const m = d.slice(0,7), x = mesAgg[m] ||= {T:{inv:0,jug:0}}; x.T.inv+=i; x.T.jug+=j; const e = x[c.etapa] ||= {inv:0,jug:0}; e.inv+=i; e.jug+=j }
+  const meses = Object.keys(mesAgg).sort(), CAP = 4;
+  const ser = k => meses.map(m => { const x = mesAgg[m][k]; return x && x.jug ? +(x.inv/x.jug).toFixed(2) : null });
+  const sT = ser('T'), sC = ser('Conversión'), sS = ser('Consideración');
+  const clip = s => s.map(v => v == null ? null : Math.min(v, CAP));
+  const capPlugin = {id:'cap', afterDatasetsDraw(ch){ const {ctx} = ch; ctx.save(); ctx.font = '600 10px Poppins'; ctx.textAlign = 'center';
+    ch.data.datasets.forEach((ds, di) => { const raw = ds._raw; if(!raw) return; const meta = ch.getDatasetMeta(di);
+      raw.forEach((v, i) => { if(v != null && v > CAP){ const pt = meta.data[i]; ctx.fillStyle = ds.borderColor; ctx.fillText('↑ ' + fU(v), pt.x, pt.y - 8) } }) });
+    ctx.restore() }};
+  const lm = (lab, s, col, w) => ({label:lab, data:clip(s), _raw:s, borderColor:col, backgroundColor:col, pointRadius:3.5, borderWidth:w, tension:.25, spanGaps:true});
+  mk('cMes', {type:'line', data:{labels:meses.map(m => MES[+m.slice(5)]), datasets:[
+      lm('Total', sT, css('--s-cpa'), 2.8), lm('Conversión', sC, css('--s-conv'), 2), lm('Consideración', sS, css('--s-cons'), 2),
+      {label:'Objetivo total', data:meses.map(()=>GOAL), borderColor:css('--s-goal'), borderDash:[5,4], pointRadius:0, borderWidth:1.3}]},
+    options:{maintainAspectRatio:false, layout:{padding:{top:18}}, interaction:{mode:'index',intersect:false}, plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c => `${c.dataset.label}: ${fU(c.dataset._raw ? c.dataset._raw[c.dataIndex] : c.parsed.y)}`}}},
+      scales:{x:{grid:{display:false}}, y:{beginAtZero:true, max:CAP, grid:{color:'#EEE'}, ticks:{callback:v=>'US$'+v}}}}, plugins:[capPlugin]});
+  $('tMes').innerHTML = `<thead><tr><th>Mes</th>${meses.map(m => `<th>${MES[+m.slice(5)]}${m===D.full.slice(0,7)?'*':''}</th>`).join('')}</tr></thead><tbody>` +
+    [['Inversión', m => fU(mesAgg[m].T.inv,0)], ['Jugadas', m => fN(mesAgg[m].T.jug)],
+     ['CPA total', m => { const v = div(mesAgg[m].T.inv, mesAgg[m].T.jug); return `<span class="pill ${cls(v,GOAL)}">${fU(v)}</span>` }],
+     ['CPA conversión', m => { const x = mesAgg[m]['Conversión']; return x ? fU(div(x.inv,x.jug)) : '—' }],
+     ['CPA consideración', m => { const x = mesAgg[m]['Consideración']; return x ? `${fU(div(x.inv,x.jug))}${x.jug < 100 ? ' <span class="muted">(' + fN(x.jug) + ' jug)</span>' : ''}` : '—' }]]
+    .map(([l,f]) => `<tr><td class="l"><b>${l}</b></td>${meses.map(m => `<td>${f(m)}</td>`).join('')}</tr>`).join('') + '</tbody>';
+
   // ── por campaña
   const f = medioF(), w1a = addDays(b,-6), w0a = addDays(b,-13), w0b = addDays(b,-7);
   const cs2 = {};
@@ -329,7 +362,7 @@ fetch('../data/seguimiento-cpa.json', {cache:'no-store'}).then(r => r.json()).th
   $('stamp').innerHTML = `Inversión al ${fD(D.full)} · jugadas al ${fD(D.hasta)}<br>actualizado ${D.actualizado.slice(8,10)}/${D.actualizado.slice(5,7)} ${D.actualizado.slice(11)}`;
   ['desde','hasta'].forEach(id => { $(id).min = D.desde; $(id).max = D.hasta });
   const h = D.full, mes = h.slice(0,8)+'01';
-  const P = [['Este mes', mes, h], ['Últimos 7 días', addDays(h,-6), h], ['Últimos 14 días', addDays(h,-13), h], ['Desde Megaloto 4', '2026-10-06', h], ['Desde agosto', D.desde, h]];
+  const P = [['Este mes', mes, h], ['Últimos 7 días', addDays(h,-6), h], ['Últimos 14 días', addDays(h,-13), h], ['Desde Megaloto 4', '2026-10-06', h], ['Este año', D.desde, h]];
   $('presets').innerHTML = P.map((p,i) => `<button class="chip${i===0?' on':''}" data-i="${i}">${p[0]}</button>`).join('');
   $('presets').onclick = ev => { const i = ev.target.dataset.i; if(i==null) return; setRange(P[i][1], P[i][2]); ev.target.classList.add('on') };
   $('evento').innerHTML = EVENTOS.map((e,i) => `<option value="${i}">${fD(e[0])} · ${e[1]}</option>`).join('');

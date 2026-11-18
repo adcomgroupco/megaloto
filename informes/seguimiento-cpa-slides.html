@@ -95,7 +95,7 @@ const cls = (v,g) => !isFinite(v) || !g ? '' : v <= g ? 'ok' : v <= g*1.2 ? 'war
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const ORD_E = ['Conversión','Consideración','Awareness'];
 const COL_M = {Meta:'--meta', TikTok:'--tiktok', Landing:'--awa'}, COL_E = {'Conversión':'--conv','Consideración':'--cons','Awareness':'--awa'};
-let D, charts = [];
+let D, charts = [], full;
 
 function sum(a, b, key){       // agrupa por medio o etapa en [a,b]; también últimos 7 días y 7 previos
   const g = {}, w1 = addDays(b,-6), w0a = addDays(b,-13), w0b = addDays(b,-7);
@@ -176,7 +176,15 @@ function build(){
       <div class="col"><div class="ct">CPA de 7 días por etapa</div><div class="cs">Líneas punteadas: objetivo de cada etapa</div><div class="chartbox"><canvas id="chE"></canvas></div>
         <div class="ct">Peso de cada etapa</div><div class="chartbox" style="flex:.55"><canvas id="chE2"></canvas></div></div>
     </div></div>
-    <div class="foot">${otros ? `${fN(otros)} jugadas sin campaña (landing en días sin campaña de tráfico o UTM sin homologar) entran en el total pero no en una etapa. ` : ''}Awareness no se evalúa por CPA.</div></section>`;
+    <div class="foot">${otros ? `${fN(otros)} jugadas sin campaña (landing en días sin campaña de tráfico o UTM sin homologar) entran en el total pero no en una etapa. ` : ''}Awareness no se evalúa por CPA.</div></section>
+
+  <section class="slide">${topBar('ene – ' + fD(full) + ' ' + full.slice(0,4))}<div class="card">
+    <div class="h"><div class="pill">CPA POR MES</div><div class="hs">Evolución del <b>CPA total</b>, de <b>conversión</b> y de <b>consideración</b> en 2026. Objetivos del flow de noviembre: total ${fU(GOAL)}, conversión ${fU(GOAL_ETAPA['Conversión'])}, consideración ${fU(GOAL_ETAPA['Consideración'])}.</div></div>
+    <div class="chartbox"><canvas id="chMes"></canvas></div>
+    <table id="tbMes"></table>
+    <div class="ins" id="insMes"></div></div>
+    <div class="foot">El mes en curso va hasta el ${fD(full)}. Los valores por encima del eje se muestran con flecha (meses con muy pocas jugadas en consideración). Megaloto 3 hasta el 5/10 y Megaloto 4 desde el 6/10 (otro píxel; el CPA usa jugadas del CRM, no el píxel).</div></section>`;
+  mensual();
 
   const base = {maintainAspectRatio:false, animation:false, interaction:{mode:'index',intersect:false},
     plugins:{legend:{position:'top', align:'end', labels:{boxWidth:10, boxHeight:10, font:{size:10, family:'Poppins'}}}},
@@ -193,9 +201,35 @@ function build(){
   charts.push(new Chart($('chE2'), share(ets, k => COL_E[k])));
 }
 
+function mensual(){
+  const g = {}; for(const [d, ci, i, j] of D.filas){ if(d > full) continue; const c = D.campanas[ci], m = d.slice(0,7), x = g[m] ||= {T:{inv:0,jug:0}};
+    x.T.inv+=i; x.T.jug+=j; const e = x[c.etapa] ||= {inv:0,jug:0}; e.inv+=i; e.jug+=j }
+  const ms = Object.keys(g).sort(), CAP = 4, s = k => ms.map(m => { const x = g[m][k]; return x && x.jug ? +(x.inv/x.jug).toFixed(2) : null });
+  const sT = s('T'), sC = s('Conversión'), sS = s('Consideración');
+  const L = (lab, raw, col, w) => ({label:lab, data:raw.map(v => v==null?null:Math.min(v,CAP)), _raw:raw, borderColor:col, backgroundColor:col, pointRadius:3, borderWidth:w, tension:.25, spanGaps:true});
+  const capP = {id:'cap', afterDatasetsDraw(ch){ const c = ch.ctx; c.save(); c.font = '600 10px Poppins'; c.textAlign = 'center';
+    ch.data.datasets.forEach((ds, di) => ds._raw && ds._raw.forEach((v,i) => { if(v > CAP){ const pt = ch.getDatasetMeta(di).data[i]; c.fillStyle = ds.borderColor; c.fillText('↑ ' + fU(v), pt.x, pt.y - 7) } })); c.restore() }};
+  charts.push(new Chart($('chMes'), {type:'line', data:{labels:ms.map(m => MES[+m.slice(5)]), datasets:[
+      L('Total', sT, css('--ink'), 2.8), L('Conversión', sC, css('--conv'), 2), L('Consideración', sS, css('--cons'), 2),
+      {label:'Objetivo total', data:ms.map(()=>GOAL), borderColor:css('--bad'), borderDash:[5,4], pointRadius:0, borderWidth:1.2}]},
+    options:{maintainAspectRatio:false, animation:false, interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'top', align:'end', labels:{boxWidth:10, boxHeight:10, font:{size:10, family:'Poppins'}}}, tooltip:{callbacks:{label:c => `${c.dataset.label}: ${fU(c.dataset._raw ? c.dataset._raw[c.dataIndex] : c.parsed.y)}`}}},
+      scales:{x:{grid:{display:false}, ticks:{font:{size:10}}}, y:{beginAtZero:true, max:CAP, grid:{color:'#EEE'}, ticks:{font:{size:9}, callback:v=>'US$'+v}}}}, plugins:[capP]}));
+  const cell = (k, m, g) => { const x = g[m][k]; if(!x || !x.jug) return '—'; const v = div(x.inv,x.jug), goal = k==='T' ? GOAL : GOAL_ETAPA[k]; return `<span class="chip ${cls(v,goal)}">${fU(v)}</span>` };
+  $('tbMes').innerHTML = `<tr><th>2026</th>${ms.map(m => `<th>${MES[+m.slice(5)]}</th>`).join('')}</tr>` +
+    `<tr><td><b>Inversión</b></td>${ms.map(m => `<td>${fU(g[m].T.inv/1000,1).replace('US$','US$')} mil</td>`).join('')}</tr>` +
+    `<tr><td><b>Jugadas</b></td>${ms.map(m => `<td>${fN(g[m].T.jug)}</td>`).join('')}</tr>` +
+    [['T','CPA total'],['Conversión','CPA conversión'],['Consideración','CPA consideración']].map(([k,l]) => `<tr><td><b>${l}</b></td>${ms.map(m => `<td>${cell(k,m,g)}</td>`).join('')}</tr>`).join('');
+  const best = k => { const r = ms.map((m,i) => [m, (k==='T'?sT:k==='C'?sC:sS)[i]]).filter(r => r[1] && g[r[0]][k==='T'?'T':k==='C'?'Conversión':'Consideración'].jug > 300).sort((p,q) => p[1]-q[1])[0]; return r ? `${MESL[+r[0].slice(5)]} (${fU(r[1])})` : '—' };
+  const last = ms[ms.length-1], prev = ms[ms.length-2];
+  $('insMes').innerHTML = `<ul><li>Mejor CPA total del año: <b>${best('T')}</b>; mejor conversión: <b>${best('C')}</b>; mejor consideración: <b>${best('S')}</b>.</li>
+    <li>${MESL[+last.slice(5)]} va en <b>${fU(sT[sT.length-1])}</b> total (${MESL[+prev.slice(5)]}: ${fU(sT[sT.length-2])}), conversión ${fU(sC[sC.length-1])} y consideración ${fU(sS[sS.length-1])}.</li>
+    <li>Conversión pasó de ${fU(sC[ms.indexOf('2026-09')])} en septiembre a ${fU(sC[ms.indexOf('2026-10')])} en octubre con el cambio a Megaloto 4, y en ${MESL[+last.slice(5)]} baja a ${fU(sC[sC.length-1])}.</li></ul>`;
+}
+
 fetch('../data/seguimiento-cpa.json', {cache:'no-store'}).then(r => r.json()).then(j => {
   D = j; $('estado').remove();
-  const conInv = [...new Set(D.filas.filter(f => f[2] > 0).map(f => f[0]))].sort(), full = conInv[conInv.length-1];
+  const conInv = [...new Set(D.filas.filter(f => f[2] > 0).map(f => f[0]))].sort(); full = conInv[conInv.length-1];
   const opts = []; let m = full.slice(0,7);
   while(m >= D.desde.slice(0,7)){ const a = m + '-01', y = +m.slice(0,4), mo = +m.slice(5,7), last = new Date(Date.UTC(y, mo, 0)).toISOString().slice(0,10);
     opts.push([`${a}|${last < full ? last : full}`, `${MESL[mo]} ${y}${last < full ? '' : ` (al ${fD(full)})`}`]); m = new Date(Date.UTC(y, mo-2, 1)).toISOString().slice(0,7) }
