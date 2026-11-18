@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mega Loto · Seguimiento CPA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#F5F5F5;--ink:#1A1A1A;--t2:#333;--soft:#666;--muted:#999;--line:#E0E0E0;--accent:#FFC000;
+--s-cpa:#1A1A1A;--s-day:#B8B8B8;--s-goal:#C62828;--s-inv:#E9C46A;--s-jug:#2a78d6;--s-conv:#eda100;--s-cons:#2a78d6;
+--ok:#1E7B24;--ok-bg:#E4F5E5;--warn:#8A6400;--warn-bg:#FFF1C2;--bad:#B3261E;--bad-bg:#FBE3E0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:'Poppins',sans-serif;color:var(--t2);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px}
+.back{display:inline-block;font-size:12px;color:var(--soft);text-decoration:none;margin-bottom:12px}
+header.bar{background:var(--ink);border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px;flex-wrap:wrap}
+header.bar h1{margin:0;font-size:19px;font-weight:400;color:#fff;line-height:1.25}
+header.bar h1 b{font-weight:700;font-style:italic}
+header.bar span{display:block;font-size:11.5px;color:var(--accent);font-weight:300;margin-top:2px}
+.stamp{font-size:11px;color:#bbb;text-align:right}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-top:14px}
+.controls label{font-size:11px;color:var(--soft);display:flex;align-items:center;gap:6px}
+.controls input,.controls select{font-family:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;padding:5px 8px;color:var(--ink);background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:inherit;font-size:11px;border:1px solid var(--line);background:#fff;border-radius:99px;padding:4px 12px;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--accent);border-color:var(--ink)}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+nav.toc a{font-size:11px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:99px;padding:4px 12px;text-decoration:none}
+h2.section-title{font-size:15px;font-weight:600;color:var(--ink);margin:34px 2px 12px;display:flex;align-items:center;gap:8px}
+h2.section-title::before{content:"";width:8px;height:8px;background:var(--accent);border-radius:2px}
+.note{font-size:11.5px;color:var(--soft);font-weight:300;margin:8px 2px 0;line-height:1.6}
+.kpi-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 10px 12px;text-align:center;position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;bottom:0;left:0;right:0;height:5px;background:var(--accent)}
+.kpi.ok::after{background:var(--ok)}.kpi.warn::after{background:#E0A800}.kpi.bad::after{background:var(--bad)}
+.kpi .val{font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.kpi .lbl{font-size:10.5px;font-weight:600;color:var(--t2);margin-top:4px}
+.kpi .sub{font-size:9.5px;color:var(--muted);margin-top:3px;font-weight:300;line-height:1.4}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 18px 14px;min-width:0}
+.panel h3{margin:0 0 2px;font-size:13.5px;font-weight:600;color:var(--ink)}
+.panel .cap{font-size:11px;color:var(--muted);font-weight:300;margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:11px;color:var(--soft);margin-bottom:8px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.legend i.sq{height:10px;width:10px}
+.legend i.dash{background:repeating-linear-gradient(90deg,var(--s-goal) 0 4px,transparent 4px 7px)!important}
+.chart{position:relative;height:280px}
+.tbl-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--ink);color:#fff;font-weight:500;font-size:11px;text-align:right;padding:9px 11px;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+td{padding:8px 11px;border-top:1px solid #F0F0F0;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.l{text-align:left}
+tr.total td{background:#FFF8E1;font-weight:600;color:var(--ink)}
+tr.parcial td{font-style:italic;color:var(--muted)}
+.camp{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ink)}
+.muted{color:var(--muted);font-size:10.5px}
+.pill{display:inline-block;font-size:11px;font-weight:600;border-radius:99px;padding:2px 9px}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}
+.ev{font-size:10.5px;color:#8A6400;white-space:normal;min-width:140px;text-align:left}
+.sorteo{font-size:9.5px;font-weight:600;color:#8A6400;background:var(--warn-bg);border-radius:4px;padding:1px 5px;margin-left:4px}
+.delta.up{color:var(--bad)}.delta.down{color:var(--ok)}
+.log{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 18px}
+.log div{display:grid;grid-template-columns:90px 1fr;gap:12px;padding:9px 0;border-top:1px solid #F0F0F0;font-size:12px;line-height:1.5}
+.log div:first-child{border-top:0}
+.log b{color:var(--ink)}
+ul.rules{font-size:12px;line-height:1.7;margin:0;padding:14px 18px 14px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+#estado{font-size:12px;color:var(--soft);margin-top:12px}
+.foot{font-size:11px;color:var(--muted);text-align:center;margin-top:30px;font-style:italic}
+@media (max-width:900px){.kpi-row{grid-template-columns:repeat(3,minmax(0,1fr))}.grid2{grid-template-columns:1fr}}
+@media (max-width:520px){.wrap{padding:20px 16px 48px}.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}.log div{grid-template-columns:1fr;gap:2px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="../index.html">← Portal Mega Loto</a>
+<header class="bar">
+  <div><h1>MEGA LOTO · <b>Seguimiento CPA</b></h1><span>CPA total de pauta · jugadas del CRM · Meta + TikTok</span></div>
+  <div class="stamp" id="stamp">Cargando datos…</div>
+</header>
+
+<div class="controls">
+  <label>Desde <input type="date" id="desde"></label>
+  <label>Hasta <input type="date" id="hasta"></label>
+  <div class="chips" id="presets"></div>
+  <label>Medio <select id="medio"><option value="">Todos</option><option>Meta</option><option>TikTok</option></select></label>
+</div>
+<nav class="toc"><a href="#resumen">Resumen</a><a href="#cpa">CPA por día</a><a href="#etapa">Por etapa</a><a href="#campanas">Por campaña</a><a href="#antes">Antes y después</a><a href="#diario">Detalle diario</a><a href="#bitacora">Bitácora y reglas</a></nav>
+<div id="estado"></div>
+
+<h2 class="section-title" id="resumen">Resumen del rango</h2>
+<div class="kpi-row" id="kpis"></div>
+<p class="note" id="nota-obj"></p>
+
+<h2 class="section-title" id="cpa">CPA total por día</h2>
+<div class="panel">
+  <h3>CPA de pauta (inversión ÷ jugadas del CRM)</h3>
+  <div class="cap">El CPA diario salta con los sorteos (miércoles y domingo); el de 7 días móviles es el que manda.</div>
+  <div class="legend"><span><i style="background:var(--s-day)"></i>CPA del día</span><span><i style="background:var(--s-cpa)"></i>CPA 7 días</span><span><i class="dash"></i>Objetivo</span><span><i style="background:#E0A800;width:2px;height:10px"></i>Cambio en la cuenta</span></div>
+  <div class="chart"><canvas id="cCpa" role="img" aria-label="CPA diario y de 7 días contra el objetivo"></canvas></div>
+</div>
+<div class="grid2">
+  <div class="panel" id="etapa">
+    <h3>CPA por etapa · 7 días móviles</h3>
+    <div class="cap">Conversión y consideración, cada una contra su objetivo del flow.</div>
+    <div class="legend"><span><i style="background:var(--s-conv)"></i>Conversión</span><span><i style="background:var(--s-cons)"></i>Consideración</span><span><i class="dash"></i>Objetivos</span></div>
+    <div class="chart"><canvas id="cEtapa" role="img" aria-label="CPA por etapa"></canvas></div>
+  </div>
+  <div class="panel">
+    <h3>Inversión y jugadas por día</h3>
+    <div class="cap">Barras: inversión en USD. Línea: jugadas de pauta.</div>
+    <div class="legend"><span><i class="sq" style="background:var(--s-inv)"></i>Inversión</span><span><i style="background:var(--s-jug)"></i>Jugadas</span></div>
+    <div class="chart"><canvas id="cInv" role="img" aria-label="Inversión y jugadas por día"></canvas></div>
+  </div>
+</div>
+
+<h2 class="section-title" id="campanas">Por campaña</h2>
+<div class="tbl-wrap"><table id="tCamp"></table></div>
+<p class="note">Objetivo = CPA por jugada del flow de noviembre (C-KPI de cada línea). La columna «7 días» compara los últimos 7 días del rango con los 7 anteriores. Las jugadas de landing se reparten entre las campañas de tráfico que llevan a la landing (MAPA PAUTA).</p>
+
+<h2 class="section-title" id="antes">Antes y después de un cambio</h2>
+<div class="controls" style="margin-top:0"><label>Cambio <select id="evento"></select></label><label>Días a cada lado <select id="ventana"><option>3</option><option selected>7</option><option>14</option></select></label></div>
+<div class="tbl-wrap" style="margin-top:10px"><table id="tAntes"></table></div>
+<p class="note">Después = los días completos siguientes al cambio (el día del cambio no cuenta). Antes = los mismos días de la semana, una (o dos) semanas antes, para que los sorteos de miércoles y domingo caigan igual en los dos lados.</p>
+
+<h2 class="section-title" id="diario">Detalle diario</h2>
+<div class="tbl-wrap"><table id="tDia"></table></div>
+<p class="note" id="nota-dia"></p>
+
+<h2 class="section-title" id="bitacora">Bitácora y reglas</h2>
+<div class="log" id="log"></div>
+<h3 style="font-size:13px;color:var(--ink);margin:18px 2px 8px">Reglas de lectura</h3>
+<ul class="rules">
+  <li>Mirar el <b>CPA de 7 días</b>, no el del día: los domingos y miércoles de sorteo bajan el CPA y los días sin sorteo lo suben.</li>
+  <li>Después de un cambio de públicos o presupuesto, esperar al menos <b>5 días</b> antes de sacar conclusiones (Meta reaprende).</li>
+  <li>CPA de 7 días por encima del objetivo +20 % tres días seguidos: revisar la campaña que más lo sube en la tabla «Por campaña».</li>
+  <li>Las campañas de awareness no buscan jugadas: su inversión sí entra en el CPA total, pero no se evalúan por CPA.</li>
+</ul>
+<p class="note">Fuentes: pestaña <b>CAMPAÑAS DIARIO</b> de «[Megaloto] Fuente de datos» (inversión de Meta, TikTok en COP ÷ 3.500, X y programática; jugadas de pauta = UTM con ADCOM o PAGO_ONLINE sin SMS, WhatsApp, banner ni orgánico) y compras del píxel de Meta (FB_MEGALOTO y FB_MEGALOTO_3). Etapa según el flow. Los datos se regeneran con <code>scripts/clients/megaloto/build_megaloto_seguimiento_cpa.py</code>.</p>
+<p class="foot">ADCOM · uso interno</p>
+</div>
+
+<script>
+const GOAL = 2.75, WARN = 3.30;                       // CPA total del flow de noviembre (US$17.200 / 6.261 compras) y alerta +20 %
+const GOAL_ETAPA = {'Conversión': 2.59, 'Consideración': 0.59};
+const GOAL_CAMP = {                                    // C-KPI del flow de noviembre por línea
+  'adcom_megaloto_fb_conv_meta_cons-meta': 0.59, 'adcom_megaloto_fb_conv_meta_nuevos': 1.85,
+  'adcom_megaloto_fb_conv_meta_one-activos': 2.51, 'adcom_megaloto_fb_conv_meta_riesgo': 3.59,
+  'adcom_megaloto_tt_conv_tiktok_conversion': 2.50,
+};
+const EVENTOS = [   // fecha, texto corto, detalle
+  ['2026-09-14', 'TikTok tráfico', 'Arranca cons-tiktok (tráfico a la landing) en TikTok.'],
+  ['2026-10-06', 'Megaloto 4', 'Megaloto 3 queda restringida (último gasto 5/10); la pauta pasa a Megaloto 4 con otro píxel (LotoQr 2).'],
+  ['2026-10-30', 'Lookalike', 'one-activos se divide: conjuntos calientes (BBDD y píxel) y lookalike de jugadores 90 días aparte.'],
+  ['2026-11-02', 'Presupuestos nov', 'Presupuestos de noviembre (Meta 433 USD/día) y cons-tiktok reactivado.'],
+  ['2026-11-04', 'one-activos v2', 'Conjunto caliente lleno (50 anuncios): se duplica a one-activos v2.'],
+  ['2026-11-07', 'TikTok nov', 'TikTok: video views y conversión nuevas (07/11–01/12).'],
+  ['2026-11-11', 'Black Weeks · cae el pozo', 'Promo Black Weeks en el conjunto 2x1. El pozo cae en el sorteo del miércoles; el 12/11 se pausan los anuncios con monto.'],
+  ['2026-11-13', 'Pozo nuevo', 'Pozo reiniciado (dom 15 Gs. 3.760M) y ganador +137M en interacción.'],
+  ['2026-11-16', 'Bases actualizadas', 'El cliente sube las bases (activos, one-timer, hábito roto, nuevos) con «agregar»; en riesgo sin actualizar. Lookalikes refrescados el 17/11.'],
+];
+const MES = ['','ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const DIA = ['dom','lun','mar','mié','jue','vie','sáb'];
+const $ = id => document.getElementById(id);
+const fU = (n,d=2) => isFinite(n) && n ? 'US$' + n.toLocaleString('es-PY',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
+const fN = n => isFinite(n) ? Math.round(n).toLocaleString('es-PY') : '0';
+const div = (a,b) => b ? a/b : NaN;
+const fD = s => { const p = s.split('-'); return `${+p[2]} ${MES[+p[1]]}` };
+const dow = s => new Date(s + 'T12:00:00').getDay();
+const addDays = (s,n) => new Date(Date.parse(s + 'T12:00:00Z') + n*864e5).toISOString().slice(0,10);
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const cls = (v, g) => !isFinite(v) || !g ? '' : v <= g ? 'ok' : v <= g*1.2 ? 'warn' : 'bad';
+let D, charts = {};
+
+function days(a, b){ const out=[]; for(let d=a; d<=b; d=addDays(d,1)) out.push(d); return out }
+function agg(filter){   // {fecha: {inv, jug, etapa:{...}}}
+  const by = {};
+  for(const [d, ci, inv, jug] of D.filas){
+    const c = D.campanas[ci];
+    if(filter && !filter(c)) continue;
+    const x = by[d] ||= {inv:0, jug:0, et:{}};
+    x.inv += inv; x.jug += jug;
+    const e = x.et[c.etapa] ||= {inv:0, jug:0}; e.inv += inv; e.jug += jug;
+  }
+  return by;
+}
+function roll(by, d, n, key){ let i=0, j=0;
+  for(let k=0;k<n;k++){ const x = by[addDays(d,-k)]; if(!x) continue;
+    const v = key ? x.et[key] : x; if(v){ i+=v.inv; j+=v.jug } }
+  return div(i,j) }
+const medioF = () => { const m = $('medio').value; return m ? (c => c.medio === m) : null };
+
+function render(){
+  const a = $('desde').value, b = $('hasta').value, by = agg(medioF()), ds = days(a,b);
+  const parcial = D.parcial;
+  // ── resumen
+  let inv=0, jug=0, et={}, invMeta=0, px=0;
+  for(const d of ds){ const x = by[d]; if(x){ inv+=x.inv; jug+=x.jug;
+      for(const [k,v] of Object.entries(x.et)){ (et[k] ||= {inv:0,jug:0}); et[k].inv+=v.inv; et[k].jug+=v.jug } }
+    px += D.pixel[d] || 0 }
+  for(const [d, ci, i] of D.filas) if(d>=a && d<=b && D.campanas[ci].medio==='Meta') invMeta += i;
+  const cpa = div(inv,jug), cc = et['Conversión'] && div(et['Conversión'].inv, et['Conversión'].jug), cs = et['Consideración'] && div(et['Consideración'].inv, et['Consideración'].jug);
+  const r7 = roll(by, b, 7);
+  $('kpis').innerHTML = [
+    ['', fU(inv,0), 'Inversión', `${ds.length} días · ${fD(a)} – ${fD(b)}`],
+    ['', fN(jug), 'Jugadas de pauta', 'CRM, todas las UTM de pauta'],
+    [cls(cpa,GOAL), fU(cpa), 'CPA total', `objetivo ${fU(GOAL)} · 7 días al ${fD(b)}: ${fU(r7)}`],
+    [cls(cc,GOAL_ETAPA['Conversión']), fU(cc), 'CPA conversión', `objetivo ${fU(GOAL_ETAPA['Conversión'])} · ${fN(et['Conversión']?.jug||0)} jugadas`],
+    [cls(cs,GOAL_ETAPA['Consideración']), fU(cs), 'CPA consideración', `objetivo ${fU(GOAL_ETAPA['Consideración'])} · ${fN(et['Consideración']?.jug||0)} jugadas`],
+    ['', fU(div(invMeta,px)), 'CPA píxel Meta', `${fN(px)} compras del píxel · referencia`],
+  ].map(([c,v,l,s]) => `<div class="kpi ${c}"><div class="val">${v}</div><div class="lbl">${l}</div><div class="sub">${s}</div></div>`).join('');
+  $('nota-obj').innerHTML = `Objetivos del flow de noviembre: CPA total ${fU(GOAL)} (US$17.200 para 6.261 compras), conversión ${fU(GOAL_ETAPA['Conversión'])} y consideración ${fU(GOAL_ETAPA['Consideración'])}. Verde = en objetivo, ámbar = hasta +20 %, rojo = más. ${b===parcial ? `El ${fD(parcial)} va parcial.` : ''}`;
+
+  // ── gráficos
+  const lab = ds.map(fD), evIdx = EVENTOS.map(e => [ds.indexOf(e[0]), e[1]]).filter(e => e[0] >= 0);
+  const evPlugin = {id:'ev', afterDatasetsDraw(ch){ const {ctx, chartArea:ca, scales:{x}} = ch; const txt = ch.canvas.id === 'cCpa';
+    ctx.save(); ctx.strokeStyle = '#E0A800'; ctx.fillStyle = '#8A6400'; ctx.font = '10px Poppins'; ctx.setLineDash([3,3]);
+    evIdx.forEach(([i,t],n) => { const px = x.getPixelForValue(i); ctx.beginPath(); ctx.moveTo(px, ca.top); ctx.lineTo(px, ca.bottom); ctx.stroke();
+      if(txt) ctx.fillText(t, Math.min(px+3, ca.right-ctx.measureText(t).width), ca.top + 10 + (n%3)*12) });
+    ctx.restore() }};
+  const base = (y2) => ({maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, plugins:{legend:{display:false}},
+    scales:{x:{grid:{display:false},ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:12}}, y:{beginAtZero:true,grid:{color:'#EEE'}}, ...(y2||{})}});
+  const mk = (id, cfg) => { charts[id]?.destroy(); charts[id] = new Chart($(id), cfg) };
+  const dayCpa = ds.map(d => { const x = by[d]; return x && x.jug ? +(x.inv/x.jug).toFixed(2) : null });
+  const r7s = ds.map(d => +roll(by,d,7).toFixed(2) || null);
+  const capY = Math.max(GOAL*2.2, ...r7s.filter(Boolean)) ;
+  mk('cCpa', {type:'line', data:{labels:lab, datasets:[
+      {label:'CPA del día', data:dayCpa.map(v => v==null?null:Math.min(v,capY)), borderColor:css('--s-day'), backgroundColor:css('--s-day'), pointRadius:2.5, borderWidth:1.5, tension:.2},
+      {label:'CPA 7 días', data:r7s, borderColor:css('--s-cpa'), backgroundColor:css('--s-cpa'), pointRadius:0, borderWidth:2.5, tension:.3},
+      {label:'Objetivo', data:ds.map(()=>GOAL), borderColor:css('--s-goal'), borderDash:[5,4], pointRadius:0, borderWidth:1.5}]},
+    options:{...base(), plugins:{legend:{display:false}, tooltip:{callbacks:{label:c => `${c.dataset.label}: ${fU(c.dataset.label==='CPA del día' ? dayCpa[c.dataIndex] : c.parsed.y)}`}}},
+      scales:{...base().scales, y:{beginAtZero:true, max:Math.ceil(capY), grid:{color:'#EEE'}, ticks:{callback:v=>'US$'+v}}}}, plugins:[evPlugin]});
+  mk('cEtapa', {type:'line', data:{labels:lab, datasets:[
+      {label:'Conversión', data:ds.map(d=>+roll(by,d,7,'Conversión').toFixed(2)||null), borderColor:css('--s-conv'), pointRadius:0, borderWidth:2.2, tension:.3},
+      {label:'Consideración', data:ds.map(d=>+roll(by,d,7,'Consideración').toFixed(2)||null), borderColor:css('--s-cons'), pointRadius:0, borderWidth:2.2, tension:.3},
+      {label:'Objetivo conversión', data:ds.map(()=>GOAL_ETAPA['Conversión']), borderColor:css('--s-conv'), borderDash:[5,4], pointRadius:0, borderWidth:1.2},
+      {label:'Objetivo consideración', data:ds.map(()=>GOAL_ETAPA['Consideración']), borderColor:css('--s-cons'), borderDash:[5,4], pointRadius:0, borderWidth:1.2}]},
+    options:{...base(), plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fU(c.parsed.y)}`}}},
+      scales:{...base().scales, y:{beginAtZero:true, grid:{color:'#EEE'}, ticks:{callback:v=>'US$'+v}}}}, plugins:[evPlugin]});
+  mk('cInv', {data:{labels:lab, datasets:[
+      {type:'bar', label:'Inversión', data:ds.map(d=>+(by[d]?.inv||0).toFixed(0)), backgroundColor:css('--s-inv'), yAxisID:'y', borderRadius:2, order:2},
+      {type:'line', label:'Jugadas', data:ds.map(d=>Math.round(by[d]?.jug||0)), borderColor:css('--s-jug'), backgroundColor:css('--s-jug'), yAxisID:'y2', pointRadius:2, borderWidth:2, tension:.25, order:1}]},
+    options:{...base({y2:{position:'right', beginAtZero:true, grid:{display:false}}}), plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>c.dataset.label==='Inversión'?`Inversión: ${fU(c.parsed.y,0)}`:`Jugadas: ${fN(c.parsed.y)}`}}},
+      scales:{...base().scales, y:{beginAtZero:true, grid:{color:'#EEE'}, ticks:{callback:v=>'US$'+v}}, y2:{position:'right', beginAtZero:true, grid:{display:false}}}}, plugins:[evPlugin]});
+
+  // ── por campaña
+  const f = medioF(), w1a = addDays(b,-6), w0a = addDays(b,-13), w0b = addDays(b,-7);
+  const cs2 = {};
+  for(const [d, ci, i, j] of D.filas){ const c = D.campanas[ci]; if(f && !f(c)) continue;
+    const x = cs2[ci] ||= {inv:0,jug:0,i1:0,j1:0,i0:0,j0:0};
+    if(d>=a && d<=b){ x.inv+=i; x.jug+=j }
+    if(d>=w1a && d<=b){ x.i1+=i; x.j1+=j }
+    if(d>=w0a && d<=w0b){ x.i0+=i; x.j0+=j } }
+  const ordE = {'Conversión':0,'Consideración':1,'Awareness':2,'Landing':3,'Sin homologar':4};
+  const rowsC = Object.entries(cs2).filter(([,x]) => x.inv || x.jug).sort((p,q) => (ordE[D.campanas[p[0]].etapa]??9) - (ordE[D.campanas[q[0]].etapa]??9) || q[1].inv - p[1].inv);
+  const T = {inv:0,jug:0,i1:0,j1:0,i0:0,j0:0}; rowsC.forEach(([,x]) => Object.keys(T).forEach(k => T[k]+=x[k]));
+  const delta = (n, o) => { if(!(n > 0) || !(o > 0)) return '—'; const p = (n/o-1)*100; return `<span class="delta ${p>0?'up':'down'}">${p>0?'+':''}${p.toFixed(0)} %</span>` };
+  const rowHtml = (name, c, x, goal, total) => {
+    const v = div(x.inv,x.jug), v1 = div(x.i1,x.j1), v0 = div(x.i0,x.j0), aw = c && c.etapa === 'Awareness';
+    return `<tr class="${total?'total':''}"><td class="l">${total ? 'Total' : `<span class="camp">${name.replace(/^adcom_megaloto_/,'')}</span>`}</td>
+      <td class="l">${c ? c.medio : ''}</td><td class="l">${c ? c.etapa : ''}</td><td>${fU(x.inv,0)}</td><td>${fN(x.jug)}</td>
+      <td>${aw ? `<span class="muted">${fU(v)}</span>` : `<span class="pill ${cls(v,goal)}">${fU(v)}</span>`}</td><td>${goal ? fU(goal) : '—'}</td>
+      <td>${aw ? '—' : fU(v1)} <span class="muted">vs ${aw ? '—' : fU(v0)}</span></td><td>${aw ? '—' : delta(v1, v0)}</td></tr>` };
+  $('tCamp').innerHTML = `<thead><tr><th>Campaña</th><th style="text-align:left">Medio</th><th style="text-align:left">Etapa</th><th>Inversión</th><th>Jugadas</th><th>CPA</th><th>Objetivo</th><th>CPA 7 días vs 7 previos</th><th>Cambio</th></tr></thead><tbody>` +
+    rowsC.map(([ci,x]) => rowHtml(D.campanas[ci].c, D.campanas[ci], x, GOAL_CAMP[D.campanas[ci].c])).join('') + rowHtml('', null, T, GOAL, true) + '</tbody>';
+
+  renderAntes();
+
+  // ── detalle diario
+  const evMap = {}; EVENTOS.forEach(e => (evMap[e[0]] ||= []).push(e[1]));
+  $('tDia').innerHTML = `<thead><tr><th>Fecha</th><th>Inversión</th><th>Jugadas</th><th>CPA</th><th>CPA 7 días</th><th>CPA conversión 7d</th><th>CPA consid. 7d</th><th>Compras píxel</th><th>Cambio en la cuenta</th></tr></thead><tbody>` +
+    ds.slice().reverse().map(d => { const x = by[d] || {inv:0,jug:0}, r = roll(by,d,7), dw = dow(d);
+      return `<tr class="${d===parcial?'parcial':''}"><td>${DIA[dw]} ${fD(d)}${dw===0||dw===3?'<span class="sorteo">sorteo</span>':''}</td><td>${fU(x.inv,0)}</td><td>${fN(x.jug)}</td><td>${fU(div(x.inv,x.jug))}</td>
+        <td><span class="pill ${cls(r,GOAL)}">${fU(r)}</span></td><td>${fU(roll(by,d,7,'Conversión'))}</td><td>${fU(roll(by,d,7,'Consideración'))}</td><td>${fN(D.pixel[d]||0)}</td><td class="ev">${(evMap[d]||[]).join(' · ')}</td></tr>` }).join('') + '</tbody>';
+  $('nota-dia').innerHTML = `CPA 7 días en verde hasta ${fU(GOAL)}, ámbar hasta ${fU(WARN)} y rojo por encima. Sorteos: miércoles y domingo. ${parcial ? `El ${fD(parcial)} va en cursiva: el día no terminó o falta cargar la inversión. Los botones de rango terminan en el último día con inversión (${fD(D.full)}).` : ''}`;
+}
+
+function renderAntes(){
+  const e = EVENTOS[+$('evento').value], n = +$('ventana').value, f = medioF();
+  const after = days(addDays(e[0],1), addDays(e[0],n)).filter(d => d <= D.full);   // solo días completos
+  const k = after.length, sh = 7*Math.ceil(Math.max(k,1)/7), before = after.map(d => addDays(d,-sh));   // mismos días de la semana, antes del cambio
+  const sum = (ds) => { const by = {}; const s = new Set(ds);
+    for(const [d, ci, i, j] of D.filas){ if(!s.has(d)) continue; const c = D.campanas[ci]; if(f && !f(c)) continue;
+      const x = by[ci] ||= {inv:0,jug:0}; x.inv+=i; x.jug+=j; const t = by.T ||= {inv:0,jug:0}; t.inv+=i; t.jug+=j }
+    return by };
+  const A = sum(before), B = sum(after);
+  if(!k){ $('tAntes').innerHTML = `<tbody><tr><td class="l">Todavía no hay días completos después del ${fD(e[0])}.</td></tr></tbody>`; return }
+  const ids = [...new Set([...Object.keys(A), ...Object.keys(B)])].filter(x => x!=='T' && D.campanas[x].etapa !== 'Awareness' && ((A[x]?.jug||0)+(B[x]?.jug||0)) > 0)
+    .sort((p,q) => (B[q]?.inv||0) - (B[p]?.inv||0));
+  const cell = (x) => x ? `${fU(div(x.inv,x.jug))} <span class="muted">${fN(x.jug)} jug · ${fU(x.inv,0)}</span>` : '—';
+  const dd = (a,b) => { const va = a && div(a.inv,a.jug), vb = b && div(b.inv,b.jug); if(!(va > 0) || !(vb > 0)) return '—'; const p=(vb/va-1)*100; return `<span class="delta ${p>0?'up':'down'}">${p>0?'+':''}${p.toFixed(0)} %</span>` };
+  $('tAntes').innerHTML = `<thead><tr><th>Campaña</th><th>Antes · ${fD(before[0])}–${fD(before[k-1])}</th><th>Después · ${fD(after[0])}–${fD(after[k-1])}</th><th>Cambio CPA</th></tr></thead><tbody>` +
+    ids.map(x => `<tr><td class="l"><span class="camp">${D.campanas[x].c.replace(/^adcom_megaloto_/,'')}</span></td><td>${cell(A[x])}</td><td>${cell(B[x])}</td><td>${dd(A[x],B[x])}</td></tr>`).join('') +
+    `<tr class="total"><td>Total (con awareness)</td><td>${cell(A.T)}</td><td>${cell(B.T)}</td><td>${dd(A.T,B.T)}</td></tr></tbody>` +
+    (k < n ? `<tbody><tr><td class="l muted" colspan="4">Solo ${k} día(s) completo(s) después del cambio: lectura preliminar.</td></tr></tbody>` : '');
+}
+
+function setRange(a,b){ $('desde').value = a < D.desde ? D.desde : a; $('hasta').value = b; document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); render() }
+
+fetch('../data/seguimiento-cpa.json', {cache:'no-store'}).then(r => r.json()).then(j => {
+  D = j; const conInv = [...new Set(D.filas.filter(f => f[2] > 0).map(f => f[0]))].sort(); D.full = conInv[conInv.length-1]; D.parcial = D.full < D.hasta ? D.hasta : (D.full === new Date().toISOString().slice(0,10) ? D.full : '');
+  $('stamp').innerHTML = `Inversión al ${fD(D.full)} · jugadas al ${fD(D.hasta)}<br>actualizado ${D.actualizado.slice(8,10)}/${D.actualizado.slice(5,7)} ${D.actualizado.slice(11)}`;
+  ['desde','hasta'].forEach(id => { $(id).min = D.desde; $(id).max = D.hasta });
+  const h = D.full, mes = h.slice(0,8)+'01';
+  const P = [['Este mes', mes, h], ['Últimos 7 días', addDays(h,-6), h], ['Últimos 14 días', addDays(h,-13), h], ['Desde Megaloto 4', '2026-10-06', h], ['Desde agosto', D.desde, h]];
+  $('presets').innerHTML = P.map((p,i) => `<button class="chip${i===0?' on':''}" data-i="${i}">${p[0]}</button>`).join('');
+  $('presets').onclick = ev => { const i = ev.target.dataset.i; if(i==null) return; setRange(P[i][1], P[i][2]); ev.target.classList.add('on') };
+  $('evento').innerHTML = EVENTOS.map((e,i) => `<option value="${i}">${fD(e[0])} · ${e[1]}</option>`).join('');
+  $('evento').value = EVENTOS.length - 1;
+  $('log').innerHTML = EVENTOS.slice().reverse().map(e => `<div><b>${fD(e[0])}</b><span><b>${e[1]}.</b> ${e[2]}</span></div>`).join('');
+  ['desde','hasta','medio'].forEach(id => $(id).onchange = () => { document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); render() });
+  ['evento','ventana'].forEach(id => $(id).onchange = renderAntes);
+  $('desde').value = mes; $('hasta').value = h; render();
+}).catch(err => { $('estado').textContent = 'No se pudieron cargar los datos (data/seguimiento-cpa.json): ' + err });
+</script>
+</body>
+</html>
