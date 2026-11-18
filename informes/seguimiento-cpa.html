@@ -85,9 +85,10 @@ ul.rules{font-size:12px;line-height:1.7;margin:0;padding:14px 18px 14px 34px;bac
   <label>Desde <input type="date" id="desde"></label>
   <label>Hasta <input type="date" id="hasta"></label>
   <div class="chips" id="presets"></div>
-  <label>Medio <select id="medio"><option value="">Todos</option><option>Meta</option><option>TikTok</option></select></label>
+  <label>Medio <select id="medio"><option value="">Todos</option><option>Meta</option><option>TikTok</option><option>Landing</option></select></label>
+  <label>Etapa <select id="etapaF"><option value="">Todas</option><option>Conversión</option><option>Consideración</option><option>Awareness</option></select></label>
 </div>
-<nav class="toc"><a href="#resumen">Resumen</a><a href="#cpa">CPA por día</a><a href="#etapa">Por etapa</a><a href="#campanas">Por campaña</a><a href="#antes">Antes y después</a><a href="#diario">Detalle diario</a><a href="#bitacora">Bitácora y reglas</a></nav>
+<nav class="toc"><a href="#resumen">Resumen</a><a href="#cpa">CPA por día</a><a href="#etapa">Por etapa</a><a href="#medio-etapa">Medio y etapa</a><a href="#campanas">Por campaña</a><a href="#antes">Antes y después</a><a href="#diario">Detalle diario</a><a href="#bitacora">Bitácora y reglas</a></nav>
 <div id="estado"></div>
 
 <h2 class="section-title" id="resumen">Resumen del rango</h2>
@@ -115,6 +116,12 @@ ul.rules{font-size:12px;line-height:1.7;margin:0;padding:14px 18px 14px 34px;bac
     <div class="chart"><canvas id="cInv" role="img" aria-label="Inversión y jugadas por día"></canvas></div>
   </div>
 </div>
+
+<h2 class="section-title" id="medio-etapa">Por medio y por etapa</h2>
+<div class="tbl-wrap"><table id="tMedio"></table></div>
+<div class="tbl-wrap" style="margin-top:16px"><table id="tEtapa"></table></div>
+<div class="tbl-wrap" style="margin-top:16px"><table id="tCruce"></table></div>
+<p class="note">La inversión de awareness entra en el CPA del medio y en el total, pero awareness no se evalúa por CPA. «7 días» = últimos 7 días del rango contra los 7 anteriores.</p>
 
 <h2 class="section-title" id="campanas">Por campaña</h2>
 <div class="tbl-wrap"><table id="tCamp"></table></div>
@@ -190,7 +197,7 @@ function roll(by, d, n, key){ let i=0, j=0;
   for(let k=0;k<n;k++){ const x = by[addDays(d,-k)]; if(!x) continue;
     const v = key ? x.et[key] : x; if(v){ i+=v.inv; j+=v.jug } }
   return div(i,j) }
-const medioF = () => { const m = $('medio').value; return m ? (c => c.medio === m) : null };
+const medioF = () => { const m = $('medio').value, e = $('etapaF').value; return (m || e) ? (c => (!m || c.medio === m) && (!e || c.etapa === e)) : null };
 
 function render(){
   const a = $('desde').value, b = $('hasta').value, by = agg(medioF()), ds = days(a,b);
@@ -266,6 +273,24 @@ function render(){
   $('tCamp').innerHTML = `<thead><tr><th>Campaña</th><th style="text-align:left">Medio</th><th style="text-align:left">Etapa</th><th>Inversión</th><th>Jugadas</th><th>CPA</th><th>Objetivo</th><th>CPA 7 días vs 7 previos</th><th>Cambio</th></tr></thead><tbody>` +
     rowsC.map(([ci,x]) => rowHtml(D.campanas[ci].c, D.campanas[ci], x, GOAL_CAMP[D.campanas[ci].c])).join('') + rowHtml('', null, T, GOAL, true) + '</tbody>';
 
+  // ── por medio y por etapa
+  const grp = key => { const g = {};
+    for(const [ci,x] of Object.entries(cs2)){ const k = D.campanas[ci][key]; const y = g[k] ||= {inv:0,jug:0,i1:0,j1:0,i0:0,j0:0}; Object.keys(y).forEach(z => y[z]+=x[z]) }
+    return Object.entries(g).filter(([,x]) => x.inv || x.jug).sort((p,q) => q[1].inv - p[1].inv) };
+  const tbl = (titulo, rows, goalOf) => `<thead><tr><th>${titulo}</th><th>Inversión</th><th>% inv.</th><th>Jugadas</th><th>% jug.</th><th>CPA</th><th>7 días</th><th>Cambio</th></tr></thead><tbody>` +
+    rows.map(([k,x]) => { const v = div(x.inv,x.jug), g = goalOf(k), aw = k === 'Awareness';
+      return `<tr><td class="l"><b>${k}</b>${g ? ` <span class="muted">obj. ${fU(g)}</span>` : ''}</td><td>${fU(x.inv,0)}</td><td>${fN(div(x.inv,T.inv)*100)} %</td><td>${fN(x.jug)}</td><td>${fN(div(x.jug,T.jug)*100)} %</td>
+        <td>${aw || !g ? `<span class="${aw?'muted':''}">${fU(v)}</span>` : `<span class="pill ${cls(v,g)}">${fU(v)}</span>`}</td><td>${aw ? '—' : fU(div(x.i1,x.j1))}</td><td>${aw ? '—' : delta(div(x.i1,x.j1), div(x.i0,x.j0))}</td></tr>` }).join('') +
+    `<tr class="total"><td>Total</td><td>${fU(T.inv,0)}</td><td>100 %</td><td>${fN(T.jug)}</td><td>100 %</td><td><span class="pill ${cls(div(T.inv,T.jug),GOAL)}">${fU(div(T.inv,T.jug))}</span></td><td>${fU(div(T.i1,T.j1))}</td><td>${delta(div(T.i1,T.j1), div(T.i0,T.j0))}</td></tr></tbody>`;
+  $('tMedio').innerHTML = tbl('Medio', grp('medio'), () => null);
+  $('tEtapa').innerHTML = tbl('Etapa', grp('etapa').sort((p,q) => (ordE[p[0]]??9) - (ordE[q[0]]??9)), k => GOAL_ETAPA[k]);
+  const meds = grp('medio').map(r => r[0]), ets = ['Conversión','Consideración','Awareness'];
+  const cruce = {}; for(const [ci,x] of Object.entries(cs2)){ const c = D.campanas[ci], y = (cruce[c.medio] ||= {})[c.etapa] ||= {inv:0,jug:0}; y.inv+=x.inv; y.jug+=x.jug }
+  $('tCruce').innerHTML = `<thead><tr><th>Medio × etapa</th>${ets.map(e => `<th>${e}</th>`).join('')}</tr></thead><tbody>` +
+    meds.filter(m => ets.some(e => cruce[m]?.[e] && (cruce[m][e].inv || cruce[m][e].jug))).map(m => `<tr><td class="l"><b>${m}</b></td>${ets.map(e => { const y = cruce[m]?.[e]; if(!y || !(y.inv || y.jug)) return '<td>—</td>';
+      const v = div(y.inv,y.jug), g = GOAL_ETAPA[e];
+      return `<td>${e==='Awareness' || !g ? `<span class="muted">${fU(v)}</span>` : `<span class="pill ${cls(v,g)}">${fU(v)}</span>`} <span class="muted">${fN(y.jug)} jug · ${fU(y.inv,0)}</span></td>` }).join('')}</tr>`).join('') + '</tbody>';
+
   renderAntes();
 
   // ── detalle diario
@@ -310,7 +335,7 @@ fetch('../data/seguimiento-cpa.json', {cache:'no-store'}).then(r => r.json()).th
   $('evento').innerHTML = EVENTOS.map((e,i) => `<option value="${i}">${fD(e[0])} · ${e[1]}</option>`).join('');
   $('evento').value = EVENTOS.length - 1;
   $('log').innerHTML = EVENTOS.slice().reverse().map(e => `<div><b>${fD(e[0])}</b><span><b>${e[1]}.</b> ${e[2]}</span></div>`).join('');
-  ['desde','hasta','medio'].forEach(id => $(id).onchange = () => { document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); render() });
+  ['desde','hasta','medio','etapaF'].forEach(id => $(id).onchange = () => { document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); render() });
   ['evento','ventana'].forEach(id => $(id).onchange = renderAntes);
   $('desde').value = mes; $('hasta').value = h; render();
 }).catch(err => { $('estado').textContent = 'No se pudieron cargar los datos (data/seguimiento-cpa.json): ' + err });
