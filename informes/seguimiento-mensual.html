@@ -96,6 +96,26 @@ ul.rules li+li{margin-top:4px}
 .ad dt{color:var(--muted)}.ad dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
 .vermas{margin-top:10px}
 @media (max-width:520px){.fbar{grid-template-columns:1fr 44px}.fbar .fl{grid-column:1/-1}.adgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.hero{display:grid;grid-template-columns:1.25fr 1.1fr .9fr 1fr;gap:14px;margin-top:16px}
+.hc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.ht{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);text-align:center}
+.hl{font-size:12px;color:var(--soft);text-align:center}
+.hv{font-size:30px;font-weight:600;color:var(--ink);text-align:center;font-variant-numeric:tabular-nums;line-height:1.15}
+.hc.sm .hv{font-size:24px}
+.hstack{display:grid;gap:14px}
+.hc.sm{border-bottom:4px solid var(--line)}.hc.sm.ok{border-bottom-color:var(--ok)}.hc.sm.warn{border-bottom-color:#E0A800}.hc.sm.bad{border-bottom-color:var(--bad)}
+.hb-pct{font-size:13px;font-weight:600}.hb-pct.ok{color:var(--ok)}.hb-pct.bad{color:var(--bad)}
+.hb{position:relative;height:30px;background:#EEE;border-radius:8px}
+.hb i{position:absolute;inset:0 auto 0 0;border-radius:8px;background:var(--ok)}.hb i.bad{background:var(--bad)}
+.hb em{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.hb-none{font-size:11px;color:var(--muted);text-align:center;padding:10px 0}
+.hf{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--soft)}
+.hs{font-size:11px;color:var(--soft);text-align:center;line-height:1.5}
+.hd{font-weight:600;font-size:12.5px}.hd.g{color:var(--ok)}.hd.b{color:var(--bad)}
+.spark{position:relative;height:70px;margin-top:auto}
+@media (max-width:900px){.hero{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.hero{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -114,6 +134,9 @@ ul.rules li+li{margin-top:4px}
 </div>
 <nav class="toc"><a href="seguimiento-cpa.html" style="background:var(--ink);color:var(--accent);border-color:var(--ink)">Seguimiento CPA diario ↗</a><a href="#resumen">Resumen</a><a href="#lectura">Lectura</a><a href="#diario">Día a día</a><a href="#medios">Medios</a><a href="#etapas">Etapas</a><a href="#campanas">Campañas</a><a href="#anuncios">Anuncios</a><a href="#mensual">Mes a mes</a><a href="#semanas">Semanas</a><a href="#eventos">Cambios</a></nav>
 <div id="estado"></div>
+
+<div class="hero" id="hero"></div>
+<p class="note" id="nota-hero"></p>
 
 <h2 class="section-title" id="resumen">Resumen del mes <span class="muted" id="rango" style="font-weight:400;margin-left:4px"></span></h2>
 <div class="kpi-row" id="kpis"></div>
@@ -194,7 +217,18 @@ const GOAL_CAMP = {
   'adcom_megaloto_tt_conv_tiktok_conversion': 2.50,
 };
 // Flow por mes (USD y jugadas objetivo). Noviembre: Meta 13.000 + TikTok 4.200 = 17.200 para 6.261 compras.
-const FLOW = {'2026-11': {inv:17200, jug:6261, medios:{Meta:13000, TikTok:4200}}, '2026-10': {inv:20000, medios:{Meta:20000}}};
+const FLOW = {
+  // «Flow Noviembre 2026»: presupuesto de campañas por medio y etapa (USD) y compras esperadas (col. R) por medio y etapa.
+  '2026-11': {fuente:'Flow Noviembre 2026', inv:17200, jug:6261, medios:{Meta:13000, TikTok:4200},
+    invME:{'Meta|Awareness':2600, 'Meta|Consideración':1300, 'Meta|Conversión':9100, 'TikTok|Awareness':800, 'TikTok|Consideración':2000, 'TikTok|Conversión':1400},
+    jugME:{'Meta|Consideración':2208.8, 'Meta|Conversión':3492.3, 'TikTok|Conversión':560}},
+  '2026-10': {fuente:'Octubre 2 2026', inv:20000, medios:{Meta:20000}, invME:{}, jugME:{}},
+};
+// objetivo del flow con los filtros de medio y etapa (suma de las celdas medio|etapa que pasan)
+function flowObj(F, key){ const m = $('medio').value, e = $('etapaF').value; if(!m && !e) return key === 'inv' ? F.inv : F.jug;
+  const map = key === 'inv' ? F.invME : F.jugME; let t = 0, any = false;
+  for(const [k, v] of Object.entries(map || {})){ const [mm, ee] = k.split('|'); if((!m || mm === m) && (!e || ee === e)){ t += v; any = true } }
+  return any ? t : NaN }
 const EVENTOS = [
   ['2026-09-14', 'TikTok tráfico', 'Arranca cons-tiktok (tráfico a la landing) en TikTok.'],
   ['2026-10-06', 'Megaloto 4', 'Megaloto 3 queda restringida (último gasto 5/10); la pauta pasa a Megaloto 4 con otro píxel (LotoQr 2).'],
@@ -294,6 +328,7 @@ function render(){
     kp('', fN(TC.clk), 'Clics', `${delta(TC.clk, TP.clk, 'up')} · CPC ${fU(div(TC.inv, TC.clk))}`),
     kp('', fP(div(TC.clk, apiT.imp), 2), 'CTR', api.length ? 'clics en el enlace ÷ impresiones' : '—'),
   ].join('');
+  renderHero(R, C, P, TC, TP);
   renderFlow(R, C);
   renderLectura(R, C, P, TC, TP);
   renderDiario(R);
@@ -305,6 +340,42 @@ function render(){
   renderSemanas(R);
   const evs = EVENTOS.filter(e => e[0] >= a && e[0] <= R.e);
   $('log').innerHTML = evs.length ? evs.slice().reverse().map(e => `<div><b>${fD(e[0])}</b><span><b>${e[1]}.</b> ${e[2]}</span></div>`).join('') : '<div><b></b><span class="muted">Sin cambios registrados en este mes.</span></div>';
+}
+
+function renderHero(R, C, P, TC, TP){
+  const F = FLOW[R.m], pm = R.nDias / R.mesDias;
+  const oInv = F ? flowObj(F, 'inv') : NaN, oJug = F ? flowObj(F, 'jug') : NaN;
+  const conv = o => Object.entries(o).filter(([ci]) => D.campanas[ci].etapa === 'Conversión').reduce((t, [, x]) => (t.inv += x.inv, t.jug += x.jug, t), {inv:0, jug:0});
+  const CC = conv(C), CP = conv(P);
+  const cpa = div(TC.inv, TC.jug), cpaP = div(TP.inv, TP.jug), cc = div(CC.inv, CC.jug), ccP = div(CP.inv, CP.jug);
+  let oConv = NaN; if(F){ const m = $('medio').value; let i = 0, j = 0;
+    for(const [k, v] of Object.entries(F.invME)){ const [mm, ee] = k.split('|'); if(ee === 'Conversión' && (!m || mm === m)) i += v }
+    for(const [k, v] of Object.entries(F.jugME)){ const [mm, ee] = k.split('|'); if(ee === 'Conversión' && (!m || mm === m)) j += v }
+    oConv = div(i, j) }
+  const oCpa = div(oInv, oJug);
+  const tot = (a, b) => { let j = 0; for(const [d, v] of Object.entries(D.crm_total || {})) if(d >= a && d <= b) j += v[0]; return j };
+  const JT = tot(R.a, R.b), JTP = tot(R.pa, R.pb);
+  const bar = (v, g) => { const p = div(v, g); if(!isFinite(p)) return '<div class="hb-none">sin objetivo en el flow para este mes / filtro</div>';
+    const k = p >= pm*0.9 ? 'ok' : 'bad';
+    return `<div class="hb-pct ${k}">${fP(p,1)}</div><div class="hb"><i class="${k}" style="width:${Math.min(p,1)*100}%"></i><em style="left:${pm*100}%" title="${fP(pm)} del mes"></em></div>` };
+  const dAbs = (a, b, money, goodUp) => { if(!isFinite(a) || !isFinite(b)) return ''; const d = a - b, up = d > 0, good = goodUp ? up : !up;
+    return `<span class="hd ${Math.abs(d) < 1e-9 ? '' : good ? 'g' : 'b'}">${up ? '▲' : '▼'} ${money ? fU(Math.abs(d)) : fN(Math.abs(d))}</span>` };
+  $('hero').innerHTML = `
+    <div class="hc"><div class="ht">Inversión total</div><div class="hv">${fU(TC.inv)}</div>${bar(TC.inv, oInv)}
+      <div class="hf"><span>cierre al ritmo actual ${fU(TC.inv / R.nDias * R.mesDias, 0)}</span><span>${isFinite(oInv) ? fU(oInv, 0) : ''}</span></div></div>
+    <div class="hc"><div class="ht">Jugadas pauta</div><div class="hv">${fN(TC.jug)}</div>${bar(TC.jug, oJug)}
+      <div class="hf"><span>cierre al ritmo actual ${fN(TC.jug / R.nDias * R.mesDias)}</span><span>${isFinite(oJug) ? fN(oJug) : ''}</span></div></div>
+    <div class="hstack">
+      <div class="hc sm ${cls(cpa, oCpa)}"><div class="hl">CPA general</div><div class="hv">${fU(cpa)}</div><div class="hs">${dAbs(cpa, cpaP, true)} <span>vs ${fU(cpaP)} · objetivo ${fU(oCpa)}</span></div></div>
+      <div class="hc sm ${cls(cc, oConv)}"><div class="hl">CPA conversión</div><div class="hv">${fU(cc)}</div><div class="hs">${dAbs(cc, ccP, true)} <span>vs ${fU(ccP)} · objetivo ${fU(oConv)}</span></div></div>
+    </div>
+    <div class="hc"><div class="ht">Jugadas totales</div><div class="hv">${fN(JT)}</div><div class="hs">${dAbs(JT, JTP, false, true)} <span>vs ${fN(JTP)} · pauta = ${fP(div(TC.jug, JT), 1)} del total</span></div>
+      <div class="spark"><canvas id="cSpark" aria-label="Jugadas totales por día"></canvas></div></div>`;
+  const ds = days(R.a, R.b), v = ds.map(d => D.crm_total?.[d]?.[0] || 0);
+  mk('cSpark', {type:'line', data:{labels:ds.map(fD), datasets:[{data:v, borderColor:'#3E8A44', backgroundColor:'rgba(62,138,68,.12)', fill:true, pointRadius:0, borderWidth:2, tension:.15}]},
+    options:{maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c => `${fN(c.raw)} jugadas`}}}, scales:{x:{display:false}, y:{display:false, beginAtZero:true}}}});
+  $('nota-hero').innerHTML = F ? `Objetivos de «${F.fuente}»${$('medio').value || $('etapaF').value ? ', solo las líneas del medio y la etapa filtrados' : ''}: presupuesto de campañas ${fU(oInv,0)}${isFinite(oJug) ? `, ${fN(oJug)} compras (jugadas de pauta) y CPA ${fU(oCpa)}` : ''}${isFinite(oConv) ? `; CPA de conversión ${fU(oConv)}` : ''}. La línea negra de cada barra marca el ${fP(pm)} del mes transcurrido: verde = al ritmo o por encima, rojo = por debajo. Las variaciones comparan con ${fD(R.pa)} – ${fD(R.pb)}. Jugadas totales = todo el CRM (pauta, orgánico, tradicional, SMS, WhatsApp…), sin filtros.`
+    : 'Este mes no tiene objetivos cargados del flow.';
 }
 
 function renderFlow(R, C){
