@@ -88,7 +88,7 @@ ul.rules{font-size:12px;line-height:1.7;margin:0;padding:14px 18px 14px 34px;bac
   <label>Medio <select id="medio"><option value="">Todos</option><option>Meta</option><option>TikTok</option><option>Landing</option></select></label>
   <label>Etapa <select id="etapaF"><option value="">Todas</option><option>Conversión</option><option>Consideración</option><option>Awareness</option></select></label>
 </div>
-<nav class="toc"><a href="seguimiento-cpa-slides.html" style="background:var(--ink);color:var(--accent);border-color:var(--ink)">Slides por medio y etapa ↗</a><a href="#resumen">Resumen</a><a href="#cpa">CPA por día</a><a href="#mensual">Por mes</a><a href="#etapa">Por etapa</a><a href="#medio-etapa">Medio y etapa</a><a href="#campanas">Por campaña</a><a href="#antes">Antes y después</a><a href="#diario">Detalle diario</a><a href="#bitacora">Bitácora y reglas</a></nav>
+<nav class="toc"><a href="seguimiento-cpa-slides.html" style="background:var(--ink);color:var(--accent);border-color:var(--ink)">Slides por medio y etapa ↗</a><a href="#resumen">Resumen</a><a href="#cpa">CPA por día</a><a href="#plan-dia">Plan por día</a><a href="#mensual">Por mes</a><a href="#etapa">Por etapa</a><a href="#medio-etapa">Medio y etapa</a><a href="#campanas">Por campaña</a><a href="#antes">Antes y después</a><a href="#diario">Detalle diario</a><a href="#bitacora">Bitácora y reglas</a></nav>
 <div id="estado"></div>
 
 <h2 class="section-title" id="resumen">Resumen del rango</h2>
@@ -102,6 +102,31 @@ ul.rules{font-size:12px;line-height:1.7;margin:0;padding:14px 18px 14px 34px;bac
   <div class="legend"><span><i style="background:var(--s-day)"></i>CPA del día</span><span><i style="background:var(--s-cpa)"></i>CPA 7 días</span><span><i class="dash"></i>Objetivo</span><span><i style="background:#E0A800;width:2px;height:10px"></i>Cambio en la cuenta</span></div>
   <div class="chart"><canvas id="cCpa" role="img" aria-label="CPA diario y de 7 días contra el objetivo"></canvas></div>
 </div>
+<h2 class="section-title" id="plan-dia">Plan de CPA por día y cómo lo vamos a hacer</h2>
+<div class="panel">
+  <h3>CPA de Meta por día de la semana</h3>
+  <div class="cap">Solo Meta, inversión ÷ jugadas del CRM. Las jugadas se concentran en los sorteos (miércoles y domingo): ahí el adicional rinde más.</div>
+  <div class="tbl-wrap" style="border-radius:10px"><table id="tDow"></table></div>
+</div>
+<div class="panel">
+  <h3>Plan contra lo real · 20 al 30 de noviembre (Meta)</h3>
+  <div class="cap">Presupuesto del día = awareness US$86,66 + diario base de conversión y consideración US$440,67 + aumento programado (víspera +40 %, sorteo +100 %). CPA objetivo según el tipo de día.</div>
+  <div class="tbl-wrap" style="border-radius:10px"><table id="tPlan"></table></div>
+  <p class="note" id="nota-plan"></p>
+</div>
+<div class="panel">
+  <h3>Cómo lo hacemos en la plataforma</h3>
+  <ul class="rules" style="border:0;padding:6px 4px 4px 22px">
+    <li><b>Diario base</b> (desde el 20/11): similares 48 · nueva matriz 22 · nuevos 62 · one-activos v2 85 · lookalike 58 · riesgo 105 · promo 2x1 60,67. Awareness igual.</li>
+    <li><b>Aumentos de presupuesto programados</b> en cada conjunto: +40 % sáb 21, mar 24 y sáb 28 (víspera; promo 2x1 no) y +100 % dom 22, mié 25 y dom 29 (sorteo). Vuelven solos al base.</li>
+    <li><b>Freno del día</b> (regla por conjunto, cada 30 min): con el 60 % del diario base gastado y costo por compra del día &gt; 3 × su referencia de 14 días, pausa el conjunto hasta el día siguiente.</li>
+    <li><b>Sin compras</b> (cada 30 min): más de US$30 en el día sin compras → pausa.</li>
+    <li><b>Reactivación</b> a las 00:00: vuelve a activar los 7 conjuntos.</li>
+    <li><b>Acelerador / reductor</b> (06:00, una vez por día): CPA de 7 días ≤ 0,85 × referencia → +15 % (tope base × 1,30); ≥ 1,30 × referencia → −15 % (piso: diario anterior al 20/11).</li>
+    <li><b>Lectura del 23/11</b>: CPA de conversión de Meta (7 días) ≤ US$1,80 → se libera la reserva de ~US$1.600; si no, pasa a diciembre.</li>
+  </ul>
+</div>
+
 <div class="panel" id="mensual" style="margin-top:16px">
   <h3>CPA por mes · total, conversión y consideración</h3>
   <div class="cap">Todo 2026, sin importar el rango elegido arriba (sí respeta los filtros de medio y etapa). El mes en curso va hasta el último día con inversión. Líneas punteadas: objetivos del flow de noviembre.</div>
@@ -177,6 +202,7 @@ const EVENTOS = [   // fecha, texto corto, detalle
   ['2026-11-18', 'Ajustes M3 → M4', 'Conversión sin Audience Network ni WhatsApp; Advantage+ audiencia en riesgo, one-activos v2, promo 2x1 y cons-meta; públicos de M3 recreados (video 60 días, interacción FB/IG 365 días, lookalike jugadores 2–3 %, lookalike nuevos 1–3 %).'],
   ['2026-11-19', 'Pozo dom22', 'Pozo del domingo 22/11 (Gs. 3.780M): 4 piezas + video Michelin con el ganador Justino en one-activos v2 y lookalike.'],
   ['2026-11-20', '+US$4.500 Meta', 'Presupuesto adicional aprobado el 19/11: diario base de conversión y consideración 346,67 → 440,67 y subidas programadas en víspera (+40 %) y día de sorteo (+100 %) hasta el 29/11. Awareness igual.'],
+  ['2026-11-20', 'Reglas por día', '23 reglas automáticas en Megaloto 4: freno del día por conjunto (CPA del píxel > 3 × referencia con 60 % del base gastado), pausa sin compras, reactivación 00:00 y acelerador/reductor ±15 % por CPA de 7 días (tope base × 1,30, piso diario anterior).'],
 ];
 const MES = ['','ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 const DIA = ['dom','lun','mar','mié','jue','vie','sáb'];
@@ -358,6 +384,35 @@ function renderAntes(){
     (k < n ? `<tbody><tr><td class="l muted" colspan="4">Solo ${k} día(s) completo(s) después del cambio: lectura preliminar.</td></tr></tbody>` : '');
 }
 
+// ── plan por día (20–30/11, Meta)
+const PLAN_BASE = 86.66 + 440.67, PLAN_VISP = 152.00, PLAN_SORT = 440.67;
+const PLAN = {'2026-11-20':['Cambio a mitad del día',480,3.50]};
+['2026-11-21','2026-11-24','2026-11-28'].forEach(d => PLAN[d] = ['Víspera', PLAN_BASE + PLAN_VISP, 2.80]);
+['2026-11-22','2026-11-25','2026-11-29'].forEach(d => PLAN[d] = ['Sorteo', PLAN_BASE + PLAN_SORT, 1.30]);
+['2026-11-23','2026-11-26','2026-11-27','2026-11-30'].forEach(d => PLAN[d] = ['Base', PLAN_BASE, 3.50]);
+function renderPlan(){
+  const meta = agg(c => c.medio === 'Meta');
+  // por día de la semana: mes en curso vs ago–sep
+  const dowAgg = (a, b) => { const r = Array.from({length:7}, () => ({inv:0, jug:0, n:new Set()}));
+    for(const d in meta){ if(d < a || d > b) continue; const w = dow(d), x = meta[d]; r[w].inv += x.inv; r[w].jug += x.jug; if(x.inv > 0) r[w].n.add(d) } return r };
+  const mes = D.full.slice(0,8) + '01', M = dowAgg(mes, D.full), H = dowAgg('2026-08-01', '2026-09-30');
+  const goalDia = w => (w===0||w===3) ? 1.30 : (w===2||w===6) ? 2.80 : 3.50;
+  $('tDow').innerHTML = `<thead><tr><th>Día</th><th>Ago–sep · CPA</th><th>Mes · inversión/día</th><th>Mes · jugadas/día</th><th>Mes · CPA</th><th>Objetivo del día</th></tr></thead><tbody>` +
+    [0,1,2,3,4,5,6].map(w => { const m = M[w], h = H[w], n = m.n.size || 1, c = div(m.inv, m.jug);
+      return `<tr><td class="l">${['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][w]}${w===0||w===3?'<span class="sorteo">sorteo</span>':w===2||w===6?'<span class="sorteo" style="background:#EEE;color:#555">víspera</span>':''}</td>
+        <td>${fU(div(h.inv,h.jug))}</td><td>${fU(m.inv/n,0)}</td><td>${fN(m.jug/n)}</td><td><span class="pill ${cls(c, goalDia(w))}">${fU(c)}</span></td><td>≤ ${fU(goalDia(w))}</td></tr>` }).join('') + '</tbody>';
+  // plan contra lo real
+  let pi = 0, ri = 0, rj = 0, pj = 0;
+  $('tPlan').innerHTML = `<thead><tr><th>Fecha</th><th>Tipo</th><th>Presupuesto plan</th><th>Inversión real</th><th>% del plan</th><th>Jugadas</th><th>CPA real</th><th>CPA objetivo</th></tr></thead><tbody>` +
+    Object.entries(PLAN).sort((p, q) => p[0] < q[0] ? -1 : 1).map(([d, [t, b, g]]) => { const x = meta[d], done = x && x.inv > 0 && d <= D.full, part = d === D.parcial;
+      pi += b; if(done){ ri += x.inv; rj += x.jug; pj += b }
+      const c = done ? div(x.inv, x.jug) : NaN;
+      return `<tr class="${part?'parcial':''}"><td class="l">${DIA[dow(d)]} ${fD(d)}</td><td class="l">${t}</td><td>${fU(b,0)}</td><td>${done ? fU(x.inv,0) : '—'}</td><td>${done ? Math.round(x.inv/b*100)+' %' : '—'}</td>
+        <td>${done ? fN(x.jug) : (x ? fN(x.jug)+' <span class="muted">parcial</span>' : '—')}</td><td>${done ? `<span class="pill ${cls(c,g)}">${fU(c)}</span>` : '—'}</td><td>≤ ${fU(g)}</td></tr>` }).join('') +
+    `<tr class="total"><td class="l" colspan="2">20–30/11</td><td>${fU(pi,0)}</td><td>${fU(ri,0)}</td><td>${pj ? Math.round(ri/pj*100)+' % de lo planeado a la fecha' : '—'}</td><td>${fN(rj)}</td><td>${fU(div(ri,rj))}</td><td>≈ US$1,90</td></tr></tbody>`;
+  $('nota-plan').innerHTML = `Inversión real de Meta según la fuente de datos (último día con inversión: ${fD(D.full)}). Verde = dentro del objetivo del día, ámbar hasta +20 %, rojo por encima. Si dos días de sorteo seguidos quedan en rojo, se revisan los aumentos programados.`;
+}
+
 function setRange(a,b){ $('desde').value = a < D.desde ? D.desde : a; $('hasta').value = b; document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); render() }
 
 fetch('../data/seguimiento-cpa.json', {cache:'no-store'}).then(r => r.json()).then(j => {
@@ -373,7 +428,7 @@ fetch('../data/seguimiento-cpa.json', {cache:'no-store'}).then(r => r.json()).th
   $('log').innerHTML = EVENTOS.slice().reverse().map(e => `<div><b>${fD(e[0])}</b><span><b>${e[1]}.</b> ${e[2]}</span></div>`).join('');
   ['desde','hasta','medio','etapaF'].forEach(id => $(id).onchange = () => { document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); render() });
   ['evento','ventana'].forEach(id => $(id).onchange = renderAntes);
-  $('desde').value = mes; $('hasta').value = h; render();
+  $('desde').value = mes; $('hasta').value = h; render(); renderPlan();
 }).catch(err => { $('estado').textContent = 'No se pudieron cargar los datos (data/seguimiento-cpa.json): ' + err });
 </script>
 </body>
