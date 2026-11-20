@@ -216,12 +216,16 @@ const GOAL_CAMP = {
   'adcom_megaloto_fb_conv_meta_one-activos': 2.51, 'adcom_megaloto_fb_conv_meta_riesgo': 3.59,
   'adcom_megaloto_tt_conv_tiktok_conversion': 2.50,
 };
-// Flow por mes (USD y jugadas objetivo). Noviembre: Meta 13.000 + TikTok 4.200 = 17.200 para 6.261 compras.
+// Flow por mes (USD y jugadas objetivo). Noviembre ajustado el 20/11: Meta 17.500 (13.000 + 4.500 aprobados el 19/11) + TikTok 4.200 = 21.700;
+// jugadas = 1–19/11 reales + proyección 20–30/11 con los C-KPI del flow ajustado (incluye la reserva de la etapa 2 a US$2,00).
 const FLOW = {
   // «Flow Noviembre 2026»: presupuesto de campañas por medio y etapa (USD) y compras esperadas (col. R) por medio y etapa.
-  '2026-11': {fuente:'Flow Noviembre 2026', inv:17200, jug:6261, medios:{Meta:13000, TikTok:4200},
-    invME:{'Meta|Awareness':2600, 'Meta|Consideración':1300, 'Meta|Conversión':9100, 'TikTok|Awareness':800, 'TikTok|Consideración':2000, 'TikTok|Conversión':1400},
-    jugME:{'Meta|Consideración':2208.8, 'Meta|Conversión':3492.3, 'TikTok|Conversión':560}},
+  '2026-11': {fuente:'Flow Noviembre 2026 ajustado', inv:21700, jug:10650, medios:{Meta:17500, TikTok:4200},
+    invME:{'Meta|Awareness':2681, 'Meta|Consideración':2152, 'Meta|Conversión':12667, 'TikTok|Awareness':800, 'TikTok|Consideración':2000, 'TikTok|Conversión':1400},
+    jugME:{'Meta|Consideración':2287, 'Meta|Conversión':7247, 'TikTok|Conversión':566}},
+  '2026-12': {fuente:'Flow Diciembre 2026', inv:22500, jug:12154, medios:{Meta:18300, TikTok:4200},
+    invME:{'Meta|Awareness':2400, 'Meta|Consideración':2900, 'Meta|Conversión':13000, 'TikTok|Awareness':1500, 'TikTok|Consideración':2700, 'TikTok|Conversión':0},
+    jugME:{'Meta|Consideración':3281, 'Meta|Conversión':8112}},
   '2026-10': {fuente:'Octubre 2 2026', inv:20000, medios:{Meta:20000}, invME:{}, jugME:{}},
 };
 // objetivo del flow con los filtros de medio y etapa (suma de las celdas medio|etapa que pasan)
@@ -241,6 +245,7 @@ const EVENTOS = [
   ['2026-11-16', 'Bases actualizadas', 'El cliente sube las bases (activos, one-timer, hábito roto, nuevos) con «agregar»; en riesgo sin actualizar. Lookalikes refrescados el 17/11.'],
   ['2026-11-18', 'Ajustes M3 → M4', 'Conversión sin Audience Network ni WhatsApp; Advantage+ audiencia en riesgo, one-activos v2, promo 2x1 y cons-meta; públicos de M3 recreados.'],
   ['2026-11-19', 'Pozo dom22', 'Pozo del domingo 22/11 (Gs. 3.780M): 4 piezas + video Michelin con el ganador Justino en one-activos v2 y lookalike.'],
+  ['2026-11-20', '+US$4.500 Meta', 'Presupuesto adicional aprobado el 19/11: diario base de conversión y consideración 346,67 → 440,67 y subidas programadas en víspera (+40 %) y día de sorteo (+100 %) hasta el 29/11. Awareness igual.'],
 ];
 const MEDIO_COL = {Meta:'#1A1A1A', TikTok:'#2a78d6', Landing:'#E9C46A', X:'#8E8E8E', 'Programática':'#C9A227'};
 const ETAPA_COL = {'Conversión':'#eda100', 'Consideración':'#2a78d6', 'Awareness':'#B8B8B8'};
